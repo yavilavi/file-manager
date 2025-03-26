@@ -1,21 +1,38 @@
 {
+
+  "include": ["src/**/*"],
+  "files": ["src/globals/process-env.d.ts"],
   "compilerOptions": {
     "module": "commonjs",
+    "moduleResolution": "node",
+    "pretty": true,
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2023",
+    "target": "ESNext",
+    "lib": ["ESNext"],
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@libs/*": [
+        "src/libs/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@modules/*": [
+        "src/modules/*"
+      ]
+    }
   }
 }

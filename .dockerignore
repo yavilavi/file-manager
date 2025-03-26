@@ -1,0 +1,14 @@
+.git
+dist
+localdb
+node_modules
+.editorconfig
+.eslintrc.js
+.gitattributes
+.gitignore
+.prettierrc
+docker-compose.yml
+generate-migration.mjs
+newrelic_agent.log
+README.md
+.idea

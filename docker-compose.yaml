@@ -1,0 +1,43 @@
+name: file-integrity-checker
+services:
+  backend:
+    container_name: "file-integrity-checker"
+    image: file-integrity-checker:latest
+    depends_on:
+      - database
+      - minio
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: "postgresql://${DB_USER}:${DB_PASSWORD}@${database}:${DB_CONTAINER_PORT}/${DB_DATABASE}"
+    ports:
+      - "$PORT:$PORT"
+  database:
+    container_name: database
+    image: postgres:16.8-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_SCHEMA: ${DB_SCHEMA}
+    ports:
+      - "5432:5432"
+    volumes:
+      - database_data:/var/lib/postgresql  
+  minio:
+    image: quay.io/minio/minio
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: $MINIO_ACCESS_KEY
+      MINIO_ROOT_PASSWORD: $MINIO_SECRET_KEY
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+volumes:
+  database_data:
+  minio_data:
