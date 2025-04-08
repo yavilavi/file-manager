@@ -5,6 +5,7 @@ import { AuthModule } from '@modules/auth/auth.module';
 import { UsersModule } from '@modules/users/users.module';
 import configuration from './config/configuration';
 import { TenantMiddleware } from '@modules/tenant/tenant.middleware';
+import { HealthModule } from '@modules/health/health.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { TenantMiddleware } from '@modules/tenant/tenant.middleware';
     FilesModule,
     AuthModule,
     UsersModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [],
