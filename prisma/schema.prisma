@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,17 +10,69 @@ datasource db {
   url      = env("DB_URL")
 }
 
-model files {
+model File {
   id        Int       @id @default(autoincrement())
   name      String    @unique(map: "uk_file_name") @db.VarChar(255)
   extension String?   @db.VarChar(20)
   mimeType  String    @db.VarChar(150)
   hash      String    @unique(map: "uk_file_hash") @db.VarChar(255)
-  size      String    @db.VarChar(30)
+  size      Int
   path      String    @db.VarChar(255)
+  company   Company   @relation(fields: [tenantId], references: [tenantId])
+  tenantId  String
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
   deletedAt DateTime?
 
-  @@map("files")
+  @@map("file")
+}
+
+model Company {
+  id          Int          @id @default(autoincrement())
+  name        String       @db.VarChar(255)
+  nit         String       @unique(map: "uk_company_nit") @db.VarChar(255)
+  tenantId    String       @unique(map: "uk_company_tenantId") @db.VarChar(15)
+  users       User[]
+  files       File[]
+  departments Department[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+  deletedAt   DateTime?
+
+  @@map("company")
+}
+
+model Department {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(255)
+  company   Company   @relation(fields: [tenantId], references: [tenantId])
+  tenantId  String
+  users     User[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  deletedAt DateTime?
+
+  @@unique([name, tenantId], name: "uk_department_name")
+  @@map("department")
+}
+
+model User {
+  id           Int         @id @default(autoincrement())
+  name         String      @db.VarChar(255)
+  email        String      @db.VarChar(20)
+  password     String      @db.VarChar(255)
+  company      Company     @relation(fields: [tenantId], references: [tenantId])
+  tenantId     String
+  department   Department? @relation(fields: [departmentId], references: [id])
+  departmentId Int?
+  files        File[]
+  isActive     Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @default(now())
+  deletedAt    DateTime?
+
+  @@unique([email, tenantId], name: "uk_user_email_company")
+  @@map("user")
 }

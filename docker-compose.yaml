@@ -1,8 +1,8 @@
-name: file-integrity-checker
+name: file-manager
 services:
   backend:
-    container_name: "file-integrity-checker"
-    image: file-integrity-checker:latest
+    container_name: "file-manager"
+    image: file-manager:latest
     depends_on:
       - database
       - minio
@@ -10,7 +10,11 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      DATABASE_URL: "postgresql://${DB_USER}:${DB_PASSWORD}@${database}:${DB_CONTAINER_PORT}/${DB_DATABASE}"
+      DB_URL: "postgresql://${DB_USER}:${DB_PASSWORD}@$database:${DB_PORT}/${DB_DATABASE}"
+      MINIO_ENDPOINT: "http://minio:9000"
+      MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
+      MINIO_SECRET_KEY: $MINIO_SECRET_KEY
+      MINIO_BUCKET: $MINIO_BUCKET
     ports:
       - "$PORT:$PORT"
   database:
@@ -27,8 +31,9 @@ services:
     volumes:
       - database_data:/var/lib/postgresql  
   minio:
-    image: quay.io/minio/minio
     container_name: minio
+    image: quay.io/minio/minio
+    restart: always
     ports:
       - "9000:9000"
       - "9001:9001"

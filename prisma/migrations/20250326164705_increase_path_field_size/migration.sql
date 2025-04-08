@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "files" ALTER COLUMN "path" SET DATA TYPE VARCHAR(255);

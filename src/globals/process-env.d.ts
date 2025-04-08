@@ -12,6 +12,14 @@ declare global {
       MINIO_ACCESS_KEY: string;
       MINIO_SECRET_KEY: string;
       MINIO_BUCKET: string;
+      ALLOWED_ORIGINS: string;
+      CORS_ORIGIN_REGEX: string;
+      JWT_SECRET: string;
+      JWT_AUD: string;
+      JWT_ISS: string;
+      BASE_URL: string;
+      PROTOCOL?: string;
+      APP_KEY: string;
     }
   }
 }

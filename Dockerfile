@@ -4,7 +4,7 @@ RUN apt-get update -y && apt-get install -y openssl curl wget
 
 FROM base AS builder
 WORKDIR /usr/app
-RUN npm i -g typescript@5.7.3 @nestjs/cli@11.0.0
+RUN npm i -g @nestjs/cli@11.0.0
 
 COPY . .
 

@@ -1,7 +1,11 @@
 {
-
-  "include": ["src/**/*"],
-  "files": ["src/globals/process-env.d.ts"],
+  "include": [
+    "src/**/*"
+  ],
+  "files": [
+    "src/globals/express.d.ts",
+    "src/globals/process-env.d.ts"
+  ],
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
@@ -12,7 +16,9 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "target": "ESNext",
-    "lib": ["ESNext"],
+    "lib": [
+      "ESNext"
+    ],
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
@@ -32,6 +38,9 @@
       ],
       "@modules/*": [
         "src/modules/*"
+      ],
+      "@shared/*": [
+        "src/shared/*"
       ]
     }
   }

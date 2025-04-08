@@ -1,5 +1,18 @@
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+const prismaClient = new PrismaClient().$extends({
+  query: {
+    file: {
+      async findMany({ args, query }) {
+        const files = await query(args);
+        return files.sort((a, b) =>
+          (a.name ?? '')
+            .toLowerCase()
+            .localeCompare((b.name ?? '').toLowerCase()),
+        );
+      },
+    },
+  },
+});
 
-export default prisma;
+export default prismaClient;
