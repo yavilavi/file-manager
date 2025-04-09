@@ -10,25 +10,25 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      PORT: $PORT
-      JWT_SECRET: $JWT_SECRET
-      JWT_AUD: $JWT_AUD
-      JWT_ISS: $JWT_ISS
-      BASE_APP_URL: $BASE_APP_URL
-      MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
-      MINIO_SECRET_KEY: $MINIO_SECRET_KEY
-      MINIO_BUCKET: $MINIO_BUCKET
-      MINIO_USE_SSL: $MINIO_USE_SSL
-      MINIO_PORT: $MINIO_PORT
-      ALLOWED_ORIGINS: $ALLOWED_ORIGINS
-      ALLOWED_WILDCARD_DOMAINS: $ALLOWED_WILDCARD_DOMAINS
-      EMAIL_PROVIDER: $EMAIL_PROVIDER
-      EMAIL_FROM: $EMAIL_FROM
-      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-      AWS_REGION: $AWS_REGION
-      DB_URL: $DB_URL
-      MINIO_ENDPOINT: $MINIO_ENDPOINT
+      - PORT=$PORT
+      - JWT_SECRET=$JWT_SECRET
+      - JWT_AUD=$JWT_AUD
+      - JWT_ISS=$JWT_ISS
+      - BASE_APP_URL=$BASE_APP_URL
+      - MINIO_ROOT_USER=$MINIO_ROOT_USER
+      - MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD
+      - MINIO_BUCKET=$MINIO_BUCKET
+      - MINIO_USE_SSL=$MINIO_USE_SSL
+      - MINIO_PORT=$MINIO_PORT
+      - ALLOWED_ORIGINS=$ALLOWED_ORIGINS
+      - ALLOWED_WILDCARD_DOMAINS=$ALLOWED_WILDCARD_DOMAINS
+      - EMAIL_PROVIDER=$EMAIL_PROVIDER
+      - EMAIL_FROM=$EMAIL_FROM
+      - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+      - AWS_REGION=$AWS_REGION
+      - DB_URL=$DB_URL
+      - MINIO_ENDPOINT=$MINIO_ENDPOINT
     restart: unless-stopped
     labels:
       - traefik.enable=true
@@ -64,10 +64,10 @@ services:
     image: postgres:16.8-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_DATABASE}
-      POSTGRES_SCHEMA: ${DB_SCHEMA}
+      - POSTGRES_USER=postgresql
+      - POSTGRES_PASSWORD=kUM3sKQy7ojVHt1XkypFObp2drth3jmFqKiyJGuO9aatuN4HNkybigyaIprSGUf9
+      - POSTGRES_DB=file_integity_manager
+      - POSTGRES_SCHEMA=public
     volumes:
       - database_data:/var/lib/postgresql
   minio:
@@ -75,8 +75,10 @@ services:
     image: quay.io/minio/minio
     restart: unless-stopped
     environment:
-      MINIO_ROOT_USER: $MINIO_ACCESS_KEY
-      MINIO_ROOT_PASSWORD: $MINIO_SECRET_KEY
+      - MINIO_SERVER_URL=$MINIO_SERVER_URL
+      - MINIO_BROWSER_REDIRECT_URL=$MINIO_BROWSER_REDIRECT_URL
+      - MINIO_ROOT_USER=$MINIO_ROOT_USER
+      - MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data

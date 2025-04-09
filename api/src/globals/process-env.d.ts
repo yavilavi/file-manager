@@ -9,8 +9,8 @@ declare global {
       PORT: string;
       DB_SCHEMA: string;
       MINIO_ENDPOINT: string;
-      MINIO_ACCESS_KEY: string;
-      MINIO_SECRET_KEY: string;
+      MINIO_ROOT_USER: string;
+      MINIO_ROOT_PASSWORD: string;
       MINIO_BUCKET: string;
       ALLOWED_ORIGINS: string;
       ALLOWED_WILDCARD_DOMAINS: string;

@@ -30,8 +30,8 @@ const configuration = registerAs('', () => ({
   },
   minio: {
     endpoint: process.env.MINIO_ENDPOINT,
-    accessKey: process.env.MINIO_ACCESS_KEY,
-    secretKey: process.env.MINIO_SECRET_KEY,
+    accessKey: process.env.MINIO_ROOT_USER,
+    secretKey: process.env.MINIO_ROOT_PASSWORD,
     bucket: process.env.MINIO_BUCKET,
     useSSL: process.env.MINIO_USE_SSL === 'true',
     port: parseInt(process.env.MINIO_PORT) || 9000,
