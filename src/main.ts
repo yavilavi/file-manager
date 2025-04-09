@@ -28,6 +28,7 @@ async function bootstrap() {
   app.use(helmet());
   app.enableCors({
     origin: (origin, callback) => {
+      console.log({ origin, originRegex, allowedOrigins });
       if (!origin || !originRegex || !allowedOrigins)
         return callback(null, true);
       console.log(originRegex);
@@ -40,6 +41,7 @@ async function bootstrap() {
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
   app.useBodyParser('text');
   app.use(json({ limit: '200mb' }));
