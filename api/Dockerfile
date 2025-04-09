@@ -6,7 +6,6 @@ RUN apt-get update -y && apt-get install -y openssl curl wget && \
 # Etapa de dependencias y build
 FROM base AS builder
 WORKDIR /usr/app
-
 ARG DB_URL
 ENV DB_URL=$DB_URL
 
@@ -23,9 +22,6 @@ RUN npx prisma generate
 
 # Build
 RUN pnpm build
-
-# Migraciones (opcional: mejor hacerlo fuera de la imagen)
-RUN npx prisma migrate deploy
 
 # Etapa final: solo runtime
 FROM base AS runner
