@@ -9,6 +9,6 @@ export default defineConfig({
     strictPort: true,
     port: 3001,
     cors: true,
-    allowedHosts: ['.app.local'],
+    allowedHosts: ['.app.local', '.docma.yilmer.com'],
   }
 })
