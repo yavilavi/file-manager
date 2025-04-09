@@ -6,8 +6,6 @@ RUN apt-get update -y && apt-get install -y openssl curl wget && \
 # Etapa de dependencias y build
 FROM base AS builder
 WORKDIR /usr/app
-ARG DB_URL
-ENV DB_URL=$DB_URL
 
 # Copiamos primero solo para aprovechar la cache de Docker
 COPY package.json .
