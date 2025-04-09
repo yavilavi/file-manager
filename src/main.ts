@@ -3,8 +3,13 @@ import { AppModule } from './app.module';
 import { json, urlencoded } from 'express';
 import helmet from 'helmet';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { HttpStatus, ValidationPipe } from '@nestjs/common';
+import {
+  HttpStatus,
+  UnauthorizedException,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import * as console from 'node:console';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -25,10 +30,12 @@ async function bootstrap() {
     origin: (origin, callback) => {
       if (!origin || !originRegex || !allowedOrigins)
         return callback(null, true);
+      console.log(originRegex);
       if (originRegex.test(origin) || allowedOrigins.includes(origin)) {
+        console.log(origin);
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        callback(new UnauthorizedException('Not allowed by CORS'));
       }
     },
     credentials: true,
@@ -40,4 +47,4 @@ async function bootstrap() {
   await app.listen(process.env.PORT ?? 3000);
 }
 
-bootstrap().catch(console.error);
+bootstrap().catch((e) => console.error(e));
