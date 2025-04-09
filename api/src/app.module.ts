@@ -11,6 +11,8 @@ import { DepartmentModule } from '@modules/department/department.module';
 import { EmailModule } from '@modules/notification/email/email.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { NotificationModule } from '@modules/notification/notification.module';
+import { seconds, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -19,6 +21,11 @@ import { NotificationModule } from '@modules/notification/notification.module';
       load: [configuration],
       expandVariables: true,
     }),
+    ThrottlerModule.forRoot([
+      { name: 'short', ttl: seconds(5), limit: 3 },
+      { name: 'medium', ttl: seconds(10), limit: 20 },
+      { name: 'long', ttl: seconds(60), limit: 100 },
+    ]),
     FilesModule,
     AuthModule,
     UsersModule,
@@ -30,7 +37,12 @@ import { NotificationModule } from '@modules/notification/notification.module';
     NotificationModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
