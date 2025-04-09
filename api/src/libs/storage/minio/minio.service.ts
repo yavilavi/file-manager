@@ -8,22 +8,12 @@ export class MinioService {
   private readonly bucket: string;
 
   constructor(private configService: ConfigService) {
-    // this.s3 = new S3Client({
-    //   region: 'us-east-1',
-    //   endpoint: this.configService.getOrThrow<string>('minio.endpoint'),
-    //   credentials: {
-    //     accessKeyId: this.configService.getOrThrow<string>('minio.accessKey'),
-    //     secretAccessKey:
-    //       this.configService.getOrThrow<string>('minio.secretKey'),
-    //   },
-    //   forcePathStyle: true, // Necesario para MinIO
-    // });
     this.client = new Minio.Client({
       endPoint: this.configService.getOrThrow<string>('minio.endpoint'),
       accessKey: this.configService.getOrThrow<string>('minio.accessKey'),
       secretKey: this.configService.getOrThrow<string>('minio.secretKey'),
       port: 9000,
-      useSSL: false,
+      useSSL: configService.getOrThrow('minio.useSSL'),
     });
 
     this.bucket = this.configService.getOrThrow<string>('minio.bucket');

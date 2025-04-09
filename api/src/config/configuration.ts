@@ -33,6 +33,7 @@ const configuration = registerAs('', () => ({
     accessKey: process.env.MINIO_ACCESS_KEY,
     secretKey: process.env.MINIO_SECRET_KEY,
     bucket: process.env.MINIO_BUCKET,
+    useSSL: process.env.MINIO_USE_SSL === 'true',
   },
 }));
 
