@@ -7,6 +7,7 @@ import useFileManagerStore from '../../stores/file-manager.store.ts';
 import { useState } from 'react';
 import formatFileSize from '../../utils/format-file-size.util.ts';
 import { format } from 'date-fns';
+import FileDetailDrawer from './components/FileDetailDrawer.tsx';
 
 export default function Documents() {
   const [file, setFile] = useState<File | null>(null);
@@ -90,6 +91,8 @@ export default function Documents() {
           {uploadFileMutation.isPending ? 'Cargando...' : 'Cargar'}
         </Button>
       </Group>
+      <FileDetailDrawer />
+
 
       {(isLoading || isFetching) && <Text>Loading...</Text>}
       {error && <Text>Error: {JSON.stringify(error)}</Text>}
@@ -99,11 +102,10 @@ export default function Documents() {
             <Table.Tr key="trh_0">
               <Table.Th key="0">Nombre</Table.Th>
               <Table.Th key="1">Tamaño</Table.Th>
-              <Table.Th key="1">hash</Table.Th>
-              <Table.Th key="2">Creado por</Table.Th>
+              <Table.Th key="3">Creado por</Table.Th>
               <Table.Th key="4">Departamento</Table.Th>
               <Table.Th key="5">Empresa</Table.Th>
-              <Table.Th key="3">Fecha creación</Table.Th>
+              <Table.Th key="6">Fecha creación</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
@@ -120,14 +122,11 @@ export default function Documents() {
                 <Table.Td key={`cell_${element.id}_size`}>
                   {formatFileSize(element.size)}
                 </Table.Td>
-                <Table.Td key={`cell_${element.id}_hash`}>
-                  {element.hash}
-                </Table.Td>
                 <Table.Td key={`cell_${element.id}_createdBy`}>
                   {element.user.name}
                 </Table.Td>
                 <Table.Td key={`cell_${element.id}_department`}>
-                  {element.user.department.name}
+                  {element.user?.department?.name ?? 'Sin departamento'}
                 </Table.Td>
                 <Table.Td key={`cell_${element.id}_company`}>
                   {element.company.name}

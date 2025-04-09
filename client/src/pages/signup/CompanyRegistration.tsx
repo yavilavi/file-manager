@@ -28,21 +28,19 @@ import { useCheckSubdomain } from '../../hooks/useCheckSubdomain.ts';
 import companySchema from './company.schema.ts';
 import administratorSchema from './administrator.schema.ts';
 import { AxiosError } from 'axios';
-import { useNavigate } from 'react-router';
 
 export default function CompanyRegistration() {
   const [active, setActive] = useState(0);
   const [highestStepVisited, setHighestStepVisited] = useState(active);
   const [departments, setDepartments] = useState(['Nombre departamento 1']);
-  const navigate = useNavigate();
 
   const hostname = window.location.hostname;
   const subdomain = hostname.split('.')[0];
   useEffect(() => {
     if (subdomain !== 'app') {
-      navigate(`${window.location.protocol}//app.${import.meta.env.VITE_APP_BASE_URL}/signup`);
+      window.location.href = `${window.location.protocol}//app.${import.meta.env.VITE_APP_BASE_URL}/signup`;
     }
-  }, [navigate, subdomain]);
+  }, [subdomain]);
 
   const form = useForm({
     initialValues: {
@@ -157,7 +155,7 @@ export default function CompanyRegistration() {
             title: 'Ups! no pudimos crear tu cuenta',
             message: `${error.response?.data.message ?? data.message}`,
             loading: false,
-            autoClose: 10000,
+            autoClose: 3000,
             color: 'red',
           });
           if (error.response?.status === 409 || error.status == 409) {
@@ -170,6 +168,12 @@ export default function CompanyRegistration() {
   };
   const shouldAllowSelectStep = (step: number) =>
     highestStepVisited >= step && active !== step;
+
+  if (subdomain !== 'app') {
+    return (
+      <Loader />
+    );
+  }
   return (
     <Box maw={800} mx="auto" mt={150}>
       <Paper withBorder shadow="md" p="xl" radius="md">

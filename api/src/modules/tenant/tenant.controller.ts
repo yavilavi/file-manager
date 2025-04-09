@@ -1,5 +1,5 @@
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common';
-import { PrismaService } from '@libs/database/prisma/client/prisma.service';
+import { PrismaService } from '@libs/database/prisma/prisma.service';
 import { IsPublic } from '@shared/decorators/is-public.decorator';
 
 @Controller('tenant')

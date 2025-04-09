@@ -1,7 +1,12 @@
-import { ConflictException, Injectable } from '@nestjs/common';
-import { PrismaService } from '@libs/database/prisma/client/prisma.service';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { PrismaService } from '@libs/database/prisma/prisma.service';
 import { CreateUserDto } from '@modules/users/dtos/create-user.dto';
 import * as argon2 from 'argon2';
+import { UpdateUserDto } from '@modules/users/dtos/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -158,6 +163,92 @@ export class UsersService {
             tenantId: true,
           },
         },
+      },
+    });
+  }
+
+  async updateUser(
+    id: number,
+    dto: UpdateUserDto,
+    tenantId: string,
+    selectPassword = false,
+  ) {
+    const user = await this.prisma.client.user.findUnique({
+      where: { id, tenantId, deletedAt: null },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    const data: {
+      name: string;
+      email: string;
+      password?: string;
+      departmentId: number;
+    } = {
+      name: dto.name,
+      email: dto.email.toLowerCase(),
+      departmentId: dto.departmentId,
+    };
+
+    if (dto.password) {
+      data.password = await argon2.hash(dto.password);
+    }
+
+    return await this.prisma.client.user.update({
+      where: { id, tenantId, deletedAt: null },
+      data,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
+        password: selectPassword,
+        department: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        company: {
+          select: {
+            id: true,
+            name: true,
+            nit: true,
+            tenantId: true,
+          },
+        },
+      },
+    });
+  }
+
+  async toggleUserStatus(id: number, tenantId: string) {
+    const user = await this.prisma.client.user.findUnique({
+      where: { id, tenantId, deletedAt: null },
+      select: {
+        id: true,
+        isActive: true,
+      },
+    });
+
+    if (!user) {
+      throw new Error('Usuario no encontrado o no permitido');
+    }
+
+    return await this.prisma.client.user.update({
+      where: { id, tenantId, deletedAt: null },
+      data: {
+        isActive: !user.isActive,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        isActive: true,
+        updatedAt: true,
       },
     });
   }

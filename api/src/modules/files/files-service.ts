@@ -1,9 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { createHash } from 'crypto';
 import { MinioService } from '@libs/storage/minio/minio.service';
-import prismaClient from '@libs/database/prisma/client/prisma.client';
 import { File } from '@prisma/client';
-import { PrismaService } from '@libs/database/prisma/client/prisma.service';
+import { PrismaService } from '@libs/database/prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -13,6 +12,43 @@ export class FilesService {
     private readonly minioService: MinioService,
     private readonly prisma: PrismaService,
   ) {}
+
+  async getFileById(id: number, tenantId: string) {
+    const file = await this.prisma.client.file.findUnique({
+      where: {
+        id,
+        tenantId: tenantId,
+        deletedAt: null,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        company: {
+          select: {
+            id: true,
+            name: true,
+            nit: true,
+            tenantId: true,
+          },
+        },
+      },
+    });
+    if (!file) {
+      throw new NotFoundException('El archivo no existe');
+    }
+    return file;
+  }
 
   async getAllFiles(tenantId: string) {
     return await this.prisma.client.file.findMany({
@@ -60,11 +96,11 @@ export class FilesService {
     if (dbFile) {
       return { message: 'EXISTING', file: dbFile };
     } else {
-      const path = `examen-final/${hash}`;
-      await this.minioService.uploadFile(file, path);
+      const filePath = `tenant_${tenantId}/${hash}`;
+      await this.minioService.uploadFile(file, filePath);
       const fileRecord = await this.saveFileRecord(
         file,
-        path,
+        filePath,
         hash,
         tenantId,
         userId,
@@ -74,10 +110,33 @@ export class FilesService {
   }
 
   async checkFileExists(hash: string, tenantId: string): Promise<File | null> {
-    return await prismaClient.file.findUnique({
+    return await this.prisma.client.file.findUnique({
       where: {
         hash,
         tenantId: tenantId,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        company: {
+          select: {
+            id: true,
+            name: true,
+            nit: true,
+            tenantId: true,
+          },
+        },
       },
     });
   }
@@ -89,7 +148,7 @@ export class FilesService {
     tenantId: string,
     userId: number,
   ): Promise<File> {
-    return await prismaClient.file.create({
+    return await this.prisma.client.file.create({
       data: {
         name: file.originalname.replace(/[_-]/g, ' '),
         extension: file.originalname.split('.').pop(),
@@ -100,6 +159,50 @@ export class FilesService {
         tenantId: tenantId,
         userId,
       },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        company: {
+          select: {
+            id: true,
+            name: true,
+            nit: true,
+            tenantId: true,
+          },
+        },
+      },
     });
+  }
+
+  async downloadFile(id: number, tenantId: string) {
+    const file = await this.prisma.client.file.findUnique({
+      where: {
+        id,
+        tenantId: tenantId,
+        deletedAt: null,
+      },
+    });
+    if (!file) {
+      throw new NotFoundException('El archivo no existe');
+    }
+    const filePath = `examen-final/${file.hash}`;
+    const stream = await this.minioService.downloadFile(filePath);
+
+    return {
+      stream,
+      contentType: file.mimeType,
+      fileName: file.name,
+    };
   }
 }

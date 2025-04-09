@@ -17,8 +17,13 @@ declare global {
       JWT_SECRET: string;
       JWT_AUD: string;
       JWT_ISS: string;
-      BASE_URL: string;
+      BASE_APP_URL: string;
       PROTOCOL?: string;
+      EMAIL_PROVIDER: string;
+      EMAIL_FROM: string;
+      AWS_ACCESS_KEY_ID: string;
+      AWS_SECRET_ACCESS_KEY: string;
+      AWS_REGION: string;
     }
   }
 }

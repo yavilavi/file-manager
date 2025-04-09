@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateCompanyDto } from './dtos/create-company.dto';
-import { PrismaService } from '@libs/database/prisma/client/prisma.service';
+import { PrismaService } from '@libs/database/prisma/prisma.service';
 
 @Injectable()
 export class CompanyService {

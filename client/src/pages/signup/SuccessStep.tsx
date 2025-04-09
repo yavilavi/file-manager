@@ -1,12 +1,10 @@
 import { Button, Center, Stack, Title, Text } from '@mantine/core';
-import { IconCircleCheck } from '@tabler/icons-react';
-import { useNavigate } from 'react-router';
+import { IconCircleCheck, IconRocket } from '@tabler/icons-react';
 
 function SuccessStep({ redirectUrl }: { redirectUrl: string }) {
-  const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(redirectUrl);
+    window.location.href = redirectUrl;
   };
 
   return (
@@ -21,7 +19,11 @@ function SuccessStep({ redirectUrl }: { redirectUrl: string }) {
         Tu empresa ha sido registrada correctamente.
       </Text>
 
-      <Button onClick={handleClick} variant="default">
+      <Text c="dimmed" ta="center">
+        Serás redirigido a {redirectUrl} para iniciar sesión.
+      </Text>
+
+      <Button onClick={handleClick} rightSection={<IconRocket size={20} />}>
         Ir a iniciar sesión
       </Button>
     </Stack>

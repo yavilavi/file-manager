@@ -9,17 +9,17 @@ import { JwtPayloadInterface } from '@shared/interfaces/jwt-payload.interface';
 import * as argon2 from 'argon2';
 import { ConfigService } from '@nestjs/config';
 import { SignupDto } from '@modules/auth/dtos/signup.dto';
-import { CompanyService } from '@modules/company/company.service';
-import { PrismaService } from '@libs/database/prisma/client/prisma.service';
+import { PrismaService } from '@libs/database/prisma/prisma.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class AuthService {
   constructor(
     private configService: ConfigService,
     private usersService: UsersService,
-    private companyService: CompanyService,
     private jwtService: JwtService,
     private prisma: PrismaService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async validateUser(
@@ -102,8 +102,10 @@ export class AuthService {
       },
     });
 
+    this.eventEmitter.emit('company.created', signupDto);
+
     return {
-      redirectUrl: `${this.configService.get('protocol') ?? 'http'}://${created.tenantId}.${this.configService.getOrThrow('baseUrl')}`,
+      redirectUrl: `${this.configService.get('protocol') ?? 'http'}://${created.tenantId}.${this.configService.getOrThrow('baseAppUrl')}`,
     };
   }
 }

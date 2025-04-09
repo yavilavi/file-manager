@@ -2,10 +2,19 @@ import { registerAs } from '@nestjs/config';
 
 const configuration = registerAs('', () => ({
   port: parseInt(process.env.PORT, 10) || 3000,
-  baseUrl: process.env.BASE_URL,
+  baseAppUrl: process.env.BASE_APP_URL,
   protocol: process.env.PROTOCOL,
   allowedWildcardDomains: process.env.ALLOWED_WILDCARD_DOMAINS.split(','),
   allowedOrigins: process.env.ALLOWED_ORIGINS.split(','),
+  email: {
+    provider: process.env.EMAIL_PROVIDER,
+    from: process.env.EMAIL_FROM,
+  },
+  aws: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION,
+  },
   jwt: {
     secret: process.env.JWT_SECRET,
     aud: process.env.JWT_AUD,

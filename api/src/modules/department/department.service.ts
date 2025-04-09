@@ -1,5 +1,5 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { PrismaService } from '@libs/database/prisma/client/prisma.service';
+import { PrismaService } from '@libs/database/prisma/prisma.service';
 import { CreateDepartmentDto } from '@modules/department/dtos/create-department.dto';
 
 @Injectable()

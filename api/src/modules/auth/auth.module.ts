@@ -10,7 +10,7 @@ import { JwtStrategy } from '@modules/auth/passport/strategies/jwt.strategy';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth/jwt-auth.guard';
 import { CompanyModule } from '@modules/company/company.module';
-import { PrismaService } from '@libs/database/prisma/client/prisma.service';
+import { PrismaService } from '@libs/database/prisma/prisma.service';
 
 @Module({
   imports: [

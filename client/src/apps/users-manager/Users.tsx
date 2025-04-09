@@ -17,9 +17,24 @@ import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import { fetchDepartments } from '../../services/api/fetchDepartments.ts';
 import { AxiosError } from 'axios';
+import { useEffect, useState } from 'react';
+import { UserInterface } from '../../types/interfaces/user-interface.ts';
+import { updateUser } from '../../services/api/updateUser.ts';
+import { toggleUserStatus } from '../../services/api/toggleUserStatus.ts';
+import useAuthStore from '../../stores/auth.store.ts';
+
+interface FormValues {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  departmentId: string;
+}
 
 export default function Users() {
   const [opened, { open, close }] = useDisclosure(false);
+  const [editingUser, setEditingUser] = useState<UserInterface | null>(null);
+  const { user } = useAuthStore();
 
   const form = useForm({
     initialValues: {
@@ -33,9 +48,12 @@ export default function Users() {
     validate: {
       name: (value) => (value.length < 2 ? 'Nombre muy corto' : null),
       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Email inválido'),
-      password: (value) => (value.length < 6 ? 'Contraseña muy corta' : null),
+      password: (value) => {
+        if (editingUser && value.length > 0) return (value.length < 6 ? 'Contraseña muy corta' : null);
+        return null;
+      },
       confirmPassword: (value, values) =>
-        value !== values.password ? 'Las contraseñas no coinciden' : null,
+        value !== values.password && !editingUser ? 'Las contraseñas no coinciden' : null,
       departmentId: (value) => (!value ? 'Selecciona un departamento' : null),
     },
   });
@@ -45,6 +63,58 @@ export default function Users() {
     initialData: [],
     queryFn: fetchUsers,
   });
+
+  const updateUserMutation = useMutation({
+    mutationFn: updateUser, // crea esta función en /services/api/updateUser.ts
+    onSuccess: () => {
+      notifications.show({
+        title: 'Usuario actualizado',
+        message: 'Cambios guardados correctamente',
+        color: 'green',
+      });
+      refetch();
+      close();
+    },
+    onError: () => {
+      notifications.show({
+        title: 'Error',
+        message: 'No se pudo actualizar el usuario',
+        color: 'red',
+      });
+    },
+  });
+
+
+  const toggleStatusMutation = useMutation({
+    mutationFn: toggleUserStatus, // crea en /services/api/toggleUserStatus.ts
+    onSuccess: () => refetch(),
+  });
+
+  const handleSubmit = (values: FormValues) => {
+    if (editingUser) {
+      updateUserMutation.mutate({ id: editingUser.id, ...values });
+    } else {
+      createUserMutation.mutate({
+        ...values,
+        confirmPassword: values.confirmPassword,
+        departmentId: Number(values.departmentId),
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (editingUser) {
+      console.log(editingUser.department?.id);
+      form.setValues({
+        name: editingUser.name,
+        email: editingUser.email,
+        password: '',
+        confirmPassword: '',
+        departmentId: editingUser.department?.id.toString(),
+      });
+      open();
+    }
+  }, [editingUser]);
 
   const { data: departments } = useQuery({
     initialData: [],
@@ -91,14 +161,16 @@ export default function Users() {
 
       <Modal
         opened={opened}
-        onClose={close}
-        title="Crear nuevo usuario"
+        onClose={() => {
+          close();
+          setEditingUser(null);
+          form.reset();
+        }}
+        title={editingUser ? 'Editar usuario' : 'Crear nuevo usuario'}
         centered
       >
         <form
-          onSubmit={form.onSubmit((values) =>
-            createUserMutation.mutate({ ...values, departmentId: 2 }),
-          )}
+          onSubmit={form.onSubmit(handleSubmit)}
         >
           <TextInput
             label="Nombre"
@@ -114,19 +186,19 @@ export default function Users() {
             mt="md"
           />
           <PasswordInput
-            label="Contraseña"
+            label={`Contraseña ${editingUser ? '(opcional)' : ''}`}
             placeholder="********"
             {...form.getInputProps('password')}
-            required
+            required={!editingUser}
             mt="md"
           />
-          <PasswordInput
+          {!editingUser && <PasswordInput
             label="Confirmar contraseña"
             placeholder="********"
             {...form.getInputProps('confirmPassword')}
-            required
+            required={!editingUser}
             mt="md"
-          />
+          />}
           <Select
             label="Departamento"
             placeholder="Selecciona uno"
@@ -141,7 +213,7 @@ export default function Users() {
 
           <Group mt="lg">
             <Button type="submit" loading={createUserMutation.isPending}>
-              Crear usuario
+              {editingUser ? 'Actualizar' : 'Crear'}
             </Button>
           </Group>
         </form>
@@ -159,6 +231,7 @@ export default function Users() {
               <Table.Th key="3">Empresa</Table.Th>
               <Table.Th key="4">Estado</Table.Th>
               <Table.Th key="5">Fecha creación</Table.Th>
+              <Table.Th key="6">Acciones</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
@@ -171,7 +244,7 @@ export default function Users() {
                   {element.email}
                 </Table.Td>
                 <Table.Td key={`cell_${element.id}_department`}>
-                  {element.department.name}
+                  {element?.department?.name ?? 'Sin departamento'}
                 </Table.Td>
                 <Table.Td key={`cell_${element.id}_company`}>
                   {element.company.name}
@@ -182,11 +255,31 @@ export default function Users() {
                 <Table.Td key={`cell_${element.id}_createdAt`}>
                   {format(new Date(element.createdAt), 'dd/MM/yyyy HH:mm:ss')}
                 </Table.Td>
+                <Table.Td key={`cell_${element.id}_actions`}>
+                  <Group gap="xs">
+                    <Button
+                      variant="light"
+                      size="xs"
+                      onClick={() => setEditingUser(element)}
+                    >
+                      Editar
+                    </Button>
+                    {element.id !== user?.id && < Button
+                      variant="outline"
+                      size="xs"
+                      color={element.isActive ? 'red' : 'green'}
+                      onClick={() => toggleStatusMutation.mutate(element.id)}
+                    >
+                      {element.isActive ? 'Deshabilitar' : 'Habilitar'}
+                    </Button>}
+                  </Group>
+                </Table.Td>
               </Table.Tr>
             ))}
           </Table.Tbody>
         </Table>
       )}
     </>
-  );
+  )
+    ;
 }

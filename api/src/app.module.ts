@@ -8,6 +8,9 @@ import { TenantMiddleware } from '@modules/tenant/tenant.middleware';
 import { HealthModule } from '@modules/health/health.module';
 import { TenantModule } from '@modules/tenant/tenant.module';
 import { DepartmentModule } from '@modules/department/department.module';
+import { EmailModule } from '@modules/notification/email/email.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { NotificationModule } from '@modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -22,6 +25,9 @@ import { DepartmentModule } from '@modules/department/department.module';
     HealthModule,
     TenantModule,
     DepartmentModule,
+    EmailModule,
+    EventEmitterModule.forRoot(),
+    NotificationModule,
   ],
   controllers: [],
   providers: [],
