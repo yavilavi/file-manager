@@ -13,7 +13,7 @@ declare global {
       MINIO_SECRET_KEY: string;
       MINIO_BUCKET: string;
       ALLOWED_ORIGINS: string;
-      CORS_ORIGIN_REGEX: string;
+      ALLOWED_WILDCARD_DOMAINS: string;
       JWT_SECRET: string;
       JWT_AUD: string;
       JWT_ISS: string;

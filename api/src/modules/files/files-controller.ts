@@ -1,6 +1,8 @@
 import {
   Controller,
   Get,
+  MaxFileSizeValidator,
+  ParseFilePipe,
   Post,
   Request,
   UploadedFile,
@@ -16,7 +18,15 @@ export class FilesController {
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
-  uploadFile(@UploadedFile() file: Express.Multer.File, @Request() req: Req) {
+  uploadFile(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 })],
+      }),
+    )
+    file: Express.Multer.File,
+    @Request() req: Req,
+  ) {
     if (!file) {
       throw new Error('No file received');
     }

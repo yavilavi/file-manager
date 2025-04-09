@@ -3,20 +3,18 @@ import { AppModule } from './app.module';
 import { json, urlencoded } from 'express';
 import helmet from 'helmet';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import {
-  HttpStatus,
-  UnauthorizedException,
-  ValidationPipe,
-} from '@nestjs/common';
+import { HttpStatus, Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as console from 'node:console';
+import * as domain from 'node:domain';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
-  const corsOriginRegex = configService.getOrThrow<string>('corsOriginRegex');
+  const allowedWildcardDomains = configService.getOrThrow<string[]>(
+    'allowedWildcardDomains',
+  );
   const allowedOrigins = configService.getOrThrow<string>('allowedOrigins');
-  const originRegex = corsOriginRegex ? new RegExp(corsOriginRegex) : null;
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -28,12 +26,21 @@ async function bootstrap() {
   app.use(helmet());
   app.enableCors({
     origin: (origin, callback) => {
-      if (!origin || !originRegex || !allowedOrigins)
-        return callback(null, true);
-      if (originRegex.test(origin) || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(null, false);
+      if (!origin) return callback(null, true);
+      try {
+        const hostname = new URL(origin).hostname;
+        console.log(hostname);
+        if (
+          allowedWildcardDomains.some((domain) => hostname.endsWith(domain)) ||
+          allowedOrigins.includes(hostname)
+        ) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      } catch (err) {
+        Logger.error(err);
+        callback(new Error('Invalid origin'));
       }
     },
     credentials: true,

@@ -4,7 +4,7 @@ const configuration = registerAs('', () => ({
   port: parseInt(process.env.PORT, 10) || 3000,
   baseUrl: process.env.BASE_URL,
   protocol: process.env.PROTOCOL,
-  corsOriginRegex: process.env.CORS_ORIGIN_REGEX,
+  allowedWildcardDomains: process.env.ALLOWED_WILDCARD_DOMAINS.split(','),
   allowedOrigins: process.env.ALLOWED_ORIGINS.split(','),
   jwt: {
     secret: process.env.JWT_SECRET,
