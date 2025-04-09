@@ -15,8 +15,7 @@ COPY . .
 RUN pnpm install
 RUN pnpm build
 
-RUN prisma migrate status
-RUN prisma migrate deploy
+RUN npx prisma migrate deploy
 
 FROM base AS dependencies
 WORKDIR /usr/app
