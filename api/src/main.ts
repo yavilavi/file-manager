@@ -33,12 +33,12 @@ async function bootstrap() {
       if (originRegex.test(origin) || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new UnauthorizedException('Not allowed by CORS'));
+        callback(null, false);
       }
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 204,
   });
   app.useBodyParser('text');
   app.use(json({ limit: '200mb' }));
