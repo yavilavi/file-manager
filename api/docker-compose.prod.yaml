@@ -34,6 +34,26 @@ services:
       AWS_REGION: $AWS_REGION
       DB_URL: $DB_URL
       MINIO_ENDPOINT: $MINIO_ENDPOINT
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.https-0-o84cc8ok0sw4sggw8g4ogc04.rule=HostRegexp(`^.+\.api\.docma\.yilmer\.com$`)
+      - traefik.http.routers.https-0-o84cc8ok0sw4sggw8g4ogc04.entryPoints=https
+      - traefik.http.routers.https-0-o84cc8ok0sw4sggw8g4ogc04.middlewares=gzip
+      - traefik.http.routers.https-0-o84cc8ok0sw4sggw8g4ogc04.service=https-0-o84cc8ok0sw4sggw8g4ogc04
+      - traefik.http.routers.https-0-o84cc8ok0sw4sggw8g4ogc04.tls.certresolver=letsencrypt
+      - traefik.http.services.https-0-o84cc8ok0sw4sggw8g4ogc04.loadbalancer.server.port=3000
+      - traefik.http.routers.https-0-o84cc8ok0sw4sggw8g4ogc04.tls=true
+      - traefik.http.routers.http-0-o84cc8ok0sw4sggw8g4ogc04.rule=HostRegexp(`^.+\.api\.docma\.yilmer\.com$`)
+      - traefik.http.routers.http-0-o84cc8ok0sw4sggw8g4ogc04.entryPoints=http
+      - traefik.http.routers.http-0-o84cc8ok0sw4sggw8g4ogc04.middlewares=redirect-to-https
+      - caddy_0.encode=zstd gzip
+      - caddy_0.handle_path.0_reverse_proxy={{upstreams 3000}}
+      - caddy_0.handle_path=*
+      - caddy_0.header=-Server
+      - caddy_0.try_files={path} /index.html /index.php
+      - caddy_0=://
+      - caddy_ingress_network=coolify
   migrate:
     container_name: "file-manager-migrate"
     image: file-manager:latest
