@@ -25,6 +25,7 @@ declare global {
       AWS_SECRET_ACCESS_KEY: string;
       AWS_REGION: string;
       MINIO_USE_SSL: string;
+      MINIO_PORT: string;
     }
   }
 }

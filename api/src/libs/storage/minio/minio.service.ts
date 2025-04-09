@@ -12,7 +12,7 @@ export class MinioService {
       endPoint: this.configService.getOrThrow<string>('minio.endpoint'),
       accessKey: this.configService.getOrThrow<string>('minio.accessKey'),
       secretKey: this.configService.getOrThrow<string>('minio.secretKey'),
-      port: 9000,
+      port: this.configService.getOrThrow<number>('minio.port'),
       useSSL: configService.getOrThrow('minio.useSSL'),
     });
 
