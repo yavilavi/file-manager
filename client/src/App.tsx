@@ -8,7 +8,7 @@ import { Route, Routes } from 'react-router';
 import Login from './pages/Login.tsx';
 import PrivateLayout from './components/PrivateLayout/PrivateLayout.tsx';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute.tsx';
-import CompanyRegistration from './pages/CompanyRegistration.tsx';
+import CompanyRegistration from './pages/signup/CompanyRegistration.tsx';
 
 function App() {
   return (

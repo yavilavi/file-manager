@@ -16,12 +16,36 @@ export class FilesService {
 
   async getAllFiles(tenantId: string) {
     return await this.prisma.client.file.findMany({
+      relationLoadStrategy: 'join',
       orderBy: {
         name: 'asc',
       },
       where: {
         deletedAt: null,
         tenantId: tenantId,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        company: {
+          select: {
+            id: true,
+            name: true,
+            nit: true,
+            tenantId: true,
+          },
+        },
       },
     });
   }

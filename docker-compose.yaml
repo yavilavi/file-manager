@@ -9,6 +9,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        DB_URL: ${DB_URL}
+    env_file:
+      - .env
     environment:
       DB_URL: "postgresql://${DB_USER}:${DB_PASSWORD}@$database:${DB_PORT}/${DB_DATABASE}"
       MINIO_ENDPOINT: "http://minio:9000"
@@ -29,7 +33,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - database_data:/var/lib/postgresql  
+      - database_data:/var/lib/postgresql
   minio:
     container_name: minio
     image: quay.io/minio/minio

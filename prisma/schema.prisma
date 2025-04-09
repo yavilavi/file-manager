@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -19,7 +20,7 @@ model File {
   size      Int
   path      String    @db.VarChar(255)
   company   Company   @relation(fields: [tenantId], references: [tenantId])
-  tenantId  String
+  tenantId  String    @db.VarChar(15)
   user      User      @relation(fields: [userId], references: [id])
   userId    Int
   createdAt DateTime  @default(now())
@@ -32,7 +33,7 @@ model File {
 model Company {
   id          Int          @id @default(autoincrement())
   name        String       @db.VarChar(255)
-  nit         String       @unique(map: "uk_company_nit") @db.VarChar(255)
+  nit         String       @db.VarChar(255)
   tenantId    String       @unique(map: "uk_company_tenantId") @db.VarChar(15)
   users       User[]
   files       File[]
@@ -48,7 +49,7 @@ model Department {
   id        Int       @id @default(autoincrement())
   name      String    @db.VarChar(255)
   company   Company   @relation(fields: [tenantId], references: [tenantId])
-  tenantId  String
+  tenantId  String    @db.VarChar(15)
   users     User[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
@@ -60,11 +61,11 @@ model Department {
 
 model User {
   id           Int         @id @default(autoincrement())
-  name         String      @db.VarChar(255)
-  email        String      @db.VarChar(20)
+  name         String      @db.VarChar(30)
+  email        String      @db.VarChar(30)
   password     String      @db.VarChar(255)
   company      Company     @relation(fields: [tenantId], references: [tenantId])
-  tenantId     String
+  tenantId     String      @db.VarChar(15)
   department   Department? @relation(fields: [departmentId], references: [id])
   departmentId Int?
   files        File[]

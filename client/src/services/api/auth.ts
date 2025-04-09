@@ -15,3 +15,21 @@ export const validateToken = async () => {
   const { data } = await apiCall.get<UserInterface>('/auth/me');
   return data;
 };
+
+export const signup = async (data: {
+  company: {
+    name: string;
+    nit: string;
+    tenantId: string;
+    departments: { name: string }[];
+  };
+  user: {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  };
+}) => {
+  const response = await apiCall.post('/auth/signup', data);
+  return response.data;
+};

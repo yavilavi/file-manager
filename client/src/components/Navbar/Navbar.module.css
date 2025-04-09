@@ -95,3 +95,19 @@
     color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0));
   }
 }
+
+.logoutButton {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: #868e96;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.logoutButton:hover {
+  background-color: #f1f3f5;
+  border-radius: 8px;
+  color: #000;
+}

@@ -1,4 +1,10 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { Match } from '@shared/decorators/match.decorator';
 
 export class CreateUserDto {
@@ -18,4 +24,8 @@ export class CreateUserDto {
   @IsString()
   @Match('password')
   confirmPassword: string;
+
+  @IsOptional()
+  @IsNumber()
+  departmentId?: number;
 }

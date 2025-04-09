@@ -1,25 +1,18 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-import {
-  Box,
-  Button,
-  SimpleGrid,
-  Text,
-  useMantineTheme,
-} from '@mantine/core';
+import { Button, FileInput, Group, Table, Text } from '@mantine/core';
 import { fetchDocuments } from '../../services/api/fetchDocuments.ts';
-import { getFileIcon } from '../../utils/get-file-icon.tsx';
-import classes from './Documents.module.css';
-import formatFileSize from '../../utils/format-file-size.util.ts';
 import { uploadDocument } from '../../services/api/uploadDocument.ts';
 import { notifications } from '@mantine/notifications';
 import useFileManagerStore from '../../stores/file-manager.store.ts';
 import { useState } from 'react';
+import formatFileSize from '../../utils/format-file-size.util.ts';
+import { format } from 'date-fns';
 
 export default function Documents() {
   const [file, setFile] = useState<File | null>(null);
-  const theme = useMantineTheme();
   const { data, isLoading, error, isFetching, refetch } = useQuery({
     queryKey: ['files'],
+    initialData: [],
     queryFn: fetchDocuments,
   });
 
@@ -63,12 +56,6 @@ export default function Documents() {
     },
   });
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setFile(event.target.files[0]); // 📌 Guarda solo el archivo
-    }
-  };
-
   const handleUpload = () => {
     if (!file) {
       notifications.show({
@@ -90,45 +77,68 @@ export default function Documents() {
     uploadFileMutation.mutate(file);
   };
 
-  const files = (data ?? []).map((file) => (
-    <Box
-      key={file.id}
-      className={classes.item}
-      onClick={() => setSelectedFile(file)}
-    >
-      {getFileIcon(file.extension, 50, theme.colors['blue'][6])}
-      <Text size="xs" maw={50} lineClamp={2}>
-        {file.name}
-      </Text>
-      <Text size="xs" truncate="end" w={100} mt={7}>
-        {file.size && formatFileSize(file.size)}
-      </Text>
-    </Box>
-  ));
-
   return (
     <>
       <h3>Documents</h3>
-      {/*<FileInput*/}
-      {/*  clearable*/}
-      {/*  label="Seleccionar archivo"*/}
-      {/*  placeholder="Seleccionar archivo"*/}
-      {/*  onChange={setFile}*/}
-      {/*/>*/}
-      <input type="file" onChange={handleFileChange} />
-      <Button
-        onClick={handleUpload}
-        mt="md"
-        disabled={uploadFileMutation.isPending}
-      >
-        {uploadFileMutation.isPending ? 'Cargando...' : 'Cargar'}
-      </Button>
+      <Group mb="md" align="center">
+        <FileInput
+          clearable
+          placeholder="Seleccionar archivo"
+          onChange={setFile}
+        />
+        <Button onClick={handleUpload} disabled={uploadFileMutation.isPending}>
+          {uploadFileMutation.isPending ? 'Cargando...' : 'Cargar'}
+        </Button>
+      </Group>
+
       {(isLoading || isFetching) && <Text>Loading...</Text>}
       {error && <Text>Error: {JSON.stringify(error)}</Text>}
       {data && data.length > 0 && (
-        <SimpleGrid cols={10} mt="md">
-          {files}
-        </SimpleGrid>
+        <Table striped highlightOnHover withTableBorder withColumnBorders>
+          <Table.Thead>
+            <Table.Tr key="trh_0">
+              <Table.Th key="0">Nombre</Table.Th>
+              <Table.Th key="1">Tamaño</Table.Th>
+              <Table.Th key="1">hash</Table.Th>
+              <Table.Th key="2">Creado por</Table.Th>
+              <Table.Th key="4">Departamento</Table.Th>
+              <Table.Th key="5">Empresa</Table.Th>
+              <Table.Th key="3">Fecha creación</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {data.map((element) => (
+              <Table.Tr
+                key={element.id}
+                onClick={() => {
+                  setSelectedFile(element);
+                }}
+              >
+                <Table.Td key={`cell_${element.id}_name`}>
+                  {element.name}
+                </Table.Td>
+                <Table.Td key={`cell_${element.id}_size`}>
+                  {formatFileSize(element.size)}
+                </Table.Td>
+                <Table.Td key={`cell_${element.id}_hash`}>
+                  {element.hash}
+                </Table.Td>
+                <Table.Td key={`cell_${element.id}_createdBy`}>
+                  {element.user.name}
+                </Table.Td>
+                <Table.Td key={`cell_${element.id}_department`}>
+                  {element.user.department.name}
+                </Table.Td>
+                <Table.Td key={`cell_${element.id}_company`}>
+                  {element.company.name}
+                </Table.Td>
+                <Table.Td key={`cell_${element.id}_createdAt`}>
+                  {format(new Date(element.createdAt), 'dd/MM/yyyy HH:mm:ss')}
+                </Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
       )}
     </>
   );

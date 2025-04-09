@@ -4,12 +4,19 @@ RUN apt-get update -y && apt-get install -y openssl curl wget
 
 FROM base AS builder
 WORKDIR /usr/app
+
+ARG DB_URL
+ENV DB_URL=$DB_URL
+
 RUN npm i -g @nestjs/cli@11.0.0
 
 COPY . .
 
 RUN pnpm install
 RUN pnpm build
+
+RUN prisma migrate status
+RUN prisma migrate deploy
 
 FROM base AS dependencies
 WORKDIR /usr/app

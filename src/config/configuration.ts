@@ -6,7 +6,6 @@ const configuration = registerAs('', () => ({
   protocol: process.env.PROTOCOL,
   corsOriginRegex: process.env.CORS_ORIGIN_REGEX,
   allowedOrigins: process.env.ALLOWED_ORIGINS.split(','),
-  appKey: process.env.APP_KEY,
   jwt: {
     secret: process.env.JWT_SECRET,
     aud: process.env.JWT_AUD,

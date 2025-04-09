@@ -9,6 +9,7 @@ import { validateToken } from '../../services/api/auth.ts';
 import { useQuery } from '@tanstack/react-query';
 import Documents from '../../apps/documents-manager/Documents.tsx';
 import Users from '../../apps/users-manager/Users.tsx';
+import Departments from '../../apps/departments-manager/Departments.tsx';
 
 export default function PrivateLayout() {
   const [opened, { toggle }] = useDisclosure();
@@ -49,22 +50,26 @@ export default function PrivateLayout() {
           <Route path="/" element={<Navigate to="/documents" replace />} />
           <Route path="/documents" element={<Documents />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/departments" element={<Departments />} />
         </Routes>
       </AppShell.Main>
       <AppShell.Aside p="md">
-        <Box>
-          <h4>Selected File info</h4>
-          {selectedFile && (
-            <>
-              <h3>{selectedFile.name}</h3>
-              <p>{formatFileSize(selectedFile.size)}</p>
-              <Text size="xs" lineClamp={2}>
-                {selectedFile.hash}
-              </Text>
-              <button onClick={clearSelectedFile}>Clear</button>
-            </>
-          )}
-        </Box>
+        {selectedFile && (
+          <Box>
+            <h4>Selected File info</h4>
+            <h3>{selectedFile.name}</h3>
+            <p>{formatFileSize(selectedFile.size)}</p>
+            <Text size="xs" lineClamp={2}>
+              {selectedFile.hash}
+            </Text>
+            <button onClick={clearSelectedFile}>Clear</button>
+          </Box>
+        )}
+        {!selectedFile && (
+          <Box>
+            <h4>Este espacio está en construcción</h4>
+          </Box>
+        )}
       </AppShell.Aside>
     </AppShell>
   );

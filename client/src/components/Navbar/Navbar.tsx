@@ -1,12 +1,14 @@
-import { IconArchive, IconUsers } from '@tabler/icons-react';
+import { IconArchive, IconBuildings, IconUsers } from '@tabler/icons-react';
 import { UserButton } from '../UserButton/UserButton';
 import { NavLink } from 'react-router';
 import classes from './Navbar.module.css';
 import clsx from 'clsx';
+import LogoutButton from './LogoutButton.tsx';
 
 const links = [
   { icon: IconArchive, label: 'Documentos', path: '/documents' },
   { icon: IconUsers, label: 'Usuarios', path: '/users' },
+  { icon: IconBuildings, label: 'Departamentos', path: '/departments' },
 ];
 
 export function Navbar() {
@@ -33,6 +35,9 @@ export function Navbar() {
       </div>
       <div className={classes.section}>
         <div className={classes.mainLinks}>{mainLinks}</div>
+      </div>
+      <div className={classes.section}>
+        <LogoutButton />
       </div>
     </nav>
   );

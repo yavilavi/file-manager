@@ -1,10 +1,23 @@
+export interface DepartmentInterface {
+  id: number;
+  name: string;
+  createdAt: string;
+}
+
+interface CompanyInterface {
+  id: number;
+  name: string;
+  nit: string;
+  tenantId: string;
+}
+
 export interface UserInterface {
   id: number;
   name: string;
   email: string;
-  tenantId: string;
-  departmentId: number | null;
   isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string; // o Date si haces parsing
+  updatedAt: string; // o Date
+  department: DepartmentInterface;
+  company: CompanyInterface;
 }

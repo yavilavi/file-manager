@@ -6,9 +6,24 @@ export interface FileInterface {
   extension: FileExtension;
   mimeType: string;
   hash: string;
-  size: number; // bytes
+  size: number;
   path: string;
-  createdAt: string; // ISO string (Date.parse() puede convertirlo)
+  createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+  user: {
+    id: number;
+    name: string;
+    email: string;
+    department: {
+      id: number;
+      name: string;
+    };
+  };
+  company: {
+    id: number;
+    name: string;
+    nit: string;
+    tenantId: string;
+  };
 }

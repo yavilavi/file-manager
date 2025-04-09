@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from '@modules/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayloadInterface } from '@shared/interfaces/jwt-payload.interface';
@@ -23,7 +27,11 @@ export class AuthService {
     pass: string,
     tenantId?: string,
   ): Promise<false | JwtPayloadInterface> {
-    const user = await this.usersService.findByEmail(username, tenantId);
+    const user = await this.usersService.findByEmail(
+      username.toLowerCase(),
+      tenantId,
+      true,
+    );
     if (!user || !user.isActive) return false;
     const passwordIsValid = await argon2.verify(user.password, pass);
     if (user.isActive && passwordIsValid) {
@@ -57,6 +65,22 @@ export class AuthService {
     const { company, user } = signupDto;
     user.password = await argon2.hash(user.password);
 
+    const existingCompany = await this.prisma.client.company.findFirst({
+      where: {
+        nit: company.nit,
+        deletedAt: null,
+      },
+      select: {
+        nit: true,
+      },
+    });
+
+    if (existingCompany) {
+      throw new ConflictException(
+        'Ya hay una compañía registrada con este NIT',
+      );
+    }
+
     const created = await this.prisma.client.company.create({
       data: {
         name: company.name,
@@ -70,7 +94,7 @@ export class AuthService {
         users: {
           create: {
             name: user.name,
-            email: user.email,
+            email: user.email.toLowerCase(),
             password: user.password,
             isActive: true,
           },

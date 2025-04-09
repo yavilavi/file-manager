@@ -19,7 +19,6 @@ declare global {
       JWT_ISS: string;
       BASE_URL: string;
       PROTOCOL?: string;
-      APP_KEY: string;
     }
   }
 }

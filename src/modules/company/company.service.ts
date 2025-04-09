@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateCompanyDto } from './dtos/create-company.dto';
 import { PrismaService } from '@libs/database/prisma/client/prisma.service';
 
@@ -7,6 +7,21 @@ export class CompanyService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateCompanyDto) {
+    const existingCompany = await this.prisma.client.company.findFirst({
+      where: {
+        nit: data.nit,
+        deletedAt: null,
+      },
+      select: {
+        nit: true,
+      },
+    });
+
+    if (existingCompany) {
+      throw new ConflictException(
+        'Ya hay una compañía registrada con este NIT',
+      );
+    }
     return this.prisma.client.company.create({
       data: {
         name: data.name,

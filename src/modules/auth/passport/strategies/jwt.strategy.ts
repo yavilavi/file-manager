@@ -6,7 +6,6 @@ import { UsersService } from '@modules/users/users.service';
 import { JwtPayloadInterface } from '@shared/interfaces/jwt-payload.interface';
 import { RequestUserInterface } from '@shared/interfaces/request-user-interface';
 import { Request } from 'express';
-import * as _ from 'lodash';
 import { omit } from 'lodash';
 
 @Injectable()
@@ -30,6 +29,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     const { tenantId } = req;
     const dbUser = await this.usersService.findById(payload.sub, tenantId);
     if (!dbUser) throw new UnauthorizedException('Invalid access token');
-    return { data: omit(dbUser, 'password') };
+    return {
+      data: {
+        ...omit(dbUser, 'password'),
+        tenantId: dbUser.company.tenantId,
+        departmentId: dbUser?.department?.id ?? null,
+      },
+    };
   }
 }

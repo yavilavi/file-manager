@@ -6,6 +6,8 @@ import { UsersModule } from '@modules/users/users.module';
 import configuration from './config/configuration';
 import { TenantMiddleware } from '@modules/tenant/tenant.middleware';
 import { HealthModule } from '@modules/health/health.module';
+import { TenantModule } from '@modules/tenant/tenant.module';
+import { DepartmentModule } from '@modules/department/department.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { HealthModule } from '@modules/health/health.module';
     AuthModule,
     UsersModule,
     HealthModule,
+    TenantModule,
+    DepartmentModule,
   ],
   controllers: [],
   providers: [],
