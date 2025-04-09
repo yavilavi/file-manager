@@ -12,11 +12,13 @@ import formatFileSize from '../../../utils/format-file-size.util.ts';
 import { format } from 'date-fns';
 import useFileManagerStore from '../../../stores/file-manager.store.ts';
 import { fetchFileById } from '../../../services/api/fetchFileById.ts';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useDownloadFile } from '../../../hooks/useDownloadFile.ts';
+import { useDeleteDocument } from '../../../hooks/useDeleteDocument.ts';
 
 const FileDetailDrawer = () => {
   const { selectedFile, setSelectedFile } = useFileManagerStore();
+  const queryClient = useQueryClient();
 
   const { data: file } = useQuery({
     queryKey: ['file', selectedFile?.id],
@@ -24,8 +26,11 @@ const FileDetailDrawer = () => {
     enabled: !!selectedFile,
   });
 
-
   const download = useDownloadFile();
+
+  const deleteMutation = useDeleteDocument(() => {
+    void queryClient.invalidateQueries({ queryKey: ['files'] });
+  });
 
   return (
     <Drawer
@@ -114,7 +119,11 @@ const FileDetailDrawer = () => {
                 color="red"
                 variant="light"
                 onClick={() => {
+                  if (!selectedFile) return;
+                  deleteMutation.mutate(selectedFile.id);
+                  setSelectedFile(null);
                 }}
+                loading={deleteMutation.isPending}
               >
                 Eliminar
               </Button>

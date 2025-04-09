@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   Logger,
   MaxFileSizeValidator,
@@ -71,5 +72,10 @@ export class FilesController {
   @Get(':id')
   getFileById(@Param('id', ParseIntPipe) id: number, @Request() req: Req) {
     return this.filesService.getFileById(id, req.tenantId);
+  }
+
+  @Delete(':id')
+  async deleteFile(@Param('id', ParseIntPipe) id: number, @Request() req: Req) {
+    return this.filesService.deleteFile(id, req.tenantId);
   }
 }

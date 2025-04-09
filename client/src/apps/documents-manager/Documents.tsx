@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { Button, FileInput, Group, Table, Text } from '@mantine/core';
+import { Button, FileInput, Group, Table } from '@mantine/core';
 import { fetchDocuments } from '../../services/api/fetchDocuments.ts';
 import { uploadDocument } from '../../services/api/uploadDocument.ts';
 import { notifications } from '@mantine/notifications';
@@ -11,7 +11,7 @@ import FileDetailDrawer from './components/FileDetailDrawer.tsx';
 
 export default function Documents() {
   const [file, setFile] = useState<File | null>(null);
-  const { data, isLoading, error, isFetching, refetch } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ['files'],
     initialData: [],
     queryFn: fetchDocuments,
@@ -93,11 +93,8 @@ export default function Documents() {
       </Group>
       <FileDetailDrawer />
 
-
-      {(isLoading || isFetching) && <Text>Loading...</Text>}
-      {error && <Text>Error: {JSON.stringify(error)}</Text>}
       {data && data.length > 0 && (
-        <Table striped highlightOnHover withTableBorder withColumnBorders>
+        <Table highlightOnHover withTableBorder withColumnBorders>
           <Table.Thead>
             <Table.Tr key="trh_0">
               <Table.Th key="0">Nombre</Table.Th>

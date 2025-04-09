@@ -5,6 +5,7 @@ import {
   Paper,
   Box,
   Title, Loader, Text,
+  Image, Stack,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useLogin } from '../hooks/useLogin';
@@ -90,32 +91,42 @@ export default function Login() {
   return (
     <Box maw={400} mx="auto" mt={150}>
       <Paper withBorder shadow="md" p="xl" radius="md">
-        <Title order={2} mb="md">
-          Iniciar sesión
-        </Title>
-        <form
-          onSubmit={form.onSubmit(handleSubmit)}
-          style={{ width: '100%', marginTop: '3rem' }}
-        >
-          <TextInput
-            label="Correo"
-            {...form.getInputProps('username')}
-            type="email"
+        <Stack justify="center" align="center" mb="lg">
+          <Image
+            radius="md"
+            src="https://minio.docma.yilmer.com/assets/docma-logo.png"
+            style={{
+              width: '60%',
+            }}
+            mb="md"
           />
-          <PasswordInput
-            label="Contraseña"
-            mt="md"
-            {...form.getInputProps('password')}
-          />
-          <Button
-            type="submit"
-            mt="xl"
-            fullWidth
-            loading={loginMutation.isPending}
-          >
+          <Title order={4}>
             Iniciar sesión
-          </Button>
-        </form>
+          </Title>
+          <form
+            onSubmit={form.onSubmit(handleSubmit)}
+            style={{ width: '100%', marginTop: '.5rem' }}
+          >
+            <TextInput
+              label="Correo"
+              {...form.getInputProps('username')}
+              type="email"
+            />
+            <PasswordInput
+              label="Contraseña"
+              mt="md"
+              {...form.getInputProps('password')}
+            />
+            <Button
+              type="submit"
+              mt="xl"
+              fullWidth
+              loading={loginMutation.isPending}
+            >
+              Iniciar sesión
+            </Button>
+          </form>
+        </Stack>
       </Paper>
     </Box>
   );

@@ -5,7 +5,7 @@ const buildWelcomeEmailTemplate = (
 ): string => `
   <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #eee; border-radius: 8px;">
     <div style="text-align: center;">
-      <img src="https://docma.yilmer.com/logo.png" alt="Docma Logo" style="width: 100px; margin-bottom: 16px;" />
+      <img src="https://minio.docma.yilmer.com/assets/docma-logo.png" alt="Docma Logo" style="width: 100px; margin-bottom: 16px;" />
       <h2 style="color: #2c3e50;">¡Bienvenido a Docma, ${name}!</h2>
     </div>
     

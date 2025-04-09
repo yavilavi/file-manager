@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { Button, Group, Table, Text, Modal, TextInput } from '@mantine/core';
+import { Button, Group, Table, Modal, TextInput } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
@@ -7,9 +7,13 @@ import { fetchDepartments } from '../../services/api/fetchDepartments.ts';
 import { AxiosError } from 'axios';
 import { createDepartment } from '../../services/api/createDepartment.ts';
 import { format } from 'date-fns';
+import { useState } from 'react';
+import { DepartmentInterface } from '../../types/interfaces/user-interface.ts';
+import { updateDepartment } from '../../services/api/updateDepartment.ts';
 
 export default function Departments() {
   const [opened, { open, close }] = useDisclosure(false);
+  const [selectedDepartment, setSelectedDepartment] = useState<DepartmentInterface | null>(null);
 
   const form = useForm({
     initialValues: { name: '' },
@@ -18,7 +22,7 @@ export default function Departments() {
     },
   });
 
-  const { data, isLoading, isFetching, error, refetch } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ['departments'],
     queryFn: fetchDepartments,
     initialData: [],
@@ -53,6 +57,46 @@ export default function Departments() {
     },
   });
 
+  const updateDepartmentMutation = useMutation({
+    mutationFn: updateDepartment,
+    onSuccess: () => {
+      notifications.show({
+        title: 'Departamento actualizado',
+        message: 'Se actualizó correctamente',
+        color: 'green',
+        autoClose: 5000,
+      });
+      refetch();
+      form.reset();
+      close();
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      notifications.show({
+        title: 'Error al editar el departamento',
+        message: `${error.response?.data.message ?? error.message}`,
+        color: 'red',
+        autoClose: 5000,
+      });
+    },
+  });
+
+  const handleEdit = (dept: DepartmentInterface) => {
+    setSelectedDepartment(dept);
+    form.setValues({ name: dept.name });
+    open();
+  };
+
+  const handleSubmit = (values: { name: string }) => {
+    if (selectedDepartment) {
+      updateDepartmentMutation.mutate({
+        id: selectedDepartment.id,
+        ...values,
+      });
+    } else {
+      createDepartmentMutation.mutate(values);
+    }
+  };
+
   return (
     <>
       <h3>Departamentos</h3>
@@ -64,15 +108,14 @@ export default function Departments() {
         opened={opened}
         onClose={() => {
           form.reset();
+          setSelectedDepartment(null);
           close();
         }}
-        title="Crear nuevo departamento"
+        title={selectedDepartment ? 'Editar departamento' : 'Crear departamento'}
         centered
       >
         <form
-          onSubmit={form.onSubmit((values) =>
-            createDepartmentMutation.mutate(values),
-          )}
+          onSubmit={form.onSubmit(handleSubmit)}
         >
           <TextInput
             label="Nombre"
@@ -83,21 +126,19 @@ export default function Departments() {
 
           <Group mt="lg">
             <Button type="submit" loading={createDepartmentMutation.isPending}>
-              Crear
+              {selectedDepartment ? 'Actualizar' : 'Crear'}
             </Button>
           </Group>
         </form>
       </Modal>
 
-      {(isLoading || isFetching) && <Text>Loading...</Text>}
-      {error && <Text>Error: {JSON.stringify(error)}</Text>}
-
       {data.length > 0 && (
-        <Table striped highlightOnHover withTableBorder withColumnBorders>
+        <Table highlightOnHover withTableBorder withColumnBorders>
           <Table.Thead>
             <Table.Tr>
               <Table.Th>Nombre</Table.Th>
               <Table.Th>Fecha de creación</Table.Th>
+              <Table.Th key="6">Acciones</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
@@ -106,6 +147,18 @@ export default function Departments() {
                 <Table.Td>{dept.name}</Table.Td>
                 <Table.Td>
                   {format(new Date(dept.createdAt), 'dd/MM/yyyy HH:mm:ss')}
+                </Table.Td>
+
+                <Table.Td key={`cell_${dept.id}_actions`}>
+                  <Group gap="xs">
+                    <Button
+                      variant="light"
+                      size="xs"
+                      onClick={() => handleEdit(dept)}
+                    >
+                      Editar
+                    </Button>
+                  </Group>
                 </Table.Td>
               </Table.Tr>
             ))}

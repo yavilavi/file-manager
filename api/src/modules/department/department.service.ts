@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '@libs/database/prisma/prisma.service';
 import { CreateDepartmentDto } from '@modules/department/dtos/create-department.dto';
 
@@ -23,6 +27,27 @@ export class DepartmentService {
     return this.prisma.client.department.create({
       data: {
         ...dto,
+        tenantId,
+      },
+      select: { id: true, name: true, createdAt: true },
+    });
+  }
+
+  async updateDepartment(
+    id: number,
+    dto: CreateDepartmentDto,
+    tenantId: string,
+  ) {
+    const exists = await this.prisma.client.department.findFirst({
+      where: { id, tenantId, deletedAt: null },
+    });
+    if (!exists) {
+      throw new NotFoundException('No existe el departamento seleccionado');
+    }
+    return this.prisma.client.department.update({
+      where: { id: exists.id },
+      data: {
+        name: dto.name,
         tenantId,
       },
       select: { id: true, name: true, createdAt: true },

@@ -204,4 +204,25 @@ export class FilesService {
       fileName: file.name,
     };
   }
+
+  async deleteFile(id: number, tenantId: string) {
+    const file = await this.prisma.client.file.findUnique({
+      where: {
+        id,
+        tenantId: tenantId,
+        deletedAt: null,
+      },
+    });
+    if (!file) {
+      throw new NotFoundException('El archivo no existe');
+    }
+    await this.prisma.client.file.update({
+      where: {
+        id: file.id,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
 }

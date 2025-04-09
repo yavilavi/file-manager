@@ -3,7 +3,6 @@ import {
   Button,
   Group,
   Table,
-  Text,
   Modal,
   TextInput,
   PasswordInput,
@@ -59,7 +58,7 @@ export default function Users() {
     },
   });
 
-  const { data, isLoading, error, isFetching, refetch } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ['users'],
     initialData: [],
     queryFn: fetchUsers,
@@ -219,11 +218,8 @@ export default function Users() {
           </Group>
         </form>
       </Modal>
-
-      {(isLoading || isFetching) && <Text>Loading...</Text>}
-      {error && <Text>Error: {JSON.stringify(error)}</Text>}
       {data && data.length > 0 && (
-        <Table striped highlightOnHover withTableBorder withColumnBorders>
+        <Table highlightOnHover withTableBorder withColumnBorders>
           <Table.Thead>
             <Table.Tr key="trh_0">
               <Table.Th key="0">Nombre</Table.Th>

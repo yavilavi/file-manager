@@ -9,6 +9,7 @@ import {
   Paper,
   Loader,
   Badge,
+  Stack, Image,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useEffect, useState } from 'react';
@@ -175,150 +176,160 @@ export default function CompanyRegistration() {
     );
   }
   return (
-    <Box maw={800} mx="auto" mt={150}>
+    <Box maw={800} mx="auto" mt={10}>
       <Paper withBorder shadow="md" p="xl" radius="md">
-        <Title order={2} mb="md">
-          Registro de empresa
-        </Title>
+        <Stack justify="center" align="center" mb="lg">
+          <Image
+            radius="md"
+            src="https://minio.docma.yilmer.com/assets/docma-logo.png"
+            style={{
+              width: '30%',
+            }}
+            mb="md"
+          />
+          <Title order={2} mb="md">
+            Registro de empresa
+          </Title>
 
-        <Stepper
-          active={active}
-          onStepClick={setActive}
-          allowNextStepsSelect={false}
-          size="sm"
-          mt="2rem"
-          completedIcon={<IconCircleCheck size={18} />}
-        >
-          <Stepper.Step
-            icon={<IconBuildingCommunity size={18} />}
-            label="Empresa"
-            description="Información de la empresa"
-            allowStepSelect={shouldAllowSelectStep(0)}
-            disabled={isSuccess}
+          <Stepper
+            active={active}
+            onStepClick={setActive}
+            allowNextStepsSelect={false}
+            size="sm"
+            mt="2rem"
+            completedIcon={<IconCircleCheck size={18} />}
           >
-            <TextInput
-              label="Nombre de la empresa"
-              {...form.getInputProps('companyName')}
-              mt="md"
-            />
-            <TextInput label="NIT" {...form.getInputProps('nit')} mt="md" />
-
-            <Group justify="start" align="end">
-              <TextInput
-                label="Subdominio"
-                {...form.getInputProps('subdomain')}
-                mt="md"
-                rightSectionPointerEvents="none"
-                rightSection={
-                  isFetching ? (
-                    <Loader size={16} />
-                  ) : data && !data.available ? (
-                    <IconCircleCheck size={16} color="red" />
-                  ) : data && data.available ? (
-                    <IconCircleCheck size={16} color="green" />
-                  ) : null
-                }
-                description={
-                  debounced.length < 3
-                    ? 'Escribe al menos 3 letras'
-                    : data && !data.available
-                      ? 'Ya está en uso'
-                      : data && data.available
-                        ? 'Disponible'
-                        : 'Verificando...'
-                }
-              />
-              <Badge color="blue" variant="light">
-                .{import.meta.env.VITE_APP_BASE_URL}
-              </Badge>
-            </Group>
-            {departments.map((dep, index) => (
-              <TextInput
-                key={index}
-                label={`Departamento ${index + 1}`}
-                value={dep}
-                onChange={(e) =>
-                  handleDepartmentChange(e.currentTarget.value, index)
-                }
-                mt="md"
-              />
-            ))}
-            <Button onClick={addDepartment} variant="light" mt="sm">
-              Agregar otro departamento
-            </Button>
-          </Stepper.Step>
-
-          <Stepper.Step
-            icon={<IconUser size={18} />}
-            label="Administrador"
-            description="Usuario principal"
-            allowStepSelect={shouldAllowSelectStep(1)}
-            disabled={isSuccess}
-          >
-            <TextInput
-              label="Nombre"
-              {...form.getInputProps('adminName')}
-              mt="md"
-            />
-            <TextInput
-              label="Correo"
-              {...form.getInputProps('adminEmail')}
-              mt="md"
-            />
-            <PasswordInput
-              label="Contraseña"
-              {...form.getInputProps('adminPassword')}
-              mt="md"
-            />
-            <PasswordInput
-              label="Confirmar contraseña"
-              {...form.getInputProps('confirmPassword')}
-              mt="md"
-            />
-          </Stepper.Step>
-
-          <Stepper.Step
-            icon={<IconListCheck size={18} />}
-            label="Revisión"
-            description="Confirmar envío"
-            allowStepSelect={shouldAllowSelectStep(2)}
-            loading={isPending}
-            disabled={isSuccess}
-          >
-            <ReviewStep form={form} />
-          </Stepper.Step>
-
-          <Stepper.Completed>
-            <SuccessStep
-              redirectUrl={`${window.location.protocol}//${form.values.subdomain}.${import.meta.env.VITE_APP_BASE_URL}`}
-            />
-          </Stepper.Completed>
-        </Stepper>
-
-        {!isSuccess && (
-          <Group justify="space-between" mt="xl">
-            <Button
-              variant="default"
-              onClick={prevStep}
-              disabled={active === 0}
+            <Stepper.Step
+              icon={<IconBuildingCommunity size={18} />}
+              label="Empresa"
+              description="Información de la empresa"
+              allowStepSelect={shouldAllowSelectStep(0)}
+              disabled={isSuccess}
             >
-              Atrás
-            </Button>
-            {active < 2 ? (
-              <Button onClick={() => handleStepChange(active + 1)}>
-                Siguiente
+              <TextInput
+                label="Nombre de la empresa"
+                {...form.getInputProps('companyName')}
+                mt="md"
+              />
+              <TextInput label="NIT" {...form.getInputProps('nit')} mt="md" />
+
+              <Group justify="start" align="end">
+                <TextInput
+                  label="Subdominio"
+                  {...form.getInputProps('subdomain')}
+                  mt="md"
+                  rightSectionPointerEvents="none"
+                  rightSection={
+                    isFetching ? (
+                      <Loader size={16} />
+                    ) : data && !data.available ? (
+                      <IconCircleCheck size={16} color="red" />
+                    ) : data && data.available ? (
+                      <IconCircleCheck size={16} color="green" />
+                    ) : null
+                  }
+                  description={
+                    debounced.length < 3
+                      ? 'Escribe al menos 3 letras'
+                      : data && !data.available
+                        ? 'Ya está en uso'
+                        : data && data.available
+                          ? 'Disponible'
+                          : 'Verificando...'
+                  }
+                />
+                <Badge color="blue" variant="light">
+                  .{import.meta.env.VITE_APP_BASE_URL}
+                </Badge>
+              </Group>
+              {departments.map((dep, index) => (
+                <TextInput
+                  key={index}
+                  label={`Departamento ${index + 1}`}
+                  value={dep}
+                  onChange={(e) =>
+                    handleDepartmentChange(e.currentTarget.value, index)
+                  }
+                  mt="md"
+                />
+              ))}
+              <Button onClick={addDepartment} variant="light" mt="sm">
+                Agregar otro departamento
               </Button>
-            ) : (
+            </Stepper.Step>
+
+            <Stepper.Step
+              icon={<IconUser size={18} />}
+              label="Administrador"
+              description="Usuario principal"
+              allowStepSelect={shouldAllowSelectStep(1)}
+              disabled={isSuccess}
+            >
+              <TextInput
+                label="Nombre"
+                {...form.getInputProps('adminName')}
+                mt="md"
+              />
+              <TextInput
+                label="Correo"
+                {...form.getInputProps('adminEmail')}
+                mt="md"
+              />
+              <PasswordInput
+                label="Contraseña"
+                {...form.getInputProps('adminPassword')}
+                mt="md"
+              />
+              <PasswordInput
+                label="Confirmar contraseña"
+                {...form.getInputProps('confirmPassword')}
+                mt="md"
+              />
+            </Stepper.Step>
+
+            <Stepper.Step
+              icon={<IconListCheck size={18} />}
+              label="Revisión"
+              description="Confirmar envío"
+              allowStepSelect={shouldAllowSelectStep(2)}
+              loading={isPending}
+              disabled={isSuccess}
+            >
+              <ReviewStep form={form} />
+            </Stepper.Step>
+
+            <Stepper.Completed>
+              <SuccessStep
+                redirectUrl={`${window.location.protocol}//${form.values.subdomain}.${import.meta.env.VITE_APP_BASE_URL}`}
+              />
+            </Stepper.Completed>
+          </Stepper>
+
+          {!isSuccess && (
+            <Group justify="space-between" mt="xl">
               <Button
-                onClick={handleSubmit}
-                loading={isPending}
-                disabled={isPending}
+                variant="default"
+                onClick={prevStep}
+                disabled={active === 0}
               >
-                Enviar
+                Atrás
               </Button>
-            )}
-          </Group>
-        )}
+              {active < 2 ? (
+                <Button onClick={() => handleStepChange(active + 1)}>
+                  Siguiente
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleSubmit}
+                  loading={isPending}
+                  disabled={isPending}
+                >
+                  Enviar
+                </Button>
+              )}
+            </Group>
+          )}
+        </Stack>
       </Paper>
     </Box>
   );
