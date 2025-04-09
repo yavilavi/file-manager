@@ -64,10 +64,10 @@ services:
     image: postgres:16.8-alpine
     restart: unless-stopped
     environment:
-      - POSTGRES_USER=postgresql
-      - POSTGRES_PASSWORD=kUM3sKQy7ojVHt1XkypFObp2drth3jmFqKiyJGuO9aatuN4HNkybigyaIprSGUf9
-      - POSTGRES_DB=file_integity_manager
-      - POSTGRES_SCHEMA=public
+      - POSTGRES_USER=$DB_USER
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_DB=$DB_DATABASE
+      - POSTGRES_SCHEMA=$DB_SCHEMA
     volumes:
       - database_data:/var/lib/postgresql
   minio:
