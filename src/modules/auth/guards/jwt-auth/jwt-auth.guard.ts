@@ -14,6 +14,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request: Request = context.switchToHttp().getRequest();
+    console.log('JwtAuthGuard', request.method, request.url);
     if (request.method === 'OPTIONS') {
       return true;
     }

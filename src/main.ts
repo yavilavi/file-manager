@@ -28,12 +28,9 @@ async function bootstrap() {
   app.use(helmet());
   app.enableCors({
     origin: (origin, callback) => {
-      console.log({ origin, originRegex, allowedOrigins });
       if (!origin || !originRegex || !allowedOrigins)
         return callback(null, true);
-      console.log(originRegex);
       if (originRegex.test(origin) || allowedOrigins.includes(origin)) {
-        console.log(origin);
         callback(null, true);
       } else {
         callback(new UnauthorizedException('Not allowed by CORS'));
