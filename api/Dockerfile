@@ -18,14 +18,14 @@ RUN pnpm install --frozen-lockfile
 # Copiamos el resto del código
 COPY . .
 
+# Generar Prisma Client
+RUN npx prisma generate
+
 # Build
 RUN pnpm build
 
 # Migraciones (opcional: mejor hacerlo fuera de la imagen)
 RUN npx prisma migrate deploy
-
-# Generar Prisma Client
-RUN npx prisma generate
 
 # Etapa final: solo runtime
 FROM base AS runner
