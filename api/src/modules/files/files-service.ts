@@ -196,8 +196,7 @@ export class FilesService {
     if (!file) {
       throw new NotFoundException('El archivo no existe');
     }
-    const filePath = `examen-final/${file.hash}`;
-    const stream = await this.minioService.downloadFile(filePath);
+    const stream = await this.minioService.downloadFile(file.path);
 
     return {
       stream,
