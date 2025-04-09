@@ -11,6 +11,7 @@ import { useLogin } from '../hooks/useLogin';
 import { useNavigate } from 'react-router';
 import authStore from '../stores/auth.store.ts';
 import { notifications } from '@mantine/notifications';
+import { AxiosError } from 'axios';
 
 export default function Login() {
   const loginMutation = useLogin();
@@ -43,16 +44,17 @@ export default function Login() {
         setToken(data.access_token);
         navigate('/documents');
       }
-    } catch (error) {
+    } catch (err: unknown) {
+      const error = err as AxiosError<{ message: string; statusCode: number; error: string }>;
       console.error('Login error', error);
       notifications.show({
         title: 'Error al iniciar sesión',
-        message:
-          'No se pudo iniciar sesión con las credenciales proporcionadas',
+        message: `${error.response?.data.message ?? error.message}`,
         color: 'red',
         autoClose: 5000,
       });
     }
+    ;
   };
 
   return (
