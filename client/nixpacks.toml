@@ -1,5 +1,5 @@
-[phases.build]
-cmds = ["pnpm install", "pnpm build"]
+[phases.install]
+cmds = ["pnpm install"]
 
-[start]
-cmd = "serve -s dist"
+[phases.build]
+cmds = ["pnpm build"]
