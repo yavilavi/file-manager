@@ -183,11 +183,11 @@ export default function CompanyRegistration() {
             radius="md"
             src="https://minio.docma.yilmer.com/assets/docma-logo.png"
             style={{
-              width: '30%',
+              width: '20%',
             }}
             mb="md"
           />
-          <Title order={2} mb="md">
+          <Title order={4} mb="md">
             Registro de empresa
           </Title>
 
