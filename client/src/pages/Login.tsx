@@ -4,7 +4,7 @@ import {
   PasswordInput,
   Paper,
   Box,
-  Title,
+  Title, Loader, Text,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useLogin } from '../hooks/useLogin';
@@ -12,11 +12,13 @@ import { useNavigate } from 'react-router';
 import authStore from '../stores/auth.store.ts';
 import { notifications } from '@mantine/notifications';
 import { AxiosError } from 'axios';
+import useTenantValidation from '../hooks/useTenantValidation.ts';
 
 export default function Login() {
   const loginMutation = useLogin();
   const navigate = useNavigate();
   const setToken = authStore((state) => state.setToken);
+  const tenantQuery = useTenantValidation();
 
   const form = useForm<{ username: null | string; password: null | string }>({
     initialValues: {
@@ -54,8 +56,36 @@ export default function Login() {
         autoClose: 5000,
       });
     }
-    ;
   };
+
+
+  if (tenantQuery.isPending) {
+    return <Loader />;
+  }
+
+  if (tenantQuery.isError || tenantQuery.data?.available === true) {
+    const hostname = window.location.hostname;
+    const subdomain = hostname.split('.')[0];
+    return (
+      <Box maw={400} mx="auto" mt={150}>
+        <Paper withBorder shadow="md" p="xl" radius="md">
+          <Title order={2} mb="sm">¡Ups! Parece que te perdiste</Title>
+          <Text>
+            El subdominio <b>{subdomain}</b> aún no está registrado por ninguna empresa.
+            ¡Apresúrate y crea tu cuenta antes de que alguien más registre <b>{subdomain}</b>!
+          </Text>
+          <Button
+            mt="xl"
+            fullWidth
+            color="blue"
+            onClick={() => window.location.href = `${window.location.protocol}//app.${import.meta.env.VITE_APP_BASE_URL}/signup`}
+          >
+            Registrarse
+          </Button>
+        </Paper>
+      </Box>
+    );
+  }
 
   return (
     <Box maw={400} mx="auto" mt={150}>

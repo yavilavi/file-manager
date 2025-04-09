@@ -5,8 +5,6 @@ import helmet from 'helmet';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { HttpStatus, Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as console from 'node:console';
-import * as domain from 'node:domain';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -28,11 +26,9 @@ async function bootstrap() {
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
       try {
-        const hostname = new URL(origin).hostname;
-        console.log(hostname);
         if (
-          allowedWildcardDomains.some((domain) => hostname.endsWith(domain)) ||
-          allowedOrigins.includes(hostname)
+          allowedWildcardDomains.some((domain) => origin.endsWith(domain)) ||
+          allowedOrigins.includes(origin)
         ) {
           callback(null, true);
         } else {

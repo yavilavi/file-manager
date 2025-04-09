@@ -11,7 +11,7 @@ import {
   Badge,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSignup } from '../../hooks/useSignup.ts';
 import { notifications } from '@mantine/notifications';
 import ReviewStep from './ReviewStep.tsx';
@@ -28,11 +28,21 @@ import { useCheckSubdomain } from '../../hooks/useCheckSubdomain.ts';
 import companySchema from './company.schema.ts';
 import administratorSchema from './administrator.schema.ts';
 import { AxiosError } from 'axios';
+import { useNavigate } from 'react-router';
 
 export default function CompanyRegistration() {
   const [active, setActive] = useState(0);
   const [highestStepVisited, setHighestStepVisited] = useState(active);
   const [departments, setDepartments] = useState(['Nombre departamento 1']);
+  const navigate = useNavigate();
+
+  const hostname = window.location.hostname;
+  const subdomain = hostname.split('.')[0];
+  useEffect(() => {
+    if (subdomain !== 'app') {
+      navigate(`${window.location.protocol}//app.${import.meta.env.VITE_APP_BASE_URL}/signup`);
+    }
+  }, [navigate, subdomain]);
 
   const form = useForm({
     initialValues: {
@@ -150,7 +160,7 @@ export default function CompanyRegistration() {
             autoClose: 10000,
             color: 'red',
           });
-          if(error.response?.status === 409 || error.status == 409) {
+          if (error.response?.status === 409 || error.status == 409) {
             form.setFieldError('nit', 'Ya existe una empresa registrada con este NIT');
             setActive(0);
           }
