@@ -5,6 +5,12 @@ import { SignupDto } from '@modules/auth/dtos/signup.dto';
 import { ConfigService } from '@nestjs/config';
 import buildWelcomeEmailTemplate from '@modules/notification/email/templates/wellcome-email.template';
 
+interface SendEmailDTO {
+  to: string;
+  subject: string;
+  body: string;
+}
+
 @Injectable()
 export class EmailNotificationsService {
   constructor(
@@ -24,6 +30,16 @@ export class EmailNotificationsService {
       await this.email.sendEmail(user.email, subject, htmlBody);
     } catch (error) {
       console.error('Error enviando correo de bienvenida:', error);
+    }
+  }
+
+  async sendEmail({ to, subject, body }: SendEmailDTO): Promise<void> {
+    try {
+      await this.email.sendEmail(to, subject, body);
+      console.log(`Correo enviado a ${to}`);
+    } catch (error) {
+      console.error(`Error enviando correo a ${to}:`, error);
+      throw new Error('No se pudo enviar el correo');
     }
   }
 }

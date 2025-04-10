@@ -1,4 +1,4 @@
-import { IconArchive, IconBuildings, IconUsers } from '@tabler/icons-react';
+import { IconArchive, IconBuildings, IconMail, IconUsers } from '@tabler/icons-react';
 import { UserButton } from '../UserButton/UserButton';
 import { NavLink } from 'react-router';
 import classes from './Navbar.module.css';
@@ -7,6 +7,7 @@ import LogoutButton from './LogoutButton.tsx';
 
 const links = [
   { icon: IconArchive, label: 'Documentos', path: '/documents' },
+  { icon: IconMail, label: 'Email', path: '/email' },
   { icon: IconUsers, label: 'Usuarios', path: '/users' },
   { icon: IconBuildings, label: 'Departamentos', path: '/departments' },
 ];

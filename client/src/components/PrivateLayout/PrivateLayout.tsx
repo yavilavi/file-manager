@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import Documents from '../../apps/documents-manager/Documents.tsx';
 import Users from '../../apps/users-manager/Users.tsx';
 import Departments from '../../apps/departments-manager/Departments.tsx';
+import SendEmails from '../../apps/email/SendEmails.tsx';
 
 export default function PrivateLayout() {
   const [opened, { toggle }] = useDisclosure();
@@ -43,6 +44,7 @@ export default function PrivateLayout() {
         <Routes>
           <Route path="/" element={<Navigate to="/documents" replace />} />
           <Route path="/documents" element={<Documents />} />
+          <Route path="/email" element={<SendEmails />} />
           <Route path="/users" element={<Users />} />
           <Route path="/departments" element={<Departments />} />
         </Routes>

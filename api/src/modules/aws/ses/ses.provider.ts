@@ -22,7 +22,7 @@ export class SesProvider implements EmailProvider {
   ) {
     const source = from || this.configService.getOrThrow('email.from');
     const command = new SendEmailCommand({
-      Source: source,
+      Source: `Docma System <${source}>`,
       Destination: {
         ToAddresses: [to],
       },

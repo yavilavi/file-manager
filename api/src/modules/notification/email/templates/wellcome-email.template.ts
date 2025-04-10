@@ -25,7 +25,7 @@ const buildWelcomeEmailTemplate = (
     </div>
 
     <p style="font-size: 14px; color: #777;">
-      ¿Necesitas ayuda? Contáctanos en <a href="mailto:yilmer@avila.dev">soporte@yilmer@avila.dev</a>.
+      ¿Necesitas ayuda? Contáctanos en <a href="mailto:yilmer@avila.dev">soporte@avila.dev</a>.
     </p>
 
     <hr style="margin: 32px 0;" />
