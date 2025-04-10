@@ -63,7 +63,7 @@ export class AuthService {
 
   async signup(signupDto: SignupDto) {
     const { company, user } = signupDto;
-    user.password = await argon2.hash(user.password);
+    const passwordHash = await argon2.hash(user.password);
 
     const existingCompany = await this.prisma.client.company.findFirst({
       where: {
@@ -95,7 +95,7 @@ export class AuthService {
           create: {
             name: user.name,
             email: user.email.toLowerCase(),
-            password: user.password,
+            password: passwordHash,
             isActive: true,
           },
         },
@@ -103,6 +103,17 @@ export class AuthService {
     });
 
     this.eventEmitter.emit('company.created', signupDto);
+    this.eventEmitter.emit('user.created', {
+      user: {
+        name: user.name,
+        email: user.email,
+        password: user.password,
+      },
+      company: {
+        name: company.name,
+        tenantId: company.tenantId,
+      },
+    });
 
     return {
       redirectUrl: `${this.configService.get('protocol') ?? 'http'}://${created.tenantId}.${this.configService.getOrThrow('baseAppUrl')}`,

@@ -1,26 +1,46 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { Button, FileInput, Group, Table } from '@mantine/core';
+import { Button, FileInput, Group, Progress, Table } from '@mantine/core';
 import { fetchDocuments } from '../../services/api/fetchDocuments.ts';
 import { uploadDocument } from '../../services/api/uploadDocument.ts';
 import { notifications } from '@mantine/notifications';
 import useFileManagerStore from '../../stores/file-manager.store.ts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import formatFileSize from '../../utils/format-file-size.util.ts';
 import { format } from 'date-fns';
 import FileDetailDrawer from './components/FileDetailDrawer.tsx';
+import { IconError404 } from '@tabler/icons-react';
 
 export default function Documents() {
   const [file, setFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const { data, refetch } = useQuery({
     queryKey: ['files'],
     initialData: [],
     queryFn: fetchDocuments,
   });
-
+  useEffect(() => {
+    if (uploadProgress !== 0) {
+      notifications.update({
+        id: 'default-notification',
+        title: 'Cargando archivo',
+        message: (
+          <Progress value={uploadProgress} transitionDuration={1000}/>
+        ),
+        loading: true,
+        autoClose: false,
+      });
+    }
+  }, [uploadProgress]);
   const { setSelectedFile } = useFileManagerStore();
 
+  const uploadWithProgress = (file: File) => {
+    setUploadProgress(0);
+    return uploadDocument(file, (progress) => {
+      setUploadProgress(progress);
+    });
+  };
   const uploadFileMutation = useMutation({
-    mutationFn: uploadDocument,
+    mutationFn: uploadWithProgress,
     onSuccess: (data) => {
       if (data.message === 'EXISTING') {
         notifications.update({
@@ -28,10 +48,11 @@ export default function Documents() {
           title: 'Operación fallida',
           message: `El archivo ya existe`,
           loading: false,
-          autoClose: 10000,
+          autoClose: 3000,
           color: 'red',
         });
         setSelectedFile(data.file);
+        setUploadProgress(0);
         return;
       }
       notifications.update({
@@ -39,10 +60,11 @@ export default function Documents() {
         title: 'Operación exitosa',
         message: `El archivo se ha cargado exitosamente`,
         loading: false,
-        autoClose: 10000,
+        autoClose: 3000,
         color: 'green',
       });
       setSelectedFile(data.file);
+      setUploadProgress(0);
       refetch();
     },
     onError: (data) => {
@@ -51,10 +73,13 @@ export default function Documents() {
         title: 'Operación fallida',
         message: `${data.message}`,
         loading: false,
-        autoClose: 10000,
-        color: 'red',
+        autoClose: 3000,
+        color: 'grape',
+        icon: <IconError404 />,
       });
+      setUploadProgress(0);
     },
+
   });
 
   const handleUpload = () => {
@@ -66,14 +91,16 @@ export default function Documents() {
       });
       return;
     }
-    console.log('Archivo seleccionado:', file); // 🔍 Verifica el tipo
-    console.log('Tipo de archivo:', file instanceof File); // 🔍 Debe ser true
+    setUploadProgress(1);
     notifications.show({
       id: 'default-notification',
-      title: 'Carga de archivo',
-      message: 'El archivo está siendo cargado',
+      title: 'Cargando archivo',
+      message: (
+        <Progress value={uploadProgress} />
+      ),
       loading: true,
       autoClose: false,
+      withCloseButton: false,
     });
     uploadFileMutation.mutate(file);
   };

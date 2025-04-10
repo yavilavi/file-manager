@@ -13,10 +13,10 @@ datasource db {
 
 model File {
   id        Int       @id @default(autoincrement())
-  name      String    @unique(map: "uk_file_name") @db.VarChar(255)
+  name      String    @db.VarChar(255)
   extension String?   @db.VarChar(20)
   mimeType  String    @db.VarChar(150)
-  hash      String    @unique(map: "uk_file_hash") @db.VarChar(255)
+  hash      String    @db.VarChar(255)
   size      Int
   path      String    @db.VarChar(255)
   company   Company   @relation(fields: [tenantId], references: [tenantId])

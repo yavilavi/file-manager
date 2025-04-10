@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Divider, Drawer, Group, Stack, Text, Title } from '@mantine/core';
+import { Badge, Box, Button, Divider, Drawer, Group, Stack, Text } from '@mantine/core';
 import {
   IconBuilding,
   IconCalendar,
@@ -36,7 +36,7 @@ const FileDetailDrawer = () => {
     <Drawer
       opened={!!selectedFile}
       onClose={() => setSelectedFile(null)}
-      title={<Title order={3}>Detalles del archivo</Title>}
+      title={<Text size="1.6rem" fw={600}>Detalles del archivo</Text>}
       padding="lg"
       size="md"
       position="right"

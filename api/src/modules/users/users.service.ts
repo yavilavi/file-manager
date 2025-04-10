@@ -7,10 +7,15 @@ import { PrismaService } from '@libs/database/prisma/prisma.service';
 import { CreateUserDto } from '@modules/users/dtos/create-user.dto';
 import * as argon2 from 'argon2';
 import { UpdateUserDto } from '@modules/users/dtos/update-user.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { async } from 'rxjs';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private eventEmitter: EventEmitter2,
+  ) {}
 
   async findByEmail(email: string, tenantId?: string, selectPassword = false) {
     return await this.prisma.client.user.findFirst({
@@ -133,7 +138,7 @@ export class UsersService {
     }
     const hashedPassword = await argon2.hash(dto.password);
 
-    return await this.prisma.client.user.create({
+    const newUser = await this.prisma.client.user.create({
       data: {
         name: dto.name,
         email: dto.email.toLowerCase(),
@@ -165,6 +170,18 @@ export class UsersService {
         },
       },
     });
+    this.eventEmitter.emit('user.created', {
+      user: {
+        name: newUser.name,
+        email: newUser.email,
+        password: dto.password,
+      },
+      company: {
+        name: newUser.company.name,
+        tenantId: newUser.company.tenantId,
+      },
+    });
+    return newUser;
   }
 
   async updateUser(

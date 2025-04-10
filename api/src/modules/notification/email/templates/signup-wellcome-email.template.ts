@@ -1,4 +1,4 @@
-const buildWelcomeEmailTemplate = (
+const buildSignupWelcomeEmailTemplate = (
   name: string,
   company: string,
   appUrl: string,
@@ -12,20 +12,24 @@ const buildWelcomeEmailTemplate = (
     <p style="font-size: 16px; color: #333;">
       Gracias por registrar <strong>${company}</strong> en Docma. Estamos emocionados de tenerte a bordo.
     </p>
+    <p style="font-size: 16px; color: #333;">
+      Pronto recibiras un correo con los datos de inicio de sesión.
+    </p>
+
 
     <p style="font-size: 16px; color: #333;">
       Desde ahora puedes comenzar a gestionar tus documentos y procesos empresariales de forma eficiente y segura.
     </p>
 
     <div style="text-align: center; margin: 24px 0;">
-      <a href="${appUrl}"
+      <a href="${appUrl}" 
          style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
          Ir al panel
       </a>
     </div>
 
     <p style="font-size: 14px; color: #777;">
-      ¿Necesitas ayuda? Contáctanos en <a href="mailto:soporte@docma.com">soporte@docma.com</a>.
+      ¿Necesitas ayuda? Contáctanos en <a href="mailto:yilmer@avila.dev">soporte@avila.dev</a>.
     </p>
 
     <hr style="margin: 32px 0;" />
@@ -34,4 +38,4 @@ const buildWelcomeEmailTemplate = (
     </p>
   </div>
 `;
-export default buildWelcomeEmailTemplate;
+export default buildSignupWelcomeEmailTemplate;
