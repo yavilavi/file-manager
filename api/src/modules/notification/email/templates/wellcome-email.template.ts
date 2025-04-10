@@ -18,14 +18,14 @@ const buildWelcomeEmailTemplate = (
     </p>
 
     <div style="text-align: center; margin: 24px 0;">
-      <a href="${appUrl}" 
+      <a href="${appUrl}"
          style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
          Ir al panel
       </a>
     </div>
 
     <p style="font-size: 14px; color: #777;">
-      ¿Necesitas ayuda? Contáctanos en <a href="mailto:yilmer@avila.dev">soporte@avila.dev</a>.
+      ¿Necesitas ayuda? Contáctanos en <a href="mailto:soporte@docma.com">soporte@docma.com</a>.
     </p>
 
     <hr style="margin: 32px 0;" />

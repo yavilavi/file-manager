@@ -1,10 +1,21 @@
-# 📦 Docma - Backend
+# 📁 Docma
 
-Este es el backend de Docma, una aplicación de gestión documental multitenant. A continuación te explicamos cómo ejecutarlo localmente.
+Docma es una aplicación de gestión documental multitenant construida como proyecto final  
+para la materia de estructuras de datos 1. Está compuesta por un frontend SPA y un backend modular con NestJS.
 
 ---
 
-## 🚀 Requisitos
+## 📦 Estructura del Proyecto
+
+```
+.
+├── api      # Backend hecho con NestJS + Prisma
+└── client   # Frontend SPA hecho con React + Vite
+```
+
+---
+
+## 🚀 Requisitos Generales
 
 - Node.js 22.x
 - [Docker + Docker Compose](https://docs.docker.com/compose/)
@@ -12,57 +23,29 @@ Este es el backend de Docma, una aplicación de gestión documental multitenant.
 
 ---
 
-## 🐳 Opción 1: Ejecutar con Docker
+## 🔧 Cómo ejecutar
 
-1. Asegúrate de tener Docker y Docker Compose instalados.
-2. Abre la terminal y ubícate en el root del proyecto.
-3. Copia el archivo de variables de entorno:
-   ```bash
-   cp .env.example .env
-En Windows PowerShell:
-```powershell
-copy .env.example .env
-```
-4. Ejecuta el backend:
+### Backend (📂 api)
 
-```bash
-docker compose up
-```
+Ver instrucciones detalladas en [`api/README.md`](./docs/api.md)
 
-5. Si todo sale bien, el backend estará corriendo en http://localhost:3000
+### Frontend (📂 client)
 
-## 🧪 Opción 2: Ejecutar con pnpm
-1. Instala Node.js 22 si no lo tienes.
+Ver instrucciones detalladas en [`client/README.md`](./docs/client.md)
 
-2. Instala pnpm globalmente:
+### 🌐 Configurar subdominios wildcard en local
 
-    ```bash
-    npm install -g pnpm
-    ```
-3. Ubícate en el root del proyecto.
+Ver instrucciones detalladas en [`docs/subdomains.md`](./docs/subdomains.md)
 
-4. Instala las dependencias:
+---
 
-    ```bash
-    pnpm install
-    ```
+## 🛠️ Tecnologías principales
 
-5. Genera el cliente de Prisma:
+- **Frontend:** React, Vite, Mantine, TypeScript
+- **Backend:** NestJS, Prisma, PostgreSQL, MinIO, TypeScript, AWS SES
 
-    ```bash
-    npx prisma generate
-    ```
+---
 
-6. Asegúrate de tener Docker y Docker Compose instalados.
+## ✍️ Autor
 
-7. Levanta los servicios de base de datos y MinIO:
-
-    ``` bash
-    docker compose up -d database
-    docker compose up -d minio
-    ```
-8. Inicia el proyecto:
-
-    ```bash
-    pnpm start:dev
-    ```
+Desarrollado por [Yilmer Avila](https://www.linkedin.com/in/yilmeravila/) como proyecto final para la materia de estructuras de datos 1
