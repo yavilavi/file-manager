@@ -11,6 +11,8 @@ para la materia de estructuras de datos 1. Está compuesta por un frontend SPA y
 .
 ├── api      # Backend hecho con NestJS + Prisma
 └── client   # Frontend SPA hecho con React + Vite
+└── docs     # Documentación del proyecto
+└── .husky   # Hooks de git
 ```
 
 ---

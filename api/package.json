@@ -107,7 +107,8 @@
       "esbuild",
       "prisma",
       "@prisma/client",
-      "argon2"
+      "argon2",
+      "protobufjs"
     ]
   }
 }

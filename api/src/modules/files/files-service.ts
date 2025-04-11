@@ -110,7 +110,7 @@ export class FilesService {
   }
 
   async checkFileExists(hash: string, tenantId: string): Promise<File | null> {
-    return await this.prisma.client.file.findUnique({
+    return await this.prisma.client.file.findFirst({
       where: {
         hash,
         tenantId: tenantId,
