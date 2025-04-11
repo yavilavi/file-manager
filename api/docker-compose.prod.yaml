@@ -9,7 +9,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - PORT=3000
+      - PORT=$PORT
       - JWT_SECRET=$JWT_SECRET
       - JWT_AUD=$JWT_AUD
       - JWT_ISS=$JWT_ISS
@@ -53,7 +53,7 @@ services:
         - CMD
         - curl
         - '-f'
-        - 'http://127.0.0.1:3000'
+        - 'http://127.0.0.1:$${PORT}/health'
   migrate:
     image: file-manager:latest
     command:
