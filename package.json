@@ -6,7 +6,8 @@
   "scripts": {
     "commit": "commit",
     "prepare": "husky",
-    "commitlint": "commitlint --edit"
+    "commitlint": "commitlint --edit",
+    "test": "echo \"Error: no test specified\""
   },
   "keywords": [],
   "author": "",
