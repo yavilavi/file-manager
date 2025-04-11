@@ -22,9 +22,9 @@ import { APP_GUARD } from '@nestjs/core';
       expandVariables: true,
     }),
     ThrottlerModule.forRoot([
-      { name: 'short', ttl: seconds(5), limit: 3 },
-      { name: 'medium', ttl: seconds(10), limit: 20 },
-      { name: 'long', ttl: seconds(60), limit: 100 },
+      { name: 'short', ttl: seconds(1), limit:  3},
+      { name: 'medium', ttl: seconds(10), limit: 30 },
+      { name: 'long', ttl: seconds(60), limit: 180 },
     ]),
     FilesModule,
     AuthModule,
