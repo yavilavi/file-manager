@@ -1,7 +1,6 @@
 name: file-manager
 services:
   backend:
-    container_name: "file-manager"
     image: file-manager:latest
     depends_on:
       - database
@@ -10,7 +9,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - PORT=$PORT
+      - PORT=3000
       - JWT_SECRET=$JWT_SECRET
       - JWT_AUD=$JWT_AUD
       - JWT_ISS=$JWT_ISS
@@ -49,8 +48,13 @@ services:
       - caddy_0.try_files={path} /index.html /index.php
       - caddy_0=://
       - caddy_ingress_network=coolify
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - '-f'
+        - 'http://127.0.0.1:3000'
   migrate:
-    container_name: "file-manager-migrate"
     image: file-manager:latest
     command:
       - "start:migrate"
@@ -60,18 +64,21 @@ services:
     environment:
       DB_URL: $DB_URL
   database:
-    container_name: database
-    image: postgres:16.8-alpine
-    restart: unless-stopped
+    image: 'postgres:16-alpine'
     environment:
       POSTGRES_USER: $POSTGRES_USER
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
       POSTGRES_DB: $POSTGRES_DB
-      POSTGRES_SCHEMA: $POSTGRES_SCHEMA
     volumes:
-      - 'database_data:/var/lib/postgresql'
+      - 'postgresql-data:/var/lib/postgresql/data'
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}'
+      interval: 5s
+      timeout: 10s
+      retries: 20
   minio:
-    container_name: minio
     image: quay.io/minio/minio
     restart: unless-stopped
     environment:
