@@ -51,7 +51,7 @@ Vamos a ejecutar el backend de Docma, que está construido con Node.js y Prisma.
 3. Ubícate en el root del proyecto.
 4. luego ubícate en la carpeta del backend
    ```bash
-   cd client
+   cd api
    ```
 5. Copia el archivo de variables de entorno:
    ```bash
