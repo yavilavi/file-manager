@@ -48,12 +48,6 @@ services:
       - caddy_0.try_files={path} /index.html /index.php
       - caddy_0=://
       - caddy_ingress_network=coolify
-    healthcheck:
-      test:
-        - CMD
-        - curl
-        - '-f'
-        - 'http://127.0.0.1:$${PORT}/health'
   migrate:
     image: file-manager:latest
     command:
@@ -71,13 +65,6 @@ services:
       POSTGRES_DB: $POSTGRES_DB
     volumes:
       - 'postgresql-data:/var/lib/postgresql/data'
-    healthcheck:
-      test:
-        - CMD-SHELL
-        - 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}'
-      interval: 5s
-      timeout: 10s
-      retries: 20
   minio:
     image: quay.io/minio/minio
     restart: unless-stopped
