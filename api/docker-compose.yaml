@@ -6,6 +6,7 @@ services:
     depends_on:
       - database
       - minio
+      - onlyoffice
     build:
       context: .
       dockerfile: Dockerfile
@@ -20,8 +21,8 @@ services:
       JWT_AUD: $JWT_AUD
       JWT_ISS: $JWT_ISS
       BASE_APP_URL: $BASE_APP_URL
-      MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
-      MINIO_SECRET_KEY: $MINIO_SECRET_KEY
+      MINIO_ROOT_USER: $MINIO_ROOT_USER
+      MINIO_ROOT_PASSWORD: $MINIO_ROOT_PASSWORD
       MINIO_BUCKET: $MINIO_BUCKET
       MINIO_USE_SSL: $MINIO_USE_SSL
       MINIO_PORT: $MINIO_PORT
@@ -34,6 +35,9 @@ services:
       AWS_REGION: $AWS_REGION
       DB_URL: "postgresql://${DB_USER}:${DB_PASSWORD}@database:${DB_PORT}/${DB_DATABASE}"
       MINIO_ENDPOINT: "minio"
+      PROTOCOL: "http"
+      BASE_API_DOMAIN: "backend:3000"      
+      ONLYOFFICE_URL: http://onlyoffice
     ports:
       - "$PORT:$PORT"
   migrate:
@@ -61,17 +65,36 @@ services:
       - database_data:/var/lib/postgresql
   minio:
     container_name: minio
-    image: quay.io/minio/minio
+    image: quay.io/minio/minio:latest
     restart: always
     ports:
       - "9000:9000"
       - "9001:9001"
     environment:
-      MINIO_ROOT_USER: $MINIO_ACCESS_KEY
-      MINIO_ROOT_PASSWORD: $MINIO_SECRET_KEY
+      MINIO_ROOT_USER: $MINIO_ROOT_USER
+      MINIO_ROOT_PASSWORD: $MINIO_ROOT_PASSWORD
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
+  onlyoffice:
+    image: onlyoffice/documentserver:latest
+    container_name: onlyoffice
+    restart: always
+    environment:
+      JWT_SECRET: $JWT_SECRET
+      JWT_ENABLED: false
+      ONLYOFFICE_HTTPS_HSTS_ENABLED: false
+    volumes:
+      - onlyoffice_logs:/var/log/onlyoffice
+      - onlyoffice_data:/var/www/onlyoffice/Data
+      - onlyoffice_lib:/var/lib/onlyoffice
+      - onlyoffice_db:/var/lib/postgresql
+    ports:
+      - '80:80'
 volumes:
   database_data:
   minio_data:
+  onlyoffice_logs:
+  onlyoffice_data:
+  onlyoffice_lib:
+  onlyoffice_db:

@@ -13,6 +13,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { NotificationModule } from '@modules/notification/notification.module';
 import { seconds, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { JwtGlobalModule } from '@libs/jwt/jwt-global.module';
 
 @Module({
   imports: [
@@ -21,10 +22,11 @@ import { APP_GUARD } from '@nestjs/core';
       load: [configuration],
       expandVariables: true,
     }),
+    JwtGlobalModule,
     ThrottlerModule.forRoot([
-      { name: 'short', ttl: seconds(1), limit:  3},
-      { name: 'medium', ttl: seconds(10), limit: 30 },
-      { name: 'long', ttl: seconds(60), limit: 180 },
+      { name: 'short', ttl: seconds(1), limit: 14 },
+      { name: 'medium', ttl: seconds(10), limit: 140 },
+      { name: 'long', ttl: seconds(60), limit: 840 },
     ]),
     FilesModule,
     AuthModule,

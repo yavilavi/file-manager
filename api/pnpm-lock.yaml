@@ -50,6 +50,9 @@ importers:
       argon2:
         specifier: ^0.41.1
         version: 0.41.1
+      axios:
+        specifier: ^1.8.4
+        version: 1.8.4
       class-transformer:
         specifier: ^0.5.1
         version: 0.5.1

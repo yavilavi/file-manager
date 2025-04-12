@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as Minio from 'minio';
+import * as Stream from 'node:stream';
 
 @Injectable()
 export class MinioService {
@@ -39,13 +40,45 @@ export class MinioService {
     });
   }
 
-  async downloadFile(filePath: string) {
+  async downloadFile(
+    filePath: string,
+    versionId?: string,
+  ): Promise<Stream.Readable> {
     try {
-      return await this.client.getObject(this.bucket, filePath);
+      return await this.client.getObject(this.bucket, filePath, {
+        versionId,
+      });
     } catch (error: unknown) {
       throw new Error(
         `Error downloading file ${filePath}: ${(error as Error).message}`,
       );
     }
+  }
+
+  async getPresignedUrl(filePath: string): Promise<string> {
+    try {
+      const url = await this.client.presignedUrl(
+        'GET',
+        this.bucket,
+        filePath,
+        5 * 60,
+      );
+      return url;
+    } catch (error: unknown) {
+      throw new Error(
+        `Error generating presigned URL for file ${filePath}: ${(error as Error).message}`,
+      );
+    }
+  }
+
+  async saveEditedFile(
+    fileName: string,
+    buffer: Stream.Readable,
+    size: number,
+    mimetype: string,
+  ) {
+    await this.client.putObject(this.bucket, fileName, buffer, size, {
+      'Content-type': mimetype,
+    });
   }
 }

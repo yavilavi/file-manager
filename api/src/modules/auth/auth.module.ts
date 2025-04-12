@@ -13,23 +13,7 @@ import { CompanyModule } from '@modules/company/company.module';
 import { PrismaService } from '@libs/database/prisma/prisma.service';
 
 @Module({
-  imports: [
-    UsersModule,
-    PassportModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
-        return {
-          secret: configService.getOrThrow<string>('jwt.secret'),
-          signOptions: {
-            expiresIn: '8h',
-          },
-        };
-      },
-    }),
-    CompanyModule,
-  ],
+  imports: [UsersModule, PassportModule, CompanyModule],
   providers: [
     PrismaService,
     AuthService,

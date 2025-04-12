@@ -22,6 +22,7 @@
     "@mantine/nprogress": "^7.17.3",
     "@mantine/tiptap": "^7.17.3",
     "@mantinex/mantine-logo": "^1.1.0",
+    "@onlyoffice/document-editor-react": "^1.6.0",
     "@tabler/icons-react": "^3.31.0",
     "@tanstack/react-query": "^5.70.0",
     "@tanstack/react-query-devtools": "^5.70.0",

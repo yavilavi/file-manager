@@ -35,6 +35,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         tenantId: dbUser.company.tenantId,
         departmentId: dbUser?.department?.id ?? null,
       },
+      department: dbUser.department ?? null,
     };
   }
 }

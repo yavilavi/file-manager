@@ -46,7 +46,7 @@ async function bootstrap() {
   app.useBodyParser('text');
   app.use(json({ limit: '200mb' }));
   app.use(urlencoded({ extended: true, limit: '200mb' }));
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
 }
 
 bootstrap().catch((e) => console.error(e));

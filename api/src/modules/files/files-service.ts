@@ -4,6 +4,9 @@ import { MinioService } from '@libs/storage/minio/minio.service';
 import { File } from '@prisma/client';
 import { PrismaService } from '@libs/database/prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import axios from 'axios';
+import * as Stream from 'node:stream';
 
 @Injectable()
 export class FilesService {
@@ -11,7 +14,63 @@ export class FilesService {
     private readonly configService: ConfigService,
     private readonly minioService: MinioService,
     private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
   ) {}
+
+  async generateEditorConfig(
+    fileId: number,
+    userId: number,
+    userDepartmentName: string,
+    userName: string,
+    tenantId: string,
+    token: string,
+  ) {
+    const file = await this.getFileById(fileId, tenantId);
+    const protocol = this.configService.getOrThrow<string>('protocol');
+    const internalBeUrl = this.configService.getOrThrow<string>(
+      'onlyoffice.internalBeUrl',
+    );
+    const url = `${protocol}://${internalBeUrl}/files/get-edit-url/${fileId}?token=${token}&tenantId=${tenantId}`;
+    const config = {
+      key: `${tenantId}${file.id}`,
+      document: {
+        key: `${tenantId}_${file.id}`,
+        fileType: file.extension,
+        title: file.name,
+        url: url,
+        permissions: {
+          edit: true,
+        },
+      },
+      documentType: 'cell',
+      editorConfig: {
+        callbackUrl: `${protocol}://${internalBeUrl}/files/changes-callback/${fileId}?tenantId=${tenantId}&token=${token}`,
+        user: {
+          id: `${userId}`,
+          name: userName,
+        },
+      },
+    };
+
+    const jwtToken = this.jwtService.sign(config);
+    const editorUrl = `${this.configService.getOrThrow<string>('onlyoffice.url')}/web-apps/apps/spreadsheeteditor/embed/index.html?lang=es&token=${jwtToken}`;
+
+    return { editorUrl, token, config: { ...config, token: jwtToken } };
+  }
+
+  async getPresignedUrl(fileId: number, tenantId: string) {
+    const file = await this.prisma.client.file.findUnique({
+      where: {
+        id: fileId,
+        tenantId: tenantId,
+        deletedAt: null,
+      },
+    });
+    if (!file) {
+      throw new NotFoundException('El archivo no existe');
+    }
+    return await this.minioService.getPresignedUrl(file.path);
+  }
 
   async getFileById(id: number, tenantId: string) {
     const file = await this.prisma.client.file.findUnique({
@@ -96,7 +155,7 @@ export class FilesService {
     if (dbFile) {
       return { message: 'EXISTING', file: dbFile };
     } else {
-      const filePath = `tenant_${tenantId}/${hash}`;
+      const filePath = `tenant_${tenantId}/${file.originalname}`;
       await this.minioService.uploadFile(file, filePath);
       const fileRecord = await this.saveFileRecord(
         file,
@@ -224,5 +283,23 @@ export class FilesService {
         deletedAt: new Date(),
       },
     });
+  }
+
+  async saveEditedFile(
+    fileId: number,
+    downloadUrl: string,
+    tenantId: string,
+  ): Promise<void> {
+    const file = await this.getFileById(Number(fileId), tenantId);
+    const response = await axios.get<Stream.Readable>(downloadUrl, {
+      responseType: 'stream',
+    });
+    await this.minioService.saveEditedFile(
+      file.path,
+      response.data,
+      file.size,
+      file.mimeType,
+    );
+    console.log(`Archivo ${fileId} actualizado en Minio`);
   }
 }

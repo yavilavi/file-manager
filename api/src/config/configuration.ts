@@ -3,9 +3,15 @@ import { registerAs } from '@nestjs/config';
 const configuration = registerAs('', () => ({
   port: parseInt(process.env.PORT, 10) || 3000,
   baseAppUrl: process.env.BASE_APP_URL,
+  baseApiDomain: process.env.BASE_API_DOMAIN,
   protocol: process.env.PROTOCOL,
   allowedWildcardDomains: process.env.ALLOWED_WILDCARD_DOMAINS.split(','),
   allowedOrigins: process.env.ALLOWED_ORIGINS.split(','),
+  onlyoffice: {
+    url: process.env.ONLYOFFICE_URL,
+    secret: process.env.JWT_SECRET,
+    internalBeUrl: process.env.ONLYOFFICE_INTERNAL_BE_URL,
+  },
   email: {
     provider: process.env.EMAIL_PROVIDER,
     from: process.env.EMAIL_FROM,
