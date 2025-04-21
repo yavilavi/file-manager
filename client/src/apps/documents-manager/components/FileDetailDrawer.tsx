@@ -15,6 +15,8 @@ import {fetchFileById} from '../../../services/api/fetchFileById.ts';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {useDownloadFile} from '../../../hooks/useDownloadFile.ts';
 import {useDeleteDocument} from '../../../hooks/useDeleteDocument.ts';
+import {useEditDocument} from '../../../hooks/useEditDocument.ts';
+import { isOnlyOfficeEditable } from '../../../utils/is-onlyoffice-editable.ts';
 
 const FileDetailDrawer = () => {
     const {selectedFile, setSelectedFile} = useFileManagerStore();
@@ -27,6 +29,7 @@ const FileDetailDrawer = () => {
     });
 
     const download = useDownloadFile();
+    const {editDocument} = useEditDocument();
 
     const deleteMutation = useDeleteDocument(() => {
         void queryClient.invalidateQueries({queryKey: ['files']});
@@ -108,21 +111,22 @@ const FileDetailDrawer = () => {
                             <Button
                                 leftSection={<IconDownload size={16}/>}
                                 variant="light"
-                                color="blue"
+                                color="green"
                                 onClick={() => download.mutate(file.id)}
                                 loading={download.isPending}
                             >
                                 Descargar
                             </Button>
-                            <Button
-                                leftSection={<IconEdit size={16}/>}
-                                variant="light"
-                                color="blue"
-                                onClick={() => alert('Funcionalidad no disponible todavía')}
-                                loading={download.isPending}
-                            >
-                                Editar
-                            </Button>
+                            {isOnlyOfficeEditable(file.extension) && (
+                                <Button
+                                    leftSection={<IconEdit size={16}/>}
+                                    variant="light"
+                                    color="blue"
+                                    onClick={() => editDocument(file.id)}
+                                >
+                                    Editar
+                                </Button>
+                            )}
                             <Button
                                 leftSection={<IconTrash size={16}/>}
                                 color="red"

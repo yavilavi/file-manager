@@ -34,10 +34,16 @@ export class MinioService {
     }
   }
 
-  async uploadFile(file: Express.Multer.File, fileName: string): Promise<void> {
-    await this.client.putObject(this.bucket, fileName, file.buffer, file.size, {
-      'Content-type': file.mimetype,
-    });
+  async uploadFile(file: Express.Multer.File, fileName: string) {
+    return this.client.putObject(
+      this.bucket,
+      fileName,
+      file.buffer,
+      file.size,
+      {
+        'Content-type': file.mimetype,
+      },
+    );
   }
 
   async downloadFile(
@@ -55,29 +61,13 @@ export class MinioService {
     }
   }
 
-  async getPresignedUrl(filePath: string): Promise<string> {
-    try {
-      const url = await this.client.presignedUrl(
-        'GET',
-        this.bucket,
-        filePath,
-        5 * 60,
-      );
-      return url;
-    } catch (error: unknown) {
-      throw new Error(
-        `Error generating presigned URL for file ${filePath}: ${(error as Error).message}`,
-      );
-    }
-  }
-
   async saveEditedFile(
     fileName: string,
     buffer: Stream.Readable,
     size: number,
     mimetype: string,
   ) {
-    await this.client.putObject(this.bucket, fileName, buffer, size, {
+    return await this.client.putObject(this.bucket, fileName, buffer, size, {
       'Content-type': mimetype,
     });
   }

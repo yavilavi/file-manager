@@ -70,11 +70,12 @@ Vamos a ejecutar el backend de Docma, que está construido con Node.js y Prisma.
    npx prisma generate
    ```
 8. Asegúrate de tener Docker y Docker Compose instalados.
-9. Levanta los servicios de base de datos y MinIO:
+9. Levanta los servicios de base de datos, onlyoffice y MinIO:
    ```bash
    docker compose up -d database
    docker compose up -d minio
    docker compose up -d migrate
+   docker compose up -d onlyoffice
    ```
 10. Ejecuta las migraciones para crear todas las tablas necesarias en la base de datos:
     ```bash

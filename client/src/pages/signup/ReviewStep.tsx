@@ -11,10 +11,17 @@ type ReviewStepProps = {
     adminEmail: string;
     adminPassword: string;
     confirmPassword: string;
+    departmentId: number;
   }>;
 };
 
 const ReviewStep = ({ form }: ReviewStepProps) => {
+  // Get the selected department name
+  const selectedDepartmentIndex = form.values.departmentId;
+  const selectedDepartment = selectedDepartmentIndex >= 0 && selectedDepartmentIndex < form.values.departments.length 
+    ? form.values.departments[selectedDepartmentIndex] 
+    : 'No seleccionado';
+
   return (
     <Paper withBorder p="md" radius="md" shadow="sm">
       <Title order={3} size="sm" mb="md">
@@ -40,8 +47,10 @@ const ReviewStep = ({ form }: ReviewStepProps) => {
           <strong>Departamentos:</strong>
         </Text>
         <List spacing="xs" size="sm" withPadding>
-          {form.values.departments.map((dep: string) => (
-            <List.Item key={dep}>{dep}</List.Item>
+          {form.values.departments.map((dep: string, index: number) => (
+            <List.Item key={dep}>
+              {dep} {index === form.values.departmentId && <Badge color="blue" size="xs" ml="xs">Seleccionado</Badge>}
+            </List.Item>
           ))}
         </List>
 
@@ -53,6 +62,9 @@ const ReviewStep = ({ form }: ReviewStepProps) => {
         </Text>
         <Text>
           <strong>Email:</strong> {form.values.adminEmail}
+        </Text>
+        <Text>
+          <strong>Departamento:</strong> {selectedDepartment}
         </Text>
       </Stack>
     </Paper>

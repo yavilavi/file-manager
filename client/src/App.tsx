@@ -16,7 +16,7 @@ function App() {
         <Routes>
             <Route path="/login" element={<Login/>}/>
             <Route path="/signup" element={<CompanyRegistration/>}/>
-            <Route path="/editor/:fileId" element={
+            <Route path="/documents/:fileId/edit/" element={
                 <PrivateRoute>
                     <DocumentsEditor/>
                 </PrivateRoute>

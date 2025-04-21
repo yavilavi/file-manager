@@ -28,6 +28,7 @@ export const signup = async (data: {
     email: string;
     password: string;
     confirmPassword: string;
+    departmentId?: number;
   };
 }) => {
   const response = await apiCall.post('/auth/signup', data);

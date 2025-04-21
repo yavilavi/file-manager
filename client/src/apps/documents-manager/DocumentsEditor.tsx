@@ -27,11 +27,11 @@ const DocumentsEditor: React.FC = () => {
         return <div>Error: {error.message}</div>;
     }
 
-    const onDocumentReady = (event) => {
+    const onDocumentReady = (): void => {
         console.log("Document is loaded")
     }
 
-    const onLoadComponentError = (errorCode, errorDescription) => {
+    const onLoadComponentError = (errorCode: number, errorDescription: string): void => {
         console.log("Error loading component", errorCode, errorDescription)
         switch (errorCode) {
             case -1: // Unknown error loading component

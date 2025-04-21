@@ -29,6 +29,7 @@ declare global {
       BASE_API_DOMAIN: string;
       ONLYOFFICE_URL: string;
       ONLYOFFICE_INTERNAL_BE_URL: string;
+      EMAIL_ENABLED: 'true' | 'false';
     }
   }
 }

@@ -10,6 +10,7 @@ import {
   Loader,
   Badge,
   Stack, Image,
+  Select,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useEffect, useState } from 'react';
@@ -34,6 +35,7 @@ export default function CompanyRegistration() {
   const [active, setActive] = useState(0);
   const [highestStepVisited, setHighestStepVisited] = useState(active);
   const [departments, setDepartments] = useState(['Nombre departamento 1']);
+  const [departmentOptions, setDepartmentOptions] = useState<{ value: string; label: string }[]>([{ value: '0', label: departments[0] }]);
 
   const hostname = window.location.hostname;
   const subdomain = hostname.split('.')[0];
@@ -53,6 +55,7 @@ export default function CompanyRegistration() {
       adminEmail: '',
       adminPassword: '',
       confirmPassword: '',
+      departmentId: -1,
     },
     validate: (values) => {
       const errors = {
@@ -63,6 +66,7 @@ export default function CompanyRegistration() {
         adminEmail: null,
         adminPassword: null,
         confirmPassword: null,
+        departmentId: null,
       };
       if (active === 0) {
         return zodResolver(companySchema)(values);
@@ -72,6 +76,10 @@ export default function CompanyRegistration() {
       }
       return errors;
     },
+    transformValues: (values) => ({
+      ...values,
+      departmentId: Number(values.departmentId)
+    }),
   });
 
   const [debounced] = useDebouncedValue(form.values.subdomain, 500);
@@ -83,6 +91,10 @@ export default function CompanyRegistration() {
     if (form.validate().hasErrors || isOutOfBounds) return;
     if (active === 0 && !data?.available) {
       form.setFieldError('subdomain', 'Debes elegir un subdominio válido');
+      return;
+    }
+    if (active === 1 && form.values.departmentId === -1) {
+      form.setFieldError('departmentId', 'Debes seleccionar un departamento');
       return;
     }
     setActive((current) => (current < 2 ? current + 1 : current));
@@ -103,11 +115,41 @@ export default function CompanyRegistration() {
     ]);
   };
 
+  const removeDepartment = (index: number) => {
+    if (departments.length <= 1) return; // Don't remove the last department
+    
+    const updated = [...departments];
+    updated.splice(index, 1);
+    setDepartments(updated);
+    form.setFieldValue('departments', updated);
+    
+    // Update department options
+    const options = updated.map((dep, idx) => ({
+      value: idx.toString(),
+      label: dep,
+    }));
+    setDepartmentOptions(options);
+    
+    // Reset departmentId if it was the removed one
+    if (form.values.departmentId === index) {
+      form.setFieldValue('departmentId', -1);
+    }
+  };
+
   const handleDepartmentChange = (value: string, index: number) => {
     const updated = [...departments];
     updated[index] = value;
     setDepartments(updated);
     form.setFieldValue('departments', updated);
+    
+    // Update department options when departments change
+    if (active === 0) {
+      const options = updated.map((dep, idx) => ({
+        value: idx.toString(),
+        label: dep,
+      }));
+      setDepartmentOptions(options);
+    }
   };
 
   const { mutate, isPending, isSuccess } = useSignup();
@@ -138,6 +180,7 @@ export default function CompanyRegistration() {
           email: form.values.adminEmail,
           password: form.values.adminPassword,
           confirmPassword: form.values.confirmPassword,
+          departmentId: Number(form.values.departmentId),
         },
       },
       {
@@ -167,8 +210,22 @@ export default function CompanyRegistration() {
       },
     );
   };
+
   const shouldAllowSelectStep = (step: number) =>
     highestStepVisited >= step && active !== step;
+
+  // Update department options when moving to admin step
+  useEffect(() => {
+    if (active === 1) {
+      const options = departments.map((dep, idx) => ({
+        value: idx.toString(),
+        label: dep,
+      }));
+      setDepartmentOptions(options);
+      // Reset departmentId to -1 when moving to admin step
+      form.setFieldValue('departmentId', -1);
+    }
+  }, [active, departments]);
 
   if (subdomain !== 'app') {
     return (
@@ -243,15 +300,27 @@ export default function CompanyRegistration() {
                 </Badge>
               </Group>
               {departments.map((dep, index) => (
-                <TextInput
-                  key={index}
-                  label={`Departamento ${index + 1}`}
-                  value={dep}
-                  onChange={(e) =>
-                    handleDepartmentChange(e.currentTarget.value, index)
-                  }
-                  mt="md"
-                />
+                <Group key={index} align="flex-end">
+                  <TextInput
+                    label={`Departamento ${index + 1}`}
+                    value={dep}
+                    onChange={(e) =>
+                      handleDepartmentChange(e.currentTarget.value, index)
+                    }
+                    mt="md"
+                    style={{ flex: 1 }}
+                  />
+                  {index > 0 && (
+                    <Button 
+                      color="red" 
+                      variant="light" 
+                      onClick={() => removeDepartment(index)}
+                      mt="md"
+                    >
+                      Eliminar
+                    </Button>
+                  )}
+                </Group>
               ))}
               <Button onClick={addDepartment} variant="light" mt="sm">
                 Agregar otro departamento
@@ -284,6 +353,16 @@ export default function CompanyRegistration() {
                 label="Confirmar contraseña"
                 {...form.getInputProps('confirmPassword')}
                 mt="md"
+              />
+              <Select
+                label="Departamento"
+                placeholder="Selecciona un departamento"
+                data={departmentOptions}
+                value={form.values.departmentId === -1 ? '' : form.values.departmentId.toString()}
+                onChange={(value) => form.setFieldValue('departmentId', value ? Number(value) : -1)}
+                required
+                mt="md"
+                error={form.errors.departmentId}
               />
             </Stepper.Step>
 

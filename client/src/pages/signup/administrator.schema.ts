@@ -19,6 +19,10 @@ const administratorSchema = z
         message: 'La contraseña no puede tener más de 10 caractéres',
       }),
     confirmPassword: z.string(),
+    departmentId: z.number({
+      required_error: 'Debes seleccionar un departamento',
+      invalid_type_error: 'No se ha seleccionado un departamento válido',
+    }),
   })
   .refine((data) => data.adminPassword === data.confirmPassword, {
     message: 'Las contraseñas no coinciden',

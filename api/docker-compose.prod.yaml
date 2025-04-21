@@ -76,3 +76,15 @@ services:
     command: server /data --console-address ":9001"
     volumes:
       - 'minio_data:/data'
+  onlyoffice:
+    image: onlyoffice/documentserver:latest
+    restart: unless-stopped
+    environment:
+      JWT_SECRET: $JWT_SECRET
+      JWT_ENABLED: $JWT_ENABLED
+      ONLYOFFICE_HTTPS_HSTS_ENABLED: $ONLYOFFICE_HTTPS_HSTS_ENABLED
+    volumes:
+      - 'onlyoffice_logs:/var/log/onlyoffice'
+      - 'onlyoffice_data:/var/www/onlyoffice/Data'
+      - 'onlyoffice_lib:/var/lib/onlyoffice'
+      - 'onlyoffice_db:/var/lib/postgresql'

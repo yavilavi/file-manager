@@ -9,7 +9,10 @@ export class EmailNotificationController {
   async manualSendEmail(
     @Body() dto: { to: string; subject: string; body: string },
   ) {
-    await this.emailService.sendEmail(dto);
-    return { message: 'Correo enviado' };
+    if (process.env.EMAIL_ENABLED === 'true') {
+      await this.emailService.sendEmail(dto);
+      return { message: 'Correo enviado' };
+    }
+    return { message: 'Envío de correo deshabilitado' };
   }
 }

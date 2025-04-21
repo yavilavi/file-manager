@@ -1,12 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { createHash } from 'crypto';
 import { MinioService } from '@libs/storage/minio/minio.service';
-import { File } from '@prisma/client';
+import { File, Prisma } from '@prisma/client';
 import { PrismaService } from '@libs/database/prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
 import * as Stream from 'node:stream';
+import getDocumentTypeByExtension from '../../utils/document-type.util';
 
 @Injectable()
 export class FilesService {
@@ -30,7 +31,17 @@ export class FilesService {
     const internalBeUrl = this.configService.getOrThrow<string>(
       'onlyoffice.internalBeUrl',
     );
-    const url = `${protocol}://${internalBeUrl}/files/get-edit-url/${fileId}?token=${token}&tenantId=${tenantId}`;
+
+    // Get the last version of the file
+    const lastVersion = await this.prisma.client.fileVersion.findFirst({
+      where: {
+        fileId: file.id,
+        isLast: true,
+        deletedAt: null,
+      },
+    });
+
+    const url = `${protocol}://${internalBeUrl}/files/get-edit-url/${fileId}?token=${token}&tenantId=${tenantId}${lastVersion ? `&versionId=${lastVersion.id}` : ''}`;
     const config = {
       key: `${tenantId}${file.id}`,
       document: {
@@ -42,34 +53,19 @@ export class FilesService {
           edit: true,
         },
       },
-      documentType: 'cell',
+      documentType: getDocumentTypeByExtension(file.extension),
       editorConfig: {
         callbackUrl: `${protocol}://${internalBeUrl}/files/changes-callback/${fileId}?tenantId=${tenantId}&token=${token}`,
         user: {
           id: `${userId}`,
-          name: userName,
+          name: `${userName} (${userDepartmentName})`,
         },
       },
     };
 
     const jwtToken = this.jwtService.sign(config);
-    const editorUrl = `${this.configService.getOrThrow<string>('onlyoffice.url')}/web-apps/apps/spreadsheeteditor/embed/index.html?lang=es&token=${jwtToken}`;
 
-    return { editorUrl, token, config: { ...config, token: jwtToken } };
-  }
-
-  async getPresignedUrl(fileId: number, tenantId: string) {
-    const file = await this.prisma.client.file.findUnique({
-      where: {
-        id: fileId,
-        tenantId: tenantId,
-        deletedAt: null,
-      },
-    });
-    if (!file) {
-      throw new NotFoundException('El archivo no existe');
-    }
-    return await this.minioService.getPresignedUrl(file.path);
+    return { token, config: { ...config, token: jwtToken } };
   }
 
   async getFileById(id: number, tenantId: string) {
@@ -110,7 +106,7 @@ export class FilesService {
   }
 
   async getAllFiles(tenantId: string) {
-    return await this.prisma.client.file.findMany({
+    return this.prisma.client.file.findMany({
       relationLoadStrategy: 'join',
       orderBy: {
         name: 'asc',
@@ -156,20 +152,21 @@ export class FilesService {
       return { message: 'EXISTING', file: dbFile };
     } else {
       const filePath = `tenant_${tenantId}/${file.originalname}`;
-      await this.minioService.uploadFile(file, filePath);
+      const { versionId } = await this.minioService.uploadFile(file, filePath);
       const fileRecord = await this.saveFileRecord(
         file,
         filePath,
         hash,
         tenantId,
         userId,
+        versionId,
       );
       return { message: 'UPLOADED', file: fileRecord };
     }
   }
 
   async checkFileExists(hash: string, tenantId: string): Promise<File | null> {
-    return await this.prisma.client.file.findFirst({
+    return this.prisma.client.file.findFirst({
       where: {
         hash,
         tenantId: tenantId,
@@ -206,15 +203,19 @@ export class FilesService {
     hash: string,
     tenantId: string,
     userId: number,
+    versionId: string | null,
   ): Promise<File> {
-    return await this.prisma.client.file.create({
+    const name = file.originalname.replace(/[_-]/g, ' ');
+    const extension = name.split('.').pop() ?? 'NA';
+    const createdFile = await this.prisma.client.file.create({
       data: {
-        name: file.originalname.replace(/[_-]/g, ' '),
-        extension: file.originalname.split('.').pop(),
+        name,
+        extension,
         hash,
         size: file.size,
         path,
         mimeType: file.mimetype,
+        documentType: getDocumentTypeByExtension(extension),
         tenantId: tenantId,
         userId,
       },
@@ -242,15 +243,41 @@ export class FilesService {
         },
       },
     });
+    if (versionId) {
+      await this.prisma.client.fileVersion.create({
+        data: {
+          id: versionId,
+          name,
+          hash,
+          size: file.size,
+          fileId: createdFile.id,
+        },
+      });
+    }
+    return createdFile;
   }
 
-  async downloadFile(id: number, tenantId: string) {
+  async downloadFile(
+    id: number,
+    tenantId: string,
+    versionId: string | undefined,
+  ) {
+    const whereClause: Prisma.FileWhereUniqueInput = {
+      id,
+      tenantId: tenantId,
+      deletedAt: null,
+    };
+
+    if (versionId !== undefined) {
+      whereClause.versions = {
+        some: {
+          id: versionId,
+        },
+      };
+    }
+
     const file = await this.prisma.client.file.findUnique({
-      where: {
-        id,
-        tenantId: tenantId,
-        deletedAt: null,
-      },
+      where: whereClause,
     });
     if (!file) {
       throw new NotFoundException('El archivo no existe');
@@ -290,16 +317,131 @@ export class FilesService {
     downloadUrl: string,
     tenantId: string,
   ): Promise<void> {
-    const file = await this.getFileById(Number(fileId), tenantId);
-    const response = await axios.get<Stream.Readable>(downloadUrl, {
-      responseType: 'stream',
+    try {
+      const file = await this.getFileById(Number(fileId), tenantId);
+      const response = await axios.get<Stream.Readable>(downloadUrl, {
+        responseType: 'stream',
+      });
+
+      // Create a hash object
+      const hashObj = createHash('sha256');
+
+      // Create a transform stream that updates the hash
+      const transformStream = new Stream.Transform({
+        transform(
+          chunk: Buffer,
+          encoding: BufferEncoding,
+          callback: (error?: Error | null) => void,
+        ) {
+          hashObj.update(chunk);
+          this.push(chunk);
+          callback();
+        },
+      });
+
+      // Pipe the response data through the transform stream
+      response.data.pipe(transformStream);
+
+      // Create a promise that resolves when the stream is finished
+      const streamFinished = new Promise<string>((resolve, reject) => {
+        // Add a timeout to handle cases where the stream might not emit an 'end' event
+        const timeout = setTimeout(() => {
+          reject(new Error('Stream processing timed out'));
+        }, 300000);
+
+        transformStream.on('end', () => {
+          clearTimeout(timeout);
+          // Get the hash after the stream is fully processed
+          const hash = hashObj.digest('hex');
+          resolve(hash);
+        });
+
+        transformStream.on('error', (err) => {
+          clearTimeout(timeout);
+          Logger.error(`Error processing stream: ${err.message}`);
+          reject(err);
+        });
+      });
+
+      // Save the file to Minio
+      const { versionId } = await this.minioService.saveEditedFile(
+        file.path,
+        transformStream,
+        file.size,
+        file.mimeType,
+      );
+
+      // Wait for the stream to finish and get the hash
+      const hash = await streamFinished;
+
+      // Create a file version before updating the file
+      if (versionId) await this.createFileVersion(file, versionId);
+
+      // Update the file record with the new hash
+      await this.prisma.client.file.update({
+        where: {
+          id: file.id,
+        },
+        data: {
+          hash,
+        },
+      });
+
+      Logger.log(`Archivo ${fileId} actualizado en Minio`);
+    } catch (error) {
+      Logger.error(
+        `Error saving edited file ${fileId}: ${(error as Error).message}`,
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Creates a version of the file before it's updated
+   */
+  private async createFileVersion(
+    file: File,
+    versionId: string,
+  ): Promise<void> {
+    await this.prisma.client.$transaction([
+      this.prisma.client.fileVersion.updateMany({
+        where: {
+          file: {
+            id: file.id,
+          },
+        },
+        data: {
+          isLast: false,
+        },
+      }),
+      this.prisma.client.fileVersion.create({
+        data: {
+          id: versionId,
+          name: file.name,
+          hash: file.hash,
+          size: file.size,
+          fileId: file.id,
+        },
+      }),
+    ]);
+
+    Logger.log(`Version ${versionId} created for file ${file.id}`);
+  }
+
+  /**
+   * Gets all versions of a file
+   */
+  async getFileVersions(fileId: number, tenantId: string) {
+    const file = await this.getFileById(fileId, tenantId);
+
+    return this.prisma.client.fileVersion.findMany({
+      where: {
+        fileId: file.id,
+        deletedAt: null,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
-    await this.minioService.saveEditedFile(
-      file.path,
-      response.data,
-      file.size,
-      file.mimeType,
-    );
-    console.log(`Archivo ${fileId} actualizado en Minio`);
   }
 }

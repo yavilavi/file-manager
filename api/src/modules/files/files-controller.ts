@@ -33,6 +33,14 @@ export class FilesController {
     private jwtService: JwtService,
   ) {}
 
+  /**
+   * Get all versions of a file
+   */
+  @Get(':id/versions')
+  getFileVersions(@Param('id', ParseIntPipe) id: number, @Request() req: Req) {
+    return this.filesService.getFileVersions(id, req.tenantId);
+  }
+
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(
@@ -55,11 +63,12 @@ export class FilesController {
   async downloadFile(
     @Param('id', ParseIntPipe) id: number,
     @Query('tenantId') tenantId: string,
+    @Query('versionId') versionId: string | undefined,
     @Response({ passthrough: true }) res: Res,
   ) {
     try {
       const { stream, contentType, fileName } =
-        await this.filesService.downloadFile(id, tenantId);
+        await this.filesService.downloadFile(id, tenantId, versionId);
 
       res.setHeader('Content-Type', contentType);
       res.setHeader(
@@ -94,12 +103,12 @@ export class FilesController {
     @Param('fileId') fileId: number,
     @Query('token') token: string,
     @Query('tenantId') tenantId: string,
-    // @Response() res: Res,
+    @Query('versionId') versionId: string | undefined,
   ) {
     try {
       this.jwtService.verify<JwtPayloadInterface>(token);
       const { stream, contentType, fileName } =
-        await this.filesService.downloadFile(fileId, tenantId);
+        await this.filesService.downloadFile(fileId, tenantId, versionId);
       return new StreamableFile(stream, {
         type: contentType,
         disposition: `attachment; filename="${fileName}"`,
@@ -136,14 +145,73 @@ export class FilesController {
     @Param('fileId') fileId: number,
     @Query('token') token: string,
     @Query('tenantId') tenantId: string,
-    @Body() body: { status: number; url: string },
+    @Body() body: { status: number; url: string; key: string; users: string[] },
   ) {
-    this.jwtService.verify<JwtPayloadInterface>(token);
-    if (body.status === 2 || body.status === 6) {
+    try {
+      this.jwtService.verify<JwtPayloadInterface>(token);
+      // Validate the callback key matches the expected format
+      const expectedKey = `${tenantId}_${fileId}`;
+      if (body.key !== expectedKey) {
+        Logger.error(
+          `Invalid callback key for file ${fileId}. Expected: ${expectedKey}, Received: ${body.key}`,
+        );
+        return JSON.stringify({ error: 1 });
+      }
       const downloadUrl: string = body.url;
-      // Aquí descargas y guardas el archivo actualizado
-      await this.filesService.saveEditedFile(fileId, downloadUrl, tenantId);
+      Logger.debug(body, 'Changes callback body');
+
+      // Handle different callback statuses
+      switch (body.status) {
+        case 0: // Document is being edited
+          Logger.log(
+            `Document ${fileId} is being edited by users: ${body.users.join(', ')}`,
+          );
+          // No action needed, document is just being edited
+          break;
+
+        case 1: // Document is ready for saving
+          Logger.log(`Document ${fileId} is ready for saving`);
+          // Document is ready but not yet saved, no action needed
+          break;
+
+        case 2:
+          Logger.error(`Error saving document ${fileId}`);
+          await this.filesService.saveEditedFile(fileId, downloadUrl, tenantId);
+          break;
+
+        case 3: // Document is closed with no changes
+          Logger.log(`Document ${fileId} was closed with no changes`);
+          // No action needed as no changes were made
+          break;
+
+        case 4: // Document is being edited, but the current document state is saved
+          Logger.log(`Document ${fileId} state was saved`);
+          // Document state was saved but editing continues, no action needed
+          break;
+
+        case 6: // Document is being edited, but the current document state is saved by timeout
+          Logger.log(`Document ${fileId} was saved by timeout`);
+          await this.filesService.saveEditedFile(fileId, downloadUrl, tenantId);
+          break;
+
+        case 7: // Document editing error has occurred
+          Logger.error(`Error editing document ${fileId}`);
+          // Return error as this is a critical error that prevents saving
+          return JSON.stringify({ error: 1 });
+
+        default:
+          Logger.warn(
+            `Unknown callback status ${body.status} for document ${fileId}`,
+          );
+        // For unknown statuses, we don't take any action but log a warning
+      }
+
+      return JSON.stringify({ error: 0 });
+    } catch (error) {
+      Logger.error(
+        `Error handling OnlyOffice callback for file ${fileId}: ${(error as Error).message}`,
+      );
+      return JSON.stringify({ error: 1 });
     }
-    return JSON.stringify({ error: 0 });
   }
 }

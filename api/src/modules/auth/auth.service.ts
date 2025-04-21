@@ -81,25 +81,53 @@ export class AuthService {
       );
     }
 
-    const created = await this.prisma.client.company.create({
-      data: {
-        name: company.name,
-        nit: company.nit,
-        tenantId: company.tenantId,
-        departments: {
-          create: company.departments.map((dep) => ({
-            name: dep.name,
-          })),
-        },
-        users: {
-          create: {
-            name: user.name,
-            email: user.email.toLowerCase(),
-            password: passwordHash,
-            isActive: true,
+    const created = await this.prisma.client.$transaction(async (tx) => {
+      const otherDepartments = company.departments.filter(
+        (dp) => dp.name !== company.departments[user.departmentId].name,
+      );
+      const userDepartment = company.departments[user.departmentId];
+      const createdCompany = await tx.company.create({
+        data: {
+          name: company.name,
+          nit: company.nit,
+          tenantId: company.tenantId,
+          departments: {
+            create: otherDepartments.map((dep) => ({
+              name: dep.name,
+            })),
           },
         },
-      },
+        include: {
+          departments: true,
+        },
+      });
+
+      await tx.user.create({
+        data: {
+          name: user.name,
+          email: user.email.toLowerCase(),
+          password: passwordHash,
+          isActive: true,
+          company: {
+            connect: {
+              id: createdCompany.id,
+            },
+          },
+          department: {
+            create: {
+              name: userDepartment.name,
+              company: {
+                connect: {
+                  id: createdCompany.id,
+                  tenantId: company.tenantId,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      return createdCompany;
     });
 
     this.eventEmitter.emit('company.created', signupDto);
