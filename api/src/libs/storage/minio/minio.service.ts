@@ -32,6 +32,10 @@ export class MinioService {
     } else {
       Logger.log('Bucket already exists, skipping creation');
     }
+    await this.client.setBucketVersioning(
+      this.configService.getOrThrow('minio.bucket'),
+      { Status: 'Enabled' },
+    );
   }
 
   async uploadFile(file: Express.Multer.File, fileName: string) {
