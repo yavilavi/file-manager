@@ -27,7 +27,6 @@ export class FilesService {
     token: string,
   ) {
     const file = await this.getFileById(fileId, tenantId);
-    const protocol = this.configService.getOrThrow<string>('protocol');
     const internalBeUrl = this.configService.getOrThrow<string>(
       'onlyoffice.internalBeUrl',
     );
@@ -41,7 +40,7 @@ export class FilesService {
       },
     });
 
-    const url = `${protocol}://${internalBeUrl}/files/get-edit-url/${fileId}?token=${token}&tenantId=${tenantId}${lastVersion ? `&versionId=${lastVersion.id}` : ''}`;
+    const url = `http://${internalBeUrl}/files/get-edit-url/${fileId}?token=${token}&tenantId=${tenantId}${lastVersion ? `&versionId=${lastVersion.id}` : ''}`;
     const config = {
       key: `${tenantId}${file.id}`,
       document: {
@@ -55,7 +54,7 @@ export class FilesService {
       },
       documentType: getDocumentTypeByExtension(file.extension),
       editorConfig: {
-        callbackUrl: `${protocol}://${internalBeUrl}/files/changes-callback/${fileId}?tenantId=${tenantId}&token=${token}`,
+        callbackUrl: `http://${internalBeUrl}/files/changes-callback/${fileId}?tenantId=${tenantId}&token=${token}`,
         user: {
           id: `${userId}`,
           name: `${userName} (${userDepartmentName})`,
