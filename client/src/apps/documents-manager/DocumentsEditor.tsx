@@ -53,7 +53,7 @@ const DocumentsEditor: React.FC = () => {
             <Group mb="md" align="center" h="100vh" w="100%">
                 <DocumentEditor
                     id="docxEditor"
-                    documentServerUrl="http://localhost/"
+                    documentServerUrl={import.meta.env.VITE_DOCUMENT_SERVER_URL}
                     config={{...editorConfig?.config, token: editorConfig?.token}}
                     events_onDocumentReady={onDocumentReady}
                     onLoadComponentError={onLoadComponentError}
