@@ -540,7 +540,7 @@
         {
           "type": "docx;dotx;docm;dotm",
           "zip": {
-            "uncompressed": "300MB",
+            "uncompressed": "50MB",
             "template": "*.xml"
           }
         },
@@ -554,7 +554,7 @@
         {
           "type": "pptx;ppsx;potx;pptm;ppsm;potm",
           "zip": {
-            "uncompressed": "300MB",
+            "uncompressed": "50MB",
             "template": "*.xml"
           }
         }
