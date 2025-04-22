@@ -85,6 +85,9 @@ services:
       JWT_SECRET: $JWT_SECRET
       JWT_ENABLED: $JWT_ENABLED
       ONLYOFFICE_HTTPS_HSTS_ENABLED: $ONLYOFFICE_HTTPS_HSTS_ENABLED
+    labels:
+      - traefik.http.middlewares.onlyoffice_redirect_http2https_header.headers.contentSecurityPolicy=upgrade-insecure-requests
+      - traefik.http.routers.https-0-ekkoc0c0co4g8gg8s4sg8gwo-onlyoffice.middlewares=onlyoffice_redirect_http2https_header
     volumes:
       - 'onlyoffice_logs:/var/log/onlyoffice'
       - 'onlyoffice_data:/var/www/onlyoffice/Data'
