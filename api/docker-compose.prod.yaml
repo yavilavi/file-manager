@@ -28,6 +28,8 @@ services:
       - AWS_REGION=$AWS_REGION
       - DB_URL=$DB_URL
       - MINIO_ENDPOINT=$MINIO_ENDPOINT
+      - BASE_API_DOMAIN=$BASE_API_DOMAIN
+      - ONLYOFFICE_URL=$ONLYOFFICE_URL
     restart: unless-stopped
     labels:
       - traefik.enable=true
@@ -88,3 +90,4 @@ services:
       - 'onlyoffice_data:/var/www/onlyoffice/Data'
       - 'onlyoffice_lib:/var/lib/onlyoffice'
       - 'onlyoffice_db:/var/lib/postgresql'
+      - './api/onlyoffice/default.json:/etc/onlyoffice/documentserver/default.json'

@@ -89,6 +89,7 @@ services:
       - onlyoffice_data:/var/www/onlyoffice/Data
       - onlyoffice_lib:/var/lib/onlyoffice
       - onlyoffice_db:/var/lib/postgresql
+      - './api/onlyoffice/default.json:/etc/onlyoffice/documentserver/default.json'
     ports:
       - '80:80'
 volumes:
