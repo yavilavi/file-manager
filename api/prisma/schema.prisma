@@ -29,7 +29,6 @@ model File {
   updatedAt    DateTime      @default(now())
   deletedAt    DateTime?
 
-  @@unique([name, tenantId], name: "file_name_tenant_unique")
   @@map("file")
 }
 
@@ -45,7 +44,7 @@ model FileVersion {
   updatedAt DateTime  @default(now())
   deletedAt DateTime?
 
-  @@unique([id], name: "uk_file_version_id")
+  @@unique([id], name: "uk_file_version_id", map: "uk_file_version_id")
   @@map("file_version")
 }
 
@@ -74,7 +73,6 @@ model Department {
   updatedAt DateTime  @default(now())
   deletedAt DateTime?
 
-  @@unique([name, tenantId], name: "uk_department_name")
   @@map("department")
 }
 
@@ -93,6 +91,5 @@ model User {
   updatedAt    DateTime    @default(now())
   deletedAt    DateTime?
 
-  @@unique([email, tenantId], name: "uk_user_email_company")
   @@map("user")
 }

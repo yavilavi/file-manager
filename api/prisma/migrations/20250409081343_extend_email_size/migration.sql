@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "user" ALTER COLUMN "email" SET DATA TYPE VARCHAR(50);

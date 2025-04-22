@@ -1,34 +1,40 @@
-/*
-  Warnings:
-
-  - You are about to drop the `files` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropTable
-DROP TABLE "files";
-
 -- CreateTable
 CREATE TABLE "file" (
     "id" SERIAL NOT NULL,
     "name" VARCHAR(255) NOT NULL,
-    "extension" VARCHAR(20),
+    "extension" VARCHAR(20) NOT NULL,
     "mimeType" VARCHAR(150) NOT NULL,
     "hash" VARCHAR(255) NOT NULL,
     "size" INTEGER NOT NULL,
     "path" VARCHAR(255) NOT NULL,
+    "documentType" VARCHAR(50),
+    "tenantId" VARCHAR(15) NOT NULL,
+    "userId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deletedAt" TIMESTAMP(3),
-    "tenantId" TEXT NOT NULL,
-    "userId" INTEGER,
 
     CONSTRAINT "file_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "file_version" (
+    "id" VARCHAR(255) NOT NULL,
+    "name" VARCHAR(255) NOT NULL,
+    "hash" VARCHAR(255) NOT NULL,
+    "size" INTEGER NOT NULL,
+    "fileId" INTEGER NOT NULL,
+    "isLast" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "deletedAt" TIMESTAMP(3)
 );
 
 -- CreateTable
 CREATE TABLE "company" (
     "id" SERIAL NOT NULL,
     "name" VARCHAR(255) NOT NULL,
+    "nit" VARCHAR(255) NOT NULL,
     "tenantId" VARCHAR(15) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -41,7 +47,7 @@ CREATE TABLE "company" (
 CREATE TABLE "department" (
     "id" SERIAL NOT NULL,
     "name" VARCHAR(255) NOT NULL,
-    "tenantId" TEXT NOT NULL,
+    "tenantId" VARCHAR(15) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deletedAt" TIMESTAMP(3),
@@ -52,11 +58,10 @@ CREATE TABLE "department" (
 -- CreateTable
 CREATE TABLE "user" (
     "id" SERIAL NOT NULL,
-    "name" VARCHAR(255) NOT NULL,
-    "email" VARCHAR(20) NOT NULL,
+    "name" VARCHAR(30) NOT NULL,
+    "email" VARCHAR(50) NOT NULL,
     "password" VARCHAR(255) NOT NULL,
-    "username" VARCHAR(20) NOT NULL,
-    "tenantId" TEXT NOT NULL,
+    "tenantId" VARCHAR(15) NOT NULL,
     "departmentId" INTEGER,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -67,28 +72,34 @@ CREATE TABLE "user" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "uk_file_name" ON "file"("name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "uk_file_hash" ON "file"("hash");
-
--- CreateIndex
-CREATE UNIQUE INDEX "uk_company_name" ON "company"("name");
+CREATE UNIQUE INDEX "uk_file_version_id" ON "file_version"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "uk_company_tenantId" ON "company"("tenantId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_username_tenantId_key" ON "user"("username", "tenantId");
+CREATE UNIQUE INDEX "uk_file_name_tenant" ON "file"("name", "tenantId") WHERE "deletedAt" IS NULL;
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_email_tenantId_key" ON "user"("email", "tenantId");
+CREATE UNIQUE INDEX "uk_file_hash_tenant" ON "file"("hash", "tenantId") WHERE "deletedAt" IS NULL;
+
+-- CreateIndex
+CREATE UNIQUE INDEX "uk_department_name" ON "department"("name", "tenantId") WHERE "deletedAt" IS NULL;
+
+-- CreateIndex
+CREATE UNIQUE INDEX "uk_user_email_company" ON "user"("email", "tenantId") WHERE "deletedAt" IS NULL;
+
+-- CreateIndex
+CREATE UNIQUE INDEX "uk_file_version_is_last" ON "file_version"("fileId", "isLast") WHERE "deletedAt" IS NULL;
 
 -- AddForeignKey
 ALTER TABLE "file" ADD CONSTRAINT "file_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "company"("tenantId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "file" ADD CONSTRAINT "file_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "file" ADD CONSTRAINT "file_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "file_version" ADD CONSTRAINT "file_version_fileId_fkey" FOREIGN KEY ("fileId") REFERENCES "file"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "department" ADD CONSTRAINT "department_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "company"("tenantId") ON DELETE RESTRICT ON UPDATE CASCADE;
