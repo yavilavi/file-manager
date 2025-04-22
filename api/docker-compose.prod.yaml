@@ -84,12 +84,11 @@ services:
     environment:
       - JWT_SECRET=$JWT_SECRET
       - JWT_ENABLED=$JWT_ENABLED
-      - ONLYOFFICE_HTTPS_HSTS_ENABLED=$ONLYOFFICE_HTTPS_HSTS_ENABLED
-      - LETS_ENCRYPT_DOMAIN=$ONLYOFFICE_LETS_ENCRYPT_DOMAIN
-      - LETS_ENCRYPT_MAIL=$ONLYOFFICE_LETS_ENCRYPT_MAIL
+      - USE_UNAUTHORIZED_STORAGE=true
     volumes:
       - 'onlyoffice_logs:/var/log/onlyoffice'
       - 'onlyoffice_data:/var/www/onlyoffice/Data'
       - 'onlyoffice_lib:/var/lib/onlyoffice'
       - 'onlyoffice_db:/var/lib/postgresql'
       - './onlyoffice/documentserver/default.json:/etc/onlyoffice/documentserver/default.json'
+      - './onlyoffice/certs/:/var/www/onlyoffice/Data/certs/'
