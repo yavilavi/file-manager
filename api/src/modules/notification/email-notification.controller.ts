@@ -1,5 +1,12 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  UnauthorizedException,
+  Request,
+} from '@nestjs/common';
 import { EmailNotificationsService } from '@modules/notification/email-notifications.service';
+import { Request as Req } from 'express';
 
 @Controller('email-notification')
 export class EmailNotificationController {
@@ -7,12 +14,13 @@ export class EmailNotificationController {
 
   @Post('send-email')
   async manualSendEmail(
+    @Request() req: Req,
     @Body() dto: { to: string; subject: string; body: string },
   ) {
-    if (process.env.EMAIL_ENABLED === 'true') {
+    if (req.user.data.canSendEmail) {
       await this.emailService.sendEmail(dto);
       return { message: 'Correo enviado' };
     }
-    return { message: 'Envío de correo deshabilitado' };
+    throw new UnauthorizedException('Envío de correo deshabilitado');
   }
 }

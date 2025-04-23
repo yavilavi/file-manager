@@ -8,7 +8,6 @@ import { CreateUserDto } from '@modules/users/dtos/create-user.dto';
 import * as argon2 from 'argon2';
 import { UpdateUserDto } from '@modules/users/dtos/update-user.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { async } from 'rxjs';
 
 @Injectable()
 export class UsersService {
@@ -18,7 +17,7 @@ export class UsersService {
   ) {}
 
   async findByEmail(email: string, tenantId?: string, selectPassword = false) {
-    return await this.prisma.client.user.findFirst({
+    return this.prisma.client.user.findFirst({
       where: {
         email,
         tenantId: tenantId,
@@ -52,7 +51,7 @@ export class UsersService {
   }
 
   async findById(id: number, tenantId?: string, selectPassword = false) {
-    return await this.prisma.client.user.findUnique({
+    return this.prisma.client.user.findUnique({
       where: {
         id,
         tenantId: tenantId,
@@ -79,6 +78,7 @@ export class UsersService {
             name: true,
             nit: true,
             tenantId: true,
+            canSendEmail: true,
           },
         },
       },
@@ -86,7 +86,7 @@ export class UsersService {
   }
 
   async getAllUsers(tenantId: string, selectPassword = false) {
-    return await this.prisma.client.user.findMany({
+    return this.prisma.client.user.findMany({
       relationLoadStrategy: 'join',
       orderBy: {
         name: 'asc',
@@ -213,7 +213,7 @@ export class UsersService {
       data.password = await argon2.hash(dto.password);
     }
 
-    return await this.prisma.client.user.update({
+    return this.prisma.client.user.update({
       where: { id, tenantId, deletedAt: null },
       data,
       select: {
@@ -255,7 +255,7 @@ export class UsersService {
       throw new Error('Usuario no encontrado o no permitido');
     }
 
-    return await this.prisma.client.user.update({
+    return this.prisma.client.user.update({
       where: { id, tenantId, deletedAt: null },
       data: {
         isActive: !user.isActive,

@@ -49,16 +49,17 @@ model FileVersion {
 }
 
 model Company {
-  id          Int          @id @default(autoincrement())
-  name        String       @db.VarChar(255)
-  nit         String       @db.VarChar(255)
-  tenantId    String       @unique(map: "uk_company_tenantId") @db.VarChar(15)
-  users       User[]
-  files       File[]
-  departments Department[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @default(now())
-  deletedAt   DateTime?
+  id           Int          @id @default(autoincrement())
+  name         String       @db.VarChar(255)
+  nit          String       @db.VarChar(255)
+  tenantId     String       @unique(map: "uk_company_tenantId") @db.VarChar(15)
+  users        User[]
+  files        File[]
+  departments  Department[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now())
+  deletedAt    DateTime?
+  canSendEmail Boolean      @default(false)
 
   @@map("company")
 }

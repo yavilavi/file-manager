@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { FilesController } from '../files-controller';
 import { FilesService } from '../files-service';
-import { File } from '@prisma/client';
 import { NotFoundException } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
@@ -105,7 +105,9 @@ describe('FilesController', () => {
       const result = await controller.getAllFiles(mockRequest);
 
       expect(result).toEqual(mockFiles);
-      expect(mockFilesService.getAllFiles).toHaveBeenCalledWith(mockRequest.tenantId);
+      expect(mockFilesService.getAllFiles).toHaveBeenCalledWith(
+        mockRequest.tenantId,
+      );
     });
   });
 
@@ -116,7 +118,10 @@ describe('FilesController', () => {
       const result = await controller.getFileById(1, mockRequest);
 
       expect(result).toEqual(mockFileWithRelations);
-      expect(mockFilesService.getFileById).toHaveBeenCalledWith(1, mockRequest.tenantId);
+      expect(mockFilesService.getFileById).toHaveBeenCalledWith(
+        1,
+        mockRequest.tenantId,
+      );
     });
 
     it('should throw NotFoundException when file does not exist', async () => {
@@ -134,7 +139,10 @@ describe('FilesController', () => {
 
       await controller.deleteFile(1, mockRequest);
 
-      expect(mockFilesService.deleteFile).toHaveBeenCalledWith(1, mockRequest.tenantId);
+      expect(mockFilesService.deleteFile).toHaveBeenCalledWith(
+        1,
+        mockRequest.tenantId,
+      );
     });
 
     it('should throw NotFoundException when file does not exist', async () => {
@@ -145,4 +153,4 @@ describe('FilesController', () => {
       );
     });
   });
-}); 
+});

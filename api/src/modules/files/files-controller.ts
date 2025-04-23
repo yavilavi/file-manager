@@ -24,7 +24,6 @@ import { Request as Req, Response as Res } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayloadInterface } from '@shared/interfaces/jwt-payload.interface';
 import { IsPublic } from '@shared/decorators/is-public.decorator';
-import * as console from 'node:console';
 
 @Controller('files')
 export class FilesController {

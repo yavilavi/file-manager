@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Test, TestingModule } from '@nestjs/testing';
 import { FilesService } from '../files-service';
 import { ConfigService } from '@nestjs/config';
@@ -96,7 +97,9 @@ describe('FilesService', () => {
 
   describe('getFileById', () => {
     it('should return a file when it exists', async () => {
-      (mockPrismaService.client.file.findUnique as jest.Mock).mockResolvedValue(mockFile);
+      (mockPrismaService.client.file.findUnique as jest.Mock).mockResolvedValue(
+        mockFile,
+      );
 
       const result = await service.getFileById(1, 'test-tenant');
 
@@ -134,7 +137,9 @@ describe('FilesService', () => {
     });
 
     it('should throw NotFoundException when file does not exist', async () => {
-      (mockPrismaService.client.file.findUnique as jest.Mock).mockResolvedValue(null);
+      (mockPrismaService.client.file.findUnique as jest.Mock).mockResolvedValue(
+        null,
+      );
 
       await expect(service.getFileById(1, 'test-tenant')).rejects.toThrow(
         NotFoundException,
@@ -144,7 +149,9 @@ describe('FilesService', () => {
 
   describe('getAllFiles', () => {
     it('should return all files for a tenant', async () => {
-      (mockPrismaService.client.file.findMany as jest.Mock).mockResolvedValue([mockFile]);
+      (mockPrismaService.client.file.findMany as jest.Mock).mockResolvedValue([
+        mockFile,
+      ]);
 
       const result = await service.getAllFiles('test-tenant');
 
@@ -184,4 +191,4 @@ describe('FilesService', () => {
       });
     });
   });
-}); 
+});

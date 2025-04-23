@@ -1,15 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
-import { PrismaService } from '../src/libs/database/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import '@types/jest';
 
 describe('FilesController (e2e)', () => {
   let app: INestApplication;
-  let prismaService: PrismaService;
   let jwtService: JwtService;
+  let httpServer: any;
 
   const mockUser = {
     id: 1,
@@ -65,8 +65,9 @@ describe('FilesController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    prismaService = moduleFixture.get<PrismaService>(PrismaService);
     jwtService = moduleFixture.get<JwtService>(JwtService);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    httpServer = app.getHttpServer();
 
     await app.init();
   });
@@ -83,7 +84,7 @@ describe('FilesController (e2e)', () => {
         tenantId: mockUser.company.tenantId,
       });
 
-      const response = await request(app.getHttpServer())
+      const response = await request(httpServer)
         .get('/files')
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
@@ -100,7 +101,7 @@ describe('FilesController (e2e)', () => {
         tenantId: mockUser.company.tenantId,
       });
 
-      const response = await request(app.getHttpServer())
+      const response = await request(httpServer)
         .get(`/files/${mockFile.id}`)
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
@@ -116,7 +117,7 @@ describe('FilesController (e2e)', () => {
         tenantId: mockUser.company.tenantId,
       });
 
-      await request(app.getHttpServer())
+      await request(httpServer)
         .get('/files/999')
         .set('Authorization', `Bearer ${token}`)
         .expect(404);
@@ -131,7 +132,7 @@ describe('FilesController (e2e)', () => {
         tenantId: mockUser.company.tenantId,
       });
 
-      await request(app.getHttpServer())
+      await request(httpServer)
         .delete(`/files/${mockFile.id}`)
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
@@ -144,10 +145,10 @@ describe('FilesController (e2e)', () => {
         tenantId: mockUser.company.tenantId,
       });
 
-      await request(app.getHttpServer())
+      await request(httpServer)
         .delete('/files/999')
         .set('Authorization', `Bearer ${token}`)
         .expect(404);
     });
   });
-}); 
+});

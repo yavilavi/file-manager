@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FilesModule } from '../files-module';
 import { FilesController } from '../files-controller';
 import { FilesService } from '../files-service';
 import { ConfigService, ConfigModule } from '@nestjs/config';
@@ -93,4 +92,4 @@ describe('FilesModule', () => {
     const service = module.get(FilesService);
     expect(service).toBeDefined();
   });
-}); 
+});

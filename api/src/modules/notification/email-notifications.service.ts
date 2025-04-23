@@ -6,7 +6,6 @@ import { ConfigService } from '@nestjs/config';
 import buildWelcomeEmailTemplate from '@modules/notification/email/templates/signup-wellcome-email.template';
 import buildNewUserWelcomeEmail from '@modules/notification/email/templates/new-user-wellcome-email.template';
 import { CreateUserDto } from '@modules/users/dtos/create-user.dto';
-import { Company } from '@prisma/client';
 
 interface SendEmailDTO {
   to: string;
