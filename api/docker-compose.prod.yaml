@@ -33,16 +33,16 @@ services:
     restart: unless-stopped
     labels:
       - traefik.enable=true
-      - traefik.http.routers.https-0-ekkoc0c0co4g8gg8s4sg8gwo.rule=HostRegexp(`^.+\.api\.docma\.yilmer\.com$`)
-      - traefik.http.routers.https-0-ekkoc0c0co4g8gg8s4sg8gwo.entryPoints=https
-      - traefik.http.routers.https-0-ekkoc0c0co4g8gg8s4sg8gwo.middlewares=gzip
-      - traefik.http.routers.https-0-ekkoc0c0co4g8gg8s4sg8gwo.service=https-0-ekkoc0c0co4g8gg8s4sg8gwo
-      - traefik.http.routers.https-0-ekkoc0c0co4g8gg8s4sg8gwo.tls.certresolver=letsencrypt
-      - traefik.http.services.https-0-ekkoc0c0co4g8gg8s4sg8gwo.loadbalancer.server.port=3000
-      - traefik.http.routers.https-0-ekkoc0c0co4g8gg8s4sg8gwo.tls=true
-      - traefik.http.routers.http-0-ekkoc0c0co4g8gg8s4sg8gwo.rule=HostRegexp(`^.+\.api\.docma\.yilmer\.com$`)
-      - traefik.http.routers.http-0-ekkoc0c0co4g8gg8s4sg8gwo.entryPoints=http
-      - traefik.http.routers.http-0-ekkoc0c0co4g8gg8s4sg8gwo.middlewares=redirect-to-https
+      - traefik.http.routers.https-0-bkok88skg80kc4c0kggc8oww.rule=HostRegexp(`^.+\.api\.docma\.yilmer\.com$`)
+      - traefik.http.routers.https-0-bkok88skg80kc4c0kggc8oww.entryPoints=https
+      - traefik.http.routers.https-0-bkok88skg80kc4c0kggc8oww.middlewares=gzip
+      - traefik.http.routers.https-0-bkok88skg80kc4c0kggc8oww.service=https-0-bkok88skg80kc4c0kggc8oww
+      - traefik.http.routers.https-0-bkok88skg80kc4c0kggc8oww.tls.certresolver=letsencrypt
+      - traefik.http.services.https-0-bkok88skg80kc4c0kggc8oww.loadbalancer.server.port=3000
+      - traefik.http.routers.https-0-bkok88skg80kc4c0kggc8oww.tls=true
+      - traefik.http.routers.http-0-bkok88skg80kc4c0kggc8oww.rule=HostRegexp(`^.+\.api\.docma\.yilmer\.com$`)
+      - traefik.http.routers.http-0-bkok88skg80kc4c0kggc8oww.entryPoints=http
+      - traefik.http.routers.http-0-bkok88skg80kc4c0kggc8oww.middlewares=redirect-to-https
       - caddy_0.encode=zstd gzip
       - caddy_0.handle_path.0_reverse_proxy={{upstreams 3000}}
       - caddy_0.handle_path=*
