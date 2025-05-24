@@ -17,8 +17,8 @@ export class GetAllFilesUseCase {
     // Validate tenant ID
     const validatedTenantId = TenantId.create(tenantId);
 
-    // Get all files for the tenant
-    const files = await this.fileRepository.findAllByTenant(
+    // Get all files for the tenant with user and company relationships
+    const files = await this.fileRepository.findAllByTenantWithRelations(
       validatedTenantId.value,
     );
 
@@ -39,6 +39,27 @@ export class GetAllFilesUseCase {
           createdAt: file.createdAt,
           updatedAt: file.updatedAt,
           deletedAt: file.deletedAt,
+          user: file.user
+            ? {
+                id: file.user.id,
+                name: file.user.name,
+                email: file.user.email,
+                department: file.user.department
+                  ? {
+                      id: file.user.department.id,
+                      name: file.user.department.name,
+                    }
+                  : undefined,
+              }
+            : undefined,
+          company: file.company
+            ? {
+                id: file.company.id,
+                name: file.company.name,
+                nit: file.company.nit,
+                tenantId: file.company.tenantId,
+              }
+            : undefined,
         }),
     );
   }

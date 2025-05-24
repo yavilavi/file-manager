@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@libs/database/prisma/prisma.service';
 import { FileEntity } from '../../domain/entities/file.entity';
-import { IFileRepository } from '../../domain/repositories/file.repository.interface';
+import {
+  IFileRepository,
+  FileWithRelations,
+} from '../../domain/repositories/file.repository.interface';
 
 @Injectable()
 export class FileRepository implements IFileRepository {
@@ -95,6 +98,43 @@ export class FileRepository implements IFileRepository {
         deletedAt: file.deletedAt,
       }),
     );
+  }
+
+  async findAllByTenantWithRelations(
+    tenantId: string,
+  ): Promise<FileWithRelations[]> {
+    return await this.prisma.client.file.findMany({
+      where: {
+        tenantId,
+        deletedAt: null,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        company: {
+          select: {
+            id: true,
+            name: true,
+            nit: true,
+            tenantId: true,
+          },
+        },
+      },
+    });
   }
 
   async findByIdWithVersions(

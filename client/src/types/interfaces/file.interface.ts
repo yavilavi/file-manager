@@ -15,7 +15,7 @@ export interface FileInterface {
     id: number;
     name: string;
     email: string;
-    department: {
+    department?: {
       id: number;
       name: string;
     };

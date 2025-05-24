@@ -3,12 +3,45 @@ import { FileVersionEntity } from '../entities/file-version.entity';
 
 export const FILE_REPOSITORY = 'FILE_REPOSITORY';
 
+export interface FileWithRelations {
+  id: number;
+  name: string;
+  extension: string;
+  mimeType: string;
+  hash: string;
+  size: number;
+  path: string;
+  documentType: string | null;
+  tenantId: string;
+  userId: number;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
+  user: {
+    id: number;
+    name: string;
+    email: string;
+    department: {
+      id: number;
+      name: string;
+    } | null;
+  } | null;
+  company: {
+    id: number;
+    name: string;
+    nit: string;
+    tenantId: string;
+  } | null;
+}
+
 export interface IFileRepository {
   findById(id: number, tenantId: string): Promise<FileEntity | null>;
 
   findByHash(hash: string, tenantId: string): Promise<FileEntity | null>;
 
   findAllByTenant(tenantId: string): Promise<FileEntity[]>;
+
+  findAllByTenantWithRelations(tenantId: string): Promise<FileWithRelations[]>;
 
   findByIdWithVersions(
     id: number,
