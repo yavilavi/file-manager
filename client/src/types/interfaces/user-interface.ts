@@ -23,4 +23,5 @@ export interface UserInterface {
   department: DepartmentInterface;
   company: CompanyInterface;
   roles?: RoleInterface[];
+  canSendEmail: boolean;
 }

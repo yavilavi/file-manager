@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import {
   ICompanyPlanRepository,
   COMPANY_PLAN_REPOSITORY,
@@ -10,6 +15,7 @@ import {
   IPlanRepository,
   PLAN_REPOSITORY,
 } from '../../domain/repositories/plan-repository.interface';
+import { CreditsService } from '../../../credits/application/services/credits.service';
 
 @Injectable()
 export class CompanyPlanService {
@@ -19,6 +25,9 @@ export class CompanyPlanService {
 
     @Inject(PLAN_REPOSITORY)
     private readonly planRepository: IPlanRepository,
+
+    @Inject(forwardRef(() => CreditsService))
+    private readonly creditsService: CreditsService,
   ) {}
 
   async findAll(): Promise<CompanyPlan[]> {
@@ -87,7 +96,26 @@ export class CompanyPlanService {
       storageUsed: BigInt(0),
     });
 
-    return this.companyPlanRepository.create(companyPlan);
+    const createdCompanyPlan =
+      await this.companyPlanRepository.create(companyPlan);
+
+    // Grant included credits if the plan has any
+    if (plan.creditsIncluded > 0) {
+      try {
+        await this.creditsService.purchaseCredits(
+          createCompanyPlanDto.tenantId,
+          {
+            amount: plan.creditsIncluded,
+            description: `Créditos incluidos con el plan ${plan.name}`,
+          },
+        );
+      } catch (error) {
+        // Log error but don't fail the plan creation
+        console.error('Failed to grant included credits:', error);
+      }
+    }
+
+    return createdCompanyPlan;
   }
 
   async update(

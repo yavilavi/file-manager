@@ -1,17 +1,24 @@
-import {AppShell, Burger, Group, Image} from '@mantine/core';
+import {AppShell, Burger, Group, Image, Badge} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
-import {Navigate, Route, Routes} from 'react-router';
+import {Navigate, Route, Routes, useNavigate} from 'react-router';
 import {Navbar} from '../Navbar/Navbar.tsx';
 import Documents from '../../apps/documents-manager/Documents.tsx';
 import Users from '../../apps/users-manager/Users.tsx';
 import Departments from '../../apps/departments-manager/Departments.tsx';
 import SendEmails from '../../apps/email/SendEmails.tsx';
+import Company from '../../pages/company/Company.tsx';
+import Credits from '../../pages/credits/Credits.tsx';
+import Subscription from '../../pages/subscription/Subscription.tsx';
 import { useEffect, useState } from 'react';
 import { useCheckCompanyPlan } from '../../hooks/useCheckCompanyPlan.ts';
+import { useQuery } from '@tanstack/react-query';
+import { fetchCompanyCredits } from '../../services/api/credits';
+import { IconCoin } from '@tabler/icons-react';
 
 export default function PrivateLayout() {
     const [opened, {toggle}] = useDisclosure();
     const [tenantId, setTenantId] = useState<string>('');
+    const navigate = useNavigate();
     
     // Extract tenant ID from hostname
     useEffect(() => {
@@ -26,6 +33,20 @@ export default function PrivateLayout() {
     // Check if company has a plan
     const { isLoading } = useCheckCompanyPlan(tenantId);
     
+    // Fetch credits for header display
+    const { 
+        data: credits 
+    } = useQuery({
+        queryKey: ['company-credits'],
+        queryFn: fetchCompanyCredits,
+        enabled: !!tenantId,
+        refetchInterval: 30000, // Refetch every 30 seconds
+    });
+
+    const handleCreditsClick = () => {
+        navigate('/credits');
+    };
+    
     // Show loading state while checking plan
     if (isLoading && tenantId) {
         return <div>Cargando...</div>;
@@ -38,13 +59,29 @@ export default function PrivateLayout() {
             padding="md"
         >
             <AppShell.Header>
-                <Group h="100%" px="md">
-                    <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm"/>
-                    <Image
-                        radius="md"
-                        src="https://minio.docma.yilmer.com/assets/docma-logo.png"
-                        height={'70%'}
-                    />
+                <Group h="100%" px="md" justify="space-between">
+                    <Group>
+                        <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm"/>
+                        <Image
+                            radius="md"
+                            src="https://minio.docma.yilmer.com/assets/docma-logo.png"
+                            height={40}
+                        />
+                    </Group>
+                    
+                    {/* Credits Balance Chip */}
+                    {credits && (
+                        <Badge 
+                            size="lg" 
+                            variant="light" 
+                            color="blue"
+                            leftSection={<IconCoin size="0.9rem" />}
+                            style={{ cursor: 'pointer' }}
+                            onClick={handleCreditsClick}
+                        >
+                            {credits.currentBalance} créditos
+                        </Badge>
+                    )}
                 </Group>
             </AppShell.Header>
             <AppShell.Navbar p="md">
@@ -57,6 +94,9 @@ export default function PrivateLayout() {
                     <Route path="/email" element={<SendEmails/>}/>
                     <Route path="/users" element={<Users/>}/>
                     <Route path="/departments" element={<Departments/>}/>
+                    <Route path="/credits" element={<Credits/>}/>
+                    <Route path="/subscription" element={<Subscription/>}/>
+                    <Route path="/company" element={<Company/>}/>
                 </Routes>
             </AppShell.Main>
         </AppShell>

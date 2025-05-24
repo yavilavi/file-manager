@@ -126,7 +126,7 @@ export class AuthService {
           },
         },
       });
-      
+
       // Create company plan if planId is provided
       if (company.planId) {
         await tx.companyPlan.create({

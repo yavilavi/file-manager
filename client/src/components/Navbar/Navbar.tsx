@@ -1,4 +1,4 @@
-import { IconArchive, IconBuildings, IconMail, IconUsers } from '@tabler/icons-react';
+import { IconArchive, IconBuildings, IconMail, IconUsers, IconBuildingStore, IconCoin, IconPackage } from '@tabler/icons-react';
 import { UserButton } from '../UserButton/UserButton';
 import { NavLink } from 'react-router';
 import classes from './Navbar.module.css';
@@ -10,6 +10,9 @@ const links = [
   { icon: IconMail, label: 'Email', path: '/email' },
   { icon: IconUsers, label: 'Usuarios', path: '/users' },
   { icon: IconBuildings, label: 'Departamentos', path: '/departments' },
+  { icon: IconCoin, label: 'Créditos', path: '/credits' },
+  { icon: IconPackage, label: 'Suscripción', path: '/subscription' },
+  { icon: IconBuildingStore, label: 'Empresa', path: '/company' },
 ];
 
 export function Navbar() {

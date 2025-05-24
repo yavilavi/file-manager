@@ -43,6 +43,7 @@ export class PlanService {
       name: createPlanDto.name,
       description: createPlanDto.description,
       storageSize: BigInt(createPlanDto.storageSize),
+      creditsIncluded: createPlanDto.creditsIncluded ?? 0,
       isActive: createPlanDto.isActive ?? true,
     });
 
@@ -61,6 +62,8 @@ export class PlanService {
       updateData.description = updatePlanDto.description;
     if (updatePlanDto.storageSize)
       updateData.storageSize = BigInt(updatePlanDto.storageSize);
+    if (updatePlanDto.creditsIncluded !== undefined)
+      updateData.creditsIncluded = updatePlanDto.creditsIncluded;
     if (updatePlanDto.isActive !== undefined)
       updateData.isActive = updatePlanDto.isActive;
 

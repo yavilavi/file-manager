@@ -1,0 +1,23 @@
+export const TENANT_VALIDATION_SERVICE = 'TENANT_VALIDATION_SERVICE';
+
+export interface ITenantValidationService {
+  validateTenantIdentifier(tenantId: string): Promise<{
+    isValid: boolean;
+    errors: string[];
+  }>;
+
+  validateSubdomainAvailability(subdomain: string): Promise<{
+    isAvailable: boolean;
+    reason?: string;
+  }>;
+
+  validateCompanyInfo(
+    name: string,
+    nit: string,
+  ): Promise<{
+    isValid: boolean;
+    errors: string[];
+  }>;
+
+  isReservedKeyword(identifier: string): boolean;
+}

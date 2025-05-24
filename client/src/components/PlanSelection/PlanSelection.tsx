@@ -38,11 +38,10 @@ function formatBytes(bytes: bigint, decimals: number = 2): string {
 }
 
 interface PlanSelectionProps {
-  tenantId: string;
   onPlanSelected?: (planId: number) => void;
 }
 
-export default function PlanSelection({ tenantId, onPlanSelected }: PlanSelectionProps) {
+export default function PlanSelection({ onPlanSelected }: PlanSelectionProps) {
   const [selectedPlanId, setSelectedPlanId] = useState<number | null>(null);
   const { data: plans, isLoading, error } = useFetchActivePlans();
 
@@ -126,6 +125,11 @@ export default function PlanSelection({ tenantId, onPlanSelected }: PlanSelectio
               <Text fw={700} size="xl" mt="auto">
                 {formatBytes(BigInt(plan.storageSize))}
               </Text>
+              {plan.creditsIncluded > 0 && (
+                <Text fw={500} c="blue" size="sm">
+                  Incluye {plan.creditsIncluded} créditos
+                </Text>
+              )}
             </Stack>
 
             <Button 

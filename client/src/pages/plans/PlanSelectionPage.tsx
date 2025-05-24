@@ -31,7 +31,7 @@ export default function PlanSelectionPage() {
         </Box>
         
         {tenantId ? (
-          <PlanSelection tenantId={tenantId} onPlanSelected={handlePlanSelected} />
+          <PlanSelection onPlanSelected={handlePlanSelected} />
         ) : (
           <Text ta="center" c="red">
             No se pudo determinar el ID de tu empresa. Por favor contacta a soporte.

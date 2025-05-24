@@ -1,4 +1,11 @@
-import { IsBoolean, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class UpdatePlanDto {
   @IsString()
@@ -12,6 +19,11 @@ export class UpdatePlanDto {
 
   @IsOptional()
   storageSize?: string; // Will be converted to BigInt
+
+  @IsNumber()
+  @IsOptional()
+  @Type(() => Number)
+  creditsIncluded?: number;
 
   @IsBoolean()
   @IsOptional()

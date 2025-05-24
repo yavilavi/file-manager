@@ -5,6 +5,7 @@ export interface Plan {
   name: string;
   description: string;
   storageSize: string; // Using string for BigInt compatibility
+  creditsIncluded: number; // Credits included with this plan
   isActive: boolean;
   createdAt: string;
   updatedAt: string;

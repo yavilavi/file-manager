@@ -32,38 +32,12 @@ import companySchema from './company.schema.ts';
 import administratorSchema from './administrator.schema.ts';
 import { AxiosError } from 'axios';
 import PlanSelection from '../../components/PlanSelection/PlanSelection.tsx';
-import { useFetchActivePlans } from '../../hooks/usePlans.ts';
-import { Plan } from '../../services/api/plans.ts';
-
-// Format bytes utility function
-function formatBytes(bytes: bigint, decimals: number = 2): string {
-  if (bytes === BigInt(0)) return '0 Bytes';
-
-  const k = BigInt(1024);
-  const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-  let i = 0;
-  let bytesNumber = bytes;
-
-  while (bytesNumber >= k && i < sizes.length - 1) {
-    bytesNumber = bytesNumber / k;
-    i++;
-  }
-
-  // Convert to number for formatting decimals
-  const bytesAsNumber = Number(bytesNumber);
-  return `${bytesAsNumber.toFixed(dm)} ${sizes[i]}`;
-}
 
 export default function CompanyRegistration() {
   const [active, setActive] = useState(0);
   const [highestStepVisited, setHighestStepVisited] = useState(active);
   const [departments, setDepartments] = useState(['Nombre departamento 1']);
   const [departmentOptions, setDepartmentOptions] = useState<{ value: string; label: string }[]>([{ value: '0', label: departments[0] }]);
-  const [planSelected, setPlanSelected] = useState(false);
-  const [selectedPlanId, setSelectedPlanId] = useState<number | null>(null);
-  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
 
   const hostname = window.location.hostname;
   const subdomain = hostname.split('.')[0];
@@ -72,8 +46,6 @@ export default function CompanyRegistration() {
       window.location.href = `${window.location.protocol}//app.${import.meta.env.VITE_APP_BASE_URL}/signup`;
     }
   }, [subdomain]);
-
-  const { data: plans } = useFetchActivePlans();
 
   const form = useForm({
     initialValues: {
@@ -86,6 +58,7 @@ export default function CompanyRegistration() {
       adminPassword: '',
       confirmPassword: '',
       departmentId: -1,
+      planId: null as number | null,
     },
     validate: (values) => {
       const errors = {
@@ -127,7 +100,7 @@ export default function CompanyRegistration() {
       form.setFieldError('departmentId', 'Debes seleccionar un departamento');
       return;
     }
-    if (active === 2 && !planSelected) {
+    if (active === 2 && !form.values.planId) {
       notifications.show({
         title: 'Selección de plan requerida',
         message: 'Debes seleccionar un plan para continuar',
@@ -195,7 +168,7 @@ export default function CompanyRegistration() {
   const handleSubmit = () => {
     console.log(form.validate());
     if (form.validate().hasErrors) return;
-    if (!planSelected || !selectedPlanId) {
+    if (!form.values.planId) {
       notifications.show({
         title: 'Selección de plan requerida',
         message: 'Debes seleccionar un plan para continuar',
@@ -220,7 +193,7 @@ export default function CompanyRegistration() {
           departments: form.values.departments.map((dep) => ({
             name: dep,
           })),
-          planId: selectedPlanId,
+          planId: form.values.planId,
         },
         user: {
           name: form.values.adminName,
@@ -420,25 +393,9 @@ export default function CompanyRegistration() {
               allowStepSelect={shouldAllowSelectStep(2)}
               disabled={isSuccess}
             >
-              <PlanSelection 
-                tenantId={form.values.subdomain} 
+              <PlanSelection
                 onPlanSelected={(planId) => {
-                  setSelectedPlanId(planId);
-                  setPlanSelected(true);
-                  
-                  // Find the selected plan details
-                  if (plans) {
-                    const plan = plans.find(p => p.id === planId);
-                    if (plan) {
-                      setSelectedPlan(plan);
-                    }
-                  }
-                  
-                  notifications.show({
-                    title: 'Plan seleccionado',
-                    message: 'Plan seleccionado correctamente',
-                    color: 'green',
-                  });
+                  form.setFieldValue('planId', planId);
                 }}
               />
             </Stepper.Step>
@@ -467,12 +424,6 @@ export default function CompanyRegistration() {
                       (option) => option.value === form.values.departmentId.toString(),
                     )?.label || '',
                 }}
-                plan={selectedPlan ? {
-                  id: selectedPlan.id,
-                  name: selectedPlan.name,
-                  description: selectedPlan.description,
-                  storageSize: formatBytes(BigInt(selectedPlan.storageSize))
-                } : undefined}
               />
             </Stepper.Step>
 

@@ -11,8 +11,7 @@ import {
 import { PlanService } from '../../application/services/plan.service';
 import { CreatePlanDto } from '../../application/dtos/create-plan.dto';
 import { UpdatePlanDto } from '../../application/dtos/update-plan.dto';
-import { Plan } from '../../domain/entities/plan.entity';
-import { serializeBigInt } from '../../../../utils/serializers';
+import { serializeBigInt } from '@utils/serializers';
 import { IsPublic } from '@shared/decorators/is-public.decorator';
 
 @Controller('plans')

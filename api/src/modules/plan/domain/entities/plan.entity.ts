@@ -3,6 +3,7 @@ export class Plan {
   name: string;
   description: string;
   storageSize: bigint;
+  creditsIncluded: number;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -12,6 +13,7 @@ export class Plan {
     name: string;
     description: string;
     storageSize: bigint;
+    creditsIncluded?: number;
     isActive?: boolean;
     deletedAt?: Date | null;
     createdAt?: Date;
@@ -19,6 +21,7 @@ export class Plan {
   }) {
     Object.assign(this, {
       ...props,
+      creditsIncluded: props.creditsIncluded ?? 0,
       isActive: props.isActive ?? true,
       createdAt: props.createdAt || new Date(),
       updatedAt: props.updatedAt || new Date(),

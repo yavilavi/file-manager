@@ -1,11 +1,13 @@
 import {
   IsBoolean,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   MinLength,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export class CreatePlanDto {
   @ApiProperty({
@@ -31,6 +33,16 @@ export class CreatePlanDto {
   })
   @IsNotEmpty()
   storageSize: string; // Will be converted to BigInt
+
+  @ApiProperty({
+    description: 'Credits included with this plan',
+    example: 100,
+    default: 0,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Type(() => Number)
+  creditsIncluded?: number;
 
   @ApiProperty({
     description: 'Whether the plan is active',

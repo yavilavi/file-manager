@@ -37,6 +37,7 @@ export class PrismaCompanyPlanRepository implements ICompanyPlanRepository {
       name: prismaPlan.name,
       description: prismaPlan.description,
       storageSize: prismaPlan.storageSize,
+      creditsIncluded: prismaPlan.creditsIncluded,
       isActive: prismaPlan.isActive,
       createdAt: prismaPlan.createdAt,
       updatedAt: prismaPlan.updatedAt,
@@ -83,9 +84,12 @@ export class PrismaCompanyPlanRepository implements ICompanyPlanRepository {
   async findByTenantId(tenantId: string): Promise<CompanyPlan | null> {
     const companyPlan = await this.prisma.client.companyPlan.findUnique({
       where: { tenantId },
+      include: { plan: true },
     });
 
-    return companyPlan ? this.toDomainEntity(companyPlan) : null;
+    if (!companyPlan) return null;
+
+    return this.toDomainEntity(companyPlan, companyPlan.plan);
   }
 
   async findByPlanId(planId: number): Promise<CompanyPlan[]> {

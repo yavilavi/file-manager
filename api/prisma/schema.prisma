@@ -199,6 +199,7 @@ model Plan {
   name              String        @unique @db.VarChar(100)
   description       String        @db.VarChar(255)
   storageSize       BigInt        // Storage size in bytes
+  creditsIncluded   Int           @default(0) // Credits included with this plan
   isActive          Boolean       @default(true)
   companyPlans      CompanyPlan[]
   createdAt         DateTime      @default(now())
