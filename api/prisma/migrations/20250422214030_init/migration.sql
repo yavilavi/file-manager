@@ -90,7 +90,7 @@ CREATE UNIQUE INDEX "uk_department_name" ON "department"("name", "tenantId") WHE
 CREATE UNIQUE INDEX "uk_user_email_company" ON "user"("email", "tenantId") WHERE "deletedAt" IS NULL;
 
 -- CreateIndex
-CREATE UNIQUE INDEX "uk_file_version_is_last" ON "file_version"("fileId", "isLast") WHERE "deletedAt" IS NULL;
+CREATE UNIQUE INDEX "uk_file_version_is_last" ON "file_version"("fileId", "isLast") WHERE "deletedAt" IS NULL AND "isLast" = true;
 
 -- AddForeignKey
 ALTER TABLE "file" ADD CONSTRAINT "file_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "company"("tenantId") ON DELETE RESTRICT ON UPDATE CASCADE;

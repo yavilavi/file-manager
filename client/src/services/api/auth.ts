@@ -1,4 +1,4 @@
-import apiCall from '../axios.ts';
+import apiCall, { publicApiCall } from '../axios.ts';
 import { UserInterface } from '../../types/interfaces/user-interface.ts';
 
 export const loginUser = async (credentials: {
@@ -22,6 +22,7 @@ export const signup = async (data: {
     nit: string;
     tenantId: string;
     departments: { name: string }[];
+    planId?: number;
   };
   user: {
     name: string;
@@ -31,6 +32,6 @@ export const signup = async (data: {
     departmentId?: number;
   };
 }) => {
-  const response = await apiCall.post('/auth/signup', data);
+  const response = await publicApiCall.post('/auth/signup', data);
   return response.data;
 };

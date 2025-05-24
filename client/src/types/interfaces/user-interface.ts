@@ -1,3 +1,5 @@
+import { RoleInterface } from './role-interface';
+
 export interface DepartmentInterface {
   id: number;
   name: string;
@@ -20,4 +22,5 @@ export interface UserInterface {
   updatedAt: string; // o Date
   department: DepartmentInterface;
   company: CompanyInterface;
+  roles?: RoleInterface[];
 }

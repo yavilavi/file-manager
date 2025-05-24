@@ -24,18 +24,46 @@ import {
   IconBuildingCommunity,
   IconUser,
   IconListCheck,
+  IconFileInvoice,
 } from '@tabler/icons-react';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { useCheckSubdomain } from '../../hooks/useCheckSubdomain.ts';
 import companySchema from './company.schema.ts';
 import administratorSchema from './administrator.schema.ts';
 import { AxiosError } from 'axios';
+import PlanSelection from '../../components/PlanSelection/PlanSelection.tsx';
+import { useFetchActivePlans } from '../../hooks/usePlans.ts';
+import { Plan } from '../../services/api/plans.ts';
+
+// Format bytes utility function
+function formatBytes(bytes: bigint, decimals: number = 2): string {
+  if (bytes === BigInt(0)) return '0 Bytes';
+
+  const k = BigInt(1024);
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+  let i = 0;
+  let bytesNumber = bytes;
+
+  while (bytesNumber >= k && i < sizes.length - 1) {
+    bytesNumber = bytesNumber / k;
+    i++;
+  }
+
+  // Convert to number for formatting decimals
+  const bytesAsNumber = Number(bytesNumber);
+  return `${bytesAsNumber.toFixed(dm)} ${sizes[i]}`;
+}
 
 export default function CompanyRegistration() {
   const [active, setActive] = useState(0);
   const [highestStepVisited, setHighestStepVisited] = useState(active);
   const [departments, setDepartments] = useState(['Nombre departamento 1']);
   const [departmentOptions, setDepartmentOptions] = useState<{ value: string; label: string }[]>([{ value: '0', label: departments[0] }]);
+  const [planSelected, setPlanSelected] = useState(false);
+  const [selectedPlanId, setSelectedPlanId] = useState<number | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
 
   const hostname = window.location.hostname;
   const subdomain = hostname.split('.')[0];
@@ -44,6 +72,8 @@ export default function CompanyRegistration() {
       window.location.href = `${window.location.protocol}//app.${import.meta.env.VITE_APP_BASE_URL}/signup`;
     }
   }, [subdomain]);
+
+  const { data: plans } = useFetchActivePlans();
 
   const form = useForm({
     initialValues: {
@@ -86,7 +116,7 @@ export default function CompanyRegistration() {
 
   const { data, isFetching } = useCheckSubdomain(debounced);
   const handleStepChange = (nextStep: number) => {
-    const isOutOfBounds = nextStep > 3 || nextStep < 0;
+    const isOutOfBounds = nextStep > 4 || nextStep < 0;
     console.log(form.validate());
     if (form.validate().hasErrors || isOutOfBounds) return;
     if (active === 0 && !data?.available) {
@@ -97,7 +127,15 @@ export default function CompanyRegistration() {
       form.setFieldError('departmentId', 'Debes seleccionar un departamento');
       return;
     }
-    setActive((current) => (current < 2 ? current + 1 : current));
+    if (active === 2 && !planSelected) {
+      notifications.show({
+        title: 'Selección de plan requerida',
+        message: 'Debes seleccionar un plan para continuar',
+        color: 'red',
+      });
+      return;
+    }
+    setActive((current) => (current < 3 ? current + 1 : current));
     setHighestStepVisited((hSC) => Math.max(hSC, nextStep));
   };
 
@@ -157,6 +195,14 @@ export default function CompanyRegistration() {
   const handleSubmit = () => {
     console.log(form.validate());
     if (form.validate().hasErrors) return;
+    if (!planSelected || !selectedPlanId) {
+      notifications.show({
+        title: 'Selección de plan requerida',
+        message: 'Debes seleccionar un plan para continuar',
+        color: 'red',
+      });
+      return;
+    }
     notifications.clean();
     notifications.show({
       id: 'signup-submit',
@@ -174,6 +220,7 @@ export default function CompanyRegistration() {
           departments: form.values.departments.map((dep) => ({
             name: dep,
           })),
+          planId: selectedPlanId,
         },
         user: {
           name: form.values.adminName,
@@ -186,7 +233,7 @@ export default function CompanyRegistration() {
       {
         onSuccess: () => {
           notifications.clean();
-          setActive(3);
+          setActive(4);
         },
         onError: (data) => {
           const error = data as AxiosError<{
@@ -367,19 +414,71 @@ export default function CompanyRegistration() {
             </Stepper.Step>
 
             <Stepper.Step
+              icon={<IconFileInvoice size={18} />}
+              label="Plan"
+              description="Selección de plan"
+              allowStepSelect={shouldAllowSelectStep(2)}
+              disabled={isSuccess}
+            >
+              <PlanSelection 
+                tenantId={form.values.subdomain} 
+                onPlanSelected={(planId) => {
+                  setSelectedPlanId(planId);
+                  setPlanSelected(true);
+                  
+                  // Find the selected plan details
+                  if (plans) {
+                    const plan = plans.find(p => p.id === planId);
+                    if (plan) {
+                      setSelectedPlan(plan);
+                    }
+                  }
+                  
+                  notifications.show({
+                    title: 'Plan seleccionado',
+                    message: 'Plan seleccionado correctamente',
+                    color: 'green',
+                  });
+                }}
+              />
+            </Stepper.Step>
+
+            <Stepper.Step
               icon={<IconListCheck size={18} />}
               label="Revisión"
               description="Confirmar envío"
-              allowStepSelect={shouldAllowSelectStep(2)}
+              allowStepSelect={shouldAllowSelectStep(3)}
               loading={isPending}
               disabled={isSuccess}
             >
-              <ReviewStep form={form} />
+              <ReviewStep
+                company={{
+                  name: form.values.companyName,
+                  nit: form.values.nit,
+                  subdomain: form.values.subdomain,
+                  departments: form.values.departments,
+                }}
+                admin={{
+                  name: form.values.adminName,
+                  email: form.values.adminEmail,
+                  departmentId: Number(form.values.departmentId),
+                  departmentName:
+                    departmentOptions.find(
+                      (option) => option.value === form.values.departmentId.toString(),
+                    )?.label || '',
+                }}
+                plan={selectedPlan ? {
+                  id: selectedPlan.id,
+                  name: selectedPlan.name,
+                  description: selectedPlan.description,
+                  storageSize: formatBytes(BigInt(selectedPlan.storageSize))
+                } : undefined}
+              />
             </Stepper.Step>
 
             <Stepper.Completed>
               <SuccessStep
-                redirectUrl={`${window.location.protocol}//${form.values.subdomain}.${import.meta.env.VITE_APP_BASE_URL}`}
+                subdomain={form.values.subdomain}
               />
             </Stepper.Completed>
           </Stepper>
@@ -393,7 +492,7 @@ export default function CompanyRegistration() {
               >
                 Atrás
               </Button>
-              {active < 2 ? (
+              {active < 3 ? (
                 <Button onClick={() => handleStepChange(active + 1)}>
                   Siguiente
                 </Button>

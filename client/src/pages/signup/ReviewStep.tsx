@@ -1,27 +1,33 @@
 import { Badge, Divider, List, Paper, Stack, Text, Title } from '@mantine/core';
-import { UseFormReturnType } from '@mantine/form';
 
-type ReviewStepProps = {
-  form: UseFormReturnType<{
-    companyName: string;
-    nit: string;
-    subdomain: string;
-    departments: string[];
-    adminName: string;
-    adminEmail: string;
-    adminPassword: string;
-    confirmPassword: string;
-    departmentId: number;
-  }>;
-};
+interface CompanyData {
+  name: string;
+  nit: string;
+  subdomain: string;
+  departments: string[];
+}
 
-const ReviewStep = ({ form }: ReviewStepProps) => {
-  // Get the selected department name
-  const selectedDepartmentIndex = form.values.departmentId;
-  const selectedDepartment = selectedDepartmentIndex >= 0 && selectedDepartmentIndex < form.values.departments.length 
-    ? form.values.departments[selectedDepartmentIndex] 
-    : 'No seleccionado';
+interface AdminData {
+  name: string;
+  email: string;
+  departmentId: number;
+  departmentName: string;
+}
 
+interface PlanData {
+  id: number;
+  name: string;
+  description: string;
+  storageSize: string;
+}
+
+export interface ReviewStepProps {
+  company: CompanyData;
+  admin: AdminData;
+  plan?: PlanData;
+}
+
+const ReviewStep = ({ company, admin, plan }: ReviewStepProps) => {
   return (
     <Paper withBorder p="md" radius="md" shadow="sm">
       <Title order={3} size="sm" mb="md">
@@ -31,40 +37,70 @@ const ReviewStep = ({ form }: ReviewStepProps) => {
       <Stack gap="sm">
         <Title order={4}>Empresa</Title>
         <Text>
-          <strong>Nombre:</strong> {form.values.companyName}
+          <strong>Nombre:</strong> {company.name}
         </Text>
         <Text>
-          <strong>NIT:</strong> {form.values.nit}
+          <strong>NIT:</strong> {company.nit}
         </Text>
         <Text>
           <strong>Subdominio:</strong>{' '}
         </Text>
         <Badge color="green" variant="light" tt="none">
-          {window.location.protocol}//{form.values.subdomain}.{import.meta.env.VITE_APP_BASE_URL}
+          {window.location.protocol}//{company.subdomain}.{import.meta.env.VITE_APP_BASE_URL}
         </Badge>
 
         <Text>
           <strong>Departamentos:</strong>
         </Text>
         <List spacing="xs" size="sm" withPadding>
-          {form.values.departments.map((dep: string, index: number) => (
-            <List.Item key={dep}>
-              {dep} {index === form.values.departmentId && <Badge color="blue" size="xs" ml="xs">Seleccionado</Badge>}
+          {company.departments.map((dep: string, index: number) => (
+            <List.Item key={index}>
+              {dep} {index === admin.departmentId && <Badge color="blue" size="xs" ml="xs">Seleccionado</Badge>}
             </List.Item>
           ))}
         </List>
 
+        {plan && (
+            <>
+              <Text>
+                <strong>Plan Seleccionado:</strong>
+              </Text>
+              <List spacing="xs" size="sm" withPadding>
+                <List.Item key={'plan--name'}>
+                  <Text>
+                    <strong>Nombre:</strong> {plan.name}
+                  </Text>
+                </List.Item>
+                <List.Item key={'plan--desc'}>
+                  <Text>
+                    <strong>Descripción:</strong> {plan.description}
+                  </Text>
+                </List.Item>
+                <List.Item key={'plan--storage'}>
+                  <Text>
+                    <strong>Almacenamiento:</strong> {plan.storageSize}
+                  </Text>
+                </List.Item>
+                <List.Item key={'plan--storage'}>
+                  <Text>
+                    <strong>Precio:</strong> 10 USD
+                  </Text>
+                </List.Item>
+              </List>
+            </>
+        )}
+
         <Divider my="sm" />
 
-        <Title order={4}>Administrador</Title>
+        <Title order={4}>Usuario Administrador</Title>
         <Text>
-          <strong>Nombre:</strong> {form.values.adminName}
+          <strong>Nombre:</strong> {admin.name}
         </Text>
         <Text>
-          <strong>Email:</strong> {form.values.adminEmail}
+          <strong>Email:</strong> {admin.email}
         </Text>
         <Text>
-          <strong>Departamento:</strong> {selectedDepartment}
+          <strong>Departamento:</strong> {admin.departmentName}
         </Text>
       </Stack>
     </Paper>

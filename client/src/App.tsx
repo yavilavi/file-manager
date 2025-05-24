@@ -10,12 +10,18 @@ import PrivateLayout from './components/PrivateLayout/PrivateLayout.tsx';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute.tsx';
 import CompanyRegistration from './pages/signup/CompanyRegistration.tsx';
 import DocumentsEditor from './apps/documents-manager/DocumentsEditor.tsx';
+import PlanSelectionPage from './pages/plans/PlanSelectionPage.tsx';
 
 function App() {
     return (
         <Routes>
             <Route path="/login" element={<Login/>}/>
             <Route path="/signup" element={<CompanyRegistration/>}/>
+            <Route path="/select-plan" element={
+                <PrivateRoute>
+                    <PlanSelectionPage />
+                </PrivateRoute>
+            }/>
             <Route path="/documents/:fileId/edit/" element={
                 <PrivateRoute>
                     <DocumentsEditor/>

@@ -1,7 +1,12 @@
 import { Button, Center, Stack, Title, Text } from '@mantine/core';
 import { IconCircleCheck, IconRocket } from '@tabler/icons-react';
 
-function SuccessStep({ redirectUrl }: { redirectUrl: string }) {
+interface SuccessStepProps {
+  subdomain: string;
+}
+
+function SuccessStep({ subdomain }: SuccessStepProps) {
+  const redirectUrl = `${window.location.protocol}//${subdomain}.${import.meta.env.VITE_APP_BASE_URL}`;
 
   const handleClick = () => {
     window.location.href = redirectUrl;

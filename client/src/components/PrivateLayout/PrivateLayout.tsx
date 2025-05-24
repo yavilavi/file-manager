@@ -6,9 +6,31 @@ import Documents from '../../apps/documents-manager/Documents.tsx';
 import Users from '../../apps/users-manager/Users.tsx';
 import Departments from '../../apps/departments-manager/Departments.tsx';
 import SendEmails from '../../apps/email/SendEmails.tsx';
+import { useEffect, useState } from 'react';
+import { useCheckCompanyPlan } from '../../hooks/useCheckCompanyPlan.ts';
 
 export default function PrivateLayout() {
     const [opened, {toggle}] = useDisclosure();
+    const [tenantId, setTenantId] = useState<string>('');
+    
+    // Extract tenant ID from hostname
+    useEffect(() => {
+        const hostname = window.location.hostname;
+        const subdomain = hostname.split('.')[0];
+        
+        if (subdomain && subdomain !== 'app') {
+            setTenantId(subdomain);
+        }
+    }, []);
+    
+    // Check if company has a plan
+    const { isLoading } = useCheckCompanyPlan(tenantId);
+    
+    // Show loading state while checking plan
+    if (isLoading && tenantId) {
+        return <div>Cargando...</div>;
+    }
+    
     return (
         <AppShell
             header={{height: 60}}

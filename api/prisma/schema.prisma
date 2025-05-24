@@ -33,7 +33,7 @@ model File {
 }
 
 model FileVersion {
-  id        String    @db.VarChar(255)
+  id        String    @id @db.VarChar(255)
   name      String    @db.VarChar(255)
   hash      String    @db.VarChar(255)
   size      Int
@@ -49,17 +49,22 @@ model FileVersion {
 }
 
 model Company {
-  id           Int          @id @default(autoincrement())
-  name         String       @db.VarChar(255)
-  nit          String       @db.VarChar(255)
-  tenantId     String       @unique(map: "uk_company_tenantId") @db.VarChar(15)
-  users        User[]
-  files        File[]
-  departments  Department[]
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @default(now())
-  deletedAt    DateTime?
-  canSendEmail Boolean      @default(false)
+  id             Int             @id @default(autoincrement())
+  name           String          @db.VarChar(255)
+  nit            String          @unique @db.VarChar(255)
+  tenantId       String          @unique(map: "uk_company_tenantId") @db.VarChar(15)
+  users          User[]
+  files          File[]
+  departments    Department[]
+  roles          Role[]
+  credits        CompanyCredits?
+  emailLogs      EmailLog[]
+  companyPlan    CompanyPlan?
+  creditTransactions CreditTransaction[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @default(now())
+  deletedAt      DateTime?
+  canSendEmail   Boolean         @default(false)
 
   @@map("company")
 }
@@ -78,19 +83,143 @@ model Department {
 }
 
 model User {
-  id           Int         @id @default(autoincrement())
-  name         String      @db.VarChar(30)
-  email        String      @db.VarChar(50)
-  password     String      @db.VarChar(255)
-  company      Company     @relation(fields: [tenantId], references: [tenantId])
-  tenantId     String      @db.VarChar(15)
+  id           Int        @id @default(autoincrement())
+  name         String     @db.VarChar(30)
+  email        String     @db.VarChar(50)
+  password     String     @db.VarChar(255)
+  company      Company    @relation(fields: [tenantId], references: [tenantId])
+  tenantId     String     @db.VarChar(15)
   department   Department? @relation(fields: [departmentId], references: [id])
   departmentId Int?
   files        File[]
-  isActive     Boolean     @default(true)
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @default(now())
+  userRoles    UserRole[]
+  emailLogs    EmailLog[]
+  isActive     Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now())
   deletedAt    DateTime?
 
   @@map("user")
+}
+
+model Permission {
+  id             String           @id @db.VarChar(50) // Format: <resource>:<action>
+  description    String           @db.VarChar(255)
+  rolePermissions RolePermission[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @default(now())
+
+  @@map("permission")
+}
+
+model Role {
+  id              Int             @id @default(autoincrement())
+  name            String          @db.VarChar(100)
+  description     String?         @db.VarChar(255)
+  company         Company         @relation(fields: [tenantId], references: [tenantId])
+  tenantId        String          @db.VarChar(15)
+  isAdmin         Boolean         @default(false)
+  rolePermissions RolePermission[]
+  userRoles       UserRole[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @default(now())
+  deletedAt       DateTime?
+
+  @@unique([tenantId, name], name: "uk_role_tenant_name")
+  @@map("role")
+}
+
+model RolePermission {
+  role          Role        @relation(fields: [roleId], references: [id])
+  roleId        Int
+  permission    Permission  @relation(fields: [permissionId], references: [id])
+  permissionId  String      @db.VarChar(50)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @default(now())
+
+  @@id([roleId, permissionId])
+  @@map("role_permission")
+}
+
+model UserRole {
+  user       User      @relation(fields: [userId], references: [id])
+  userId     Int
+  role       Role      @relation(fields: [roleId], references: [id])
+  roleId     Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now())
+
+  @@id([userId, roleId])
+  @@map("user_role")
+}
+
+model CompanyCredits {
+  id              Int       @id @default(autoincrement())
+  company         Company   @relation(fields: [tenantId], references: [tenantId])
+  tenantId        String    @unique @db.VarChar(15)
+  totalPurchased  Int       @default(0)
+  currentBalance  Int       @default(0)
+  lastPurchaseAt  DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now())
+
+  @@map("company_credits")
+}
+
+model EmailLog {
+  id          Int      @id @default(autoincrement())
+  subject     String   @db.VarChar(255)
+  recipients  String[] 
+  creditsUsed Int      @default(1)
+  status      String   @db.VarChar(50)
+  company     Company  @relation(fields: [tenantId], references: [tenantId])
+  tenantId    String   @db.VarChar(15)
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  createdAt   DateTime @default(now())
+
+  @@map("email_log")
+}
+
+model CreditTransaction {
+  id             Int      @id @default(autoincrement())
+  transactionType String   @db.VarChar(50) // PURCHASE, USAGE
+  amount         Int
+  description    String?  @db.VarChar(255)
+  company        Company  @relation(fields: [tenantId], references: [tenantId])
+  tenantId       String   @db.VarChar(15)
+  referenceId    Int?     // Can reference EmailLog id for USAGE transactions
+  createdAt      DateTime @default(now())
+
+  @@map("credit_transaction")
+}
+
+model Plan {
+  id                Int           @id @default(autoincrement())
+  name              String        @unique @db.VarChar(100)
+  description       String        @db.VarChar(255)
+  storageSize       BigInt        // Storage size in bytes
+  isActive          Boolean       @default(true)
+  companyPlans      CompanyPlan[]
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @default(now())
+  deletedAt         DateTime?
+
+  @@map("plan")
+}
+
+model CompanyPlan {
+  id              Int       @id @default(autoincrement())
+  company         Company   @relation(fields: [tenantId], references: [tenantId])
+  tenantId        String    @unique @db.VarChar(15)
+  plan            Plan      @relation(fields: [planId], references: [id])
+  planId          Int
+  startDate       DateTime  @default(now())
+  endDate         DateTime?
+  isActive        Boolean   @default(true)
+  storageUsed     BigInt    @default(0) // Current storage used in bytes
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now())
+
+  @@map("company_plan")
 }

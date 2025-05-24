@@ -4,7 +4,7 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { JwtService } from '@nestjs/jwt';
-import '@types/jest';
+import 'jest';
 
 describe('FilesController (e2e)', () => {
   let app: INestApplication;

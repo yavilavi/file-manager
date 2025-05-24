@@ -126,6 +126,19 @@ export class AuthService {
           },
         },
       });
+      
+      // Create company plan if planId is provided
+      if (company.planId) {
+        await tx.companyPlan.create({
+          data: {
+            tenantId: company.tenantId,
+            planId: company.planId,
+            startDate: new Date(),
+            isActive: true,
+            storageUsed: BigInt(0),
+          },
+        });
+      }
 
       return createdCompany;
     });

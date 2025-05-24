@@ -14,6 +14,9 @@ import { NotificationModule } from '@modules/notification/notification.module';
 import { seconds, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtGlobalModule } from '@libs/jwt/jwt-global.module';
+import { PermissionsModule } from '@modules/permissions/permissions.module';
+import { RolesModule } from '@modules/roles/roles.module';
+import { PlanModule } from '@modules/plan/plan.module';
 
 @Module({
   imports: [
@@ -37,6 +40,9 @@ import { JwtGlobalModule } from '@libs/jwt/jwt-global.module';
     EmailModule,
     EventEmitterModule.forRoot(),
     NotificationModule,
+    PermissionsModule,
+    RolesModule,
+    PlanModule,
   ],
   controllers: [],
   providers: [
