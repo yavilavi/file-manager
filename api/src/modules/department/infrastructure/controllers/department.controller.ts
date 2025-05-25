@@ -16,6 +16,7 @@ import {
 } from '@nestjs/common';
 import { Request as Req } from 'express';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth/jwt-auth.guard';
+import { RequirePermission } from '@modules/auth/decorators/require-permission.decorator';
 import { CreateDepartmentDto } from '../../application/dtos/create-department.dto';
 import { UpdateDepartmentDto } from '../../application/dtos/update-department.dto';
 import { DepartmentResponseDto } from '../../application/dtos/department-response.dto';
@@ -35,6 +36,7 @@ export class DepartmentController {
   ) {}
 
   @Get()
+  @RequirePermission('department:read')
   async getAllDepartments(
     @Request() req: Req,
   ): Promise<DepartmentResponseDto[]> {
@@ -46,6 +48,7 @@ export class DepartmentController {
   }
 
   @Post()
+  @RequirePermission('department:create')
   @HttpCode(HttpStatus.CREATED)
   async createDepartment(
     @Body() dto: CreateDepartmentDto,
@@ -69,6 +72,7 @@ export class DepartmentController {
   }
 
   @Patch(':id')
+  @RequirePermission('department:update')
   async updateDepartment(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateDepartmentDto,
@@ -96,6 +100,7 @@ export class DepartmentController {
   }
 
   @Delete(':id')
+  @RequirePermission('department:delete')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteDepartment(
     @Param('id', ParseIntPipe) id: number,

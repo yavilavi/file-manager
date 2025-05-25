@@ -11,9 +11,10 @@ import { CompanyModule } from '@modules/company/company.module';
 import { PrismaService } from '@libs/database/prisma/prisma.service';
 import { PermissionsModule } from '@modules/permissions/permissions.module';
 import { PermissionGuard } from './guards/permission/permission.guard';
+import { TenantModule } from '@modules/tenant/tenant.module';
 
 @Module({
-  imports: [UsersModule, PassportModule, CompanyModule, PermissionsModule],
+  imports: [UsersModule, PassportModule, CompanyModule, PermissionsModule, TenantModule],
   providers: [
     PrismaService,
     AuthService,

@@ -19,7 +19,8 @@
     "test:cov": "jest --config jest.config.js --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --config jest.config.js --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prisma:generate": "npx prisma generate"
+    "prisma:generate": "npx prisma generate",
+    "seed:permissions": "ts-node prisma/permissions-seed.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.775.0",

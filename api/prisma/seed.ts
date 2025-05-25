@@ -90,18 +90,72 @@ async function main() {
     });
   }
 
-  // Create 3 permissions
+  // Create permissions for all modules
   const permissions: Permission[] = [];
-  const permissionTypes = ['files', 'users', 'roles'];
-  const actions = ['read', 'write', 'delete'];
+  const permissionData = [
+    // File permissions
+    { id: 'file:create', description: 'Crear archivos' },
+    { id: 'file:read', description: 'Leer archivos' },
+    { id: 'file:update', description: 'Actualizar archivos' },
+    { id: 'file:delete', description: 'Eliminar archivos' },
+    { id: 'file:download', description: 'Descargar archivos' },
+    
+    // User permissions
+    { id: 'user:create', description: 'Crear usuarios' },
+    { id: 'user:read', description: 'Leer usuarios' },
+    { id: 'user:update', description: 'Actualizar usuarios' },
+    { id: 'user:delete', description: 'Eliminar usuarios' },
+    { id: 'user:toggle-status', description: 'Cambiar estado de usuarios' },
+    
+    // Department permissions
+    { id: 'department:create', description: 'Crear departamentos' },
+    { id: 'department:read', description: 'Leer departamentos' },
+    { id: 'department:update', description: 'Actualizar departamentos' },
+    { id: 'department:delete', description: 'Eliminar departamentos' },
+    
+    // Role permissions
+    { id: 'role:create', description: 'Crear roles' },
+    { id: 'role:read', description: 'Leer roles' },
+    { id: 'role:update', description: 'Actualizar roles' },
+    { id: 'role:delete', description: 'Eliminar roles' },
+    
+    // Permission permissions
+    { id: 'permission:create', description: 'Crear permisos' },
+    { id: 'permission:read', description: 'Leer permisos' },
+    { id: 'permission:update', description: 'Actualizar permisos' },
+    { id: 'permission:delete', description: 'Eliminar permisos' },
+    
+    // Notification permissions
+    { id: 'notification:send', description: 'Enviar notificaciones' },
+    
+    // Credit permissions
+    { id: 'credit:read', description: 'Leer créditos' },
+    { id: 'credit:purchase', description: 'Comprar créditos' },
+    { id: 'credit:use', description: 'Usar créditos' },
+    
+    // Plan permissions
+    { id: 'plan:create', description: 'Crear planes' },
+    { id: 'plan:read', description: 'Leer planes' },
+    { id: 'plan:update', description: 'Actualizar planes' },
+    { id: 'plan:delete', description: 'Eliminar planes' },
+    
+    // Company Plan permissions
+    { id: 'company-plan:create', description: 'Crear planes de empresa' },
+    { id: 'company-plan:read', description: 'Leer planes de empresa' },
+    { id: 'company-plan:update', description: 'Actualizar planes de empresa' },
+    { id: 'company-plan:delete', description: 'Eliminar planes de empresa' },
+    
+    // Tenant permissions
+    { id: 'tenant:read', description: 'Leer información del tenant' },
+  ];
 
-  for (let i = 0; i < 3; i++) {
+  for (const permData of permissionData) {
     const permission = await prisma.permission.upsert({
-      where: { id: `${permissionTypes[i]}:${actions[i]}` },
+      where: { id: permData.id },
       update: {},
       create: {
-        id: `${permissionTypes[i]}:${actions[i]}`,
-        description: `Can ${actions[i]} ${permissionTypes[i]}`,
+        id: permData.id,
+        description: permData.description,
       },
     });
     permissions.push(permission);

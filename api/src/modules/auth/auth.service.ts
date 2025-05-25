@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { SignupDto } from '@modules/auth/dtos/signup.dto';
 import { PrismaService } from '@libs/database/prisma/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { RoleInitializationService } from '@modules/tenant/application/services/role-initialization.service';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,7 @@ export class AuthService {
     private jwtService: JwtService,
     private prisma: PrismaService,
     private eventEmitter: EventEmitter2,
+    private roleInitializationService: RoleInitializationService,
   ) {}
 
   async validateUser(
@@ -102,7 +104,7 @@ export class AuthService {
         },
       });
 
-      await tx.user.create({
+      const createdUser = await tx.user.create({
         data: {
           name: user.name,
           email: user.email.toLowerCase(),
@@ -139,6 +141,13 @@ export class AuthService {
           },
         });
       }
+
+      // Initialize super admin role for the new company and assign it to the user
+      await this.roleInitializationService.initializeSuperAdminRole({
+        tenantId: company.tenantId,
+        userId: createdUser.id,
+        tx,
+      });
 
       return createdCompany;
     });

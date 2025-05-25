@@ -8,6 +8,9 @@ import { CheckSubdomainAvailabilityUseCase } from './application/use-cases/check
 import { CreateTenantUseCase } from './application/use-cases/create-tenant.use-case';
 import { GetTenantByIdUseCase } from './application/use-cases/get-tenant-by-id.use-case';
 
+// Application Layer - Services
+import { RoleInitializationService } from './application/services/role-initialization.service';
+
 // Infrastructure Layer
 import { TenantRepository } from './infrastructure/repositories/tenant.repository';
 import { TenantValidationService } from './infrastructure/services/tenant-validation.service';
@@ -26,6 +29,9 @@ import { PrismaService } from '@libs/database/prisma/prisma.service';
     CheckSubdomainAvailabilityUseCase,
     CreateTenantUseCase,
     GetTenantByIdUseCase,
+
+    // Application Services
+    RoleInitializationService,
 
     // Repository Implementations
     {
@@ -50,6 +56,9 @@ import { PrismaService } from '@libs/database/prisma/prisma.service';
 
     // Export repository for other modules that might need it
     TENANT_REPOSITORY,
+
+    // Export role initialization service for auth module
+    RoleInitializationService,
   ],
 })
 export class TenantModule {}

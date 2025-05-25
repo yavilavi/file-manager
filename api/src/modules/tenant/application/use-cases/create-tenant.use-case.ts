@@ -1,4 +1,5 @@
 import { Inject, Injectable, ConflictException } from '@nestjs/common';
+import * as argon2 from 'argon2';
 import { TenantEntity } from '../../domain/entities/tenant.entity';
 import { TenantIdentifier } from '../../domain/value-objects/tenant-identifier.vo';
 import { CompanyInfo } from '../../domain/value-objects/company-info.vo';
@@ -14,7 +15,10 @@ import {
   CreateTenantDto,
   TenantCreationResultDto,
   TenantResponseDto,
+  InitialUserResponseDto,
 } from '../dtos/create-tenant.dto';
+import { RoleInitializationService } from '../services/role-initialization.service';
+import { PrismaService } from '@libs/database/prisma/prisma.service';
 
 @Injectable()
 export class CreateTenantUseCase {
@@ -23,6 +27,8 @@ export class CreateTenantUseCase {
     private readonly tenantRepository: ITenantRepository,
     @Inject(TENANT_VALIDATION_SERVICE)
     private readonly validationService: ITenantValidationService,
+    private readonly roleInitializationService: RoleInitializationService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async execute(dto: CreateTenantDto): Promise<TenantCreationResultDto> {
@@ -71,28 +77,93 @@ export class CreateTenantUseCase {
       );
     }
 
-    // Create tenant entity
-    const tenant = TenantEntity.create({
-      id: tenantId.value,
-      name: companyInfo.name,
-      nit: companyInfo.nit,
-      canSendEmail: dto.canSendEmail || false,
+    // Validate initial user email if provided
+    if (dto.initialUser) {
+      const existingUser = await this.prisma.client.user.findFirst({
+        where: { email: dto.initialUser.email },
+      });
+      if (existingUser) {
+        throw new ConflictException(
+          'A user with this email already exists',
+        );
+      }
+    }
+
+    // Use transaction to ensure all operations succeed or fail together
+    return await this.prisma.client.$transaction(async (tx) => {
+      // Create tenant directly in the transaction
+      const createdCompany = await tx.company.create({
+        data: {
+          tenantId: tenantId.value,
+          name: companyInfo.name,
+          nit: companyInfo.nit,
+          canSendEmail: dto.canSendEmail || false,
+        },
+      });
+
+      let initialUser: InitialUserResponseDto | undefined;
+      let superAdminRole: any;
+
+      // Create initial user if provided
+      if (dto.initialUser) {
+        const hashedPassword = await argon2.hash(dto.initialUser.password);
+        
+        const createdUser = await tx.user.create({
+          data: {
+            name: dto.initialUser.name,
+            email: dto.initialUser.email,
+            password: hashedPassword,
+            tenantId: createdCompany.tenantId,
+            isActive: true,
+          },
+        });
+
+        // Initialize super admin role for the new company and assign it to the user
+        await this.roleInitializationService.initializeSuperAdminRole({
+          tenantId: createdCompany.tenantId,
+          userId: createdUser.id,
+          tx,
+        });
+
+        initialUser = new InitialUserResponseDto({
+          id: createdUser.id,
+          name: createdUser.name,
+          email: createdUser.email,
+          isActive: createdUser.isActive,
+          createdAt: createdUser.createdAt,
+        });
+
+        // Get the created super admin role for response
+        superAdminRole = await tx.role.findFirst({
+          where: {
+            tenantId: createdCompany.tenantId,
+            isAdmin: true,
+          },
+        });
+      }
+
+      // Map to response DTO
+      const responseDto = new TenantResponseDto({
+        id: createdCompany.tenantId,
+        name: createdCompany.name,
+        nit: createdCompany.nit,
+        canSendEmail: createdCompany.canSendEmail,
+        isActive: true,
+        createdAt: createdCompany.createdAt,
+        updatedAt: createdCompany.updatedAt,
+      });
+
+      return new TenantCreationResultDto(
+        responseDto,
+        'Tenant created successfully with super admin role',
+        initialUser,
+        superAdminRole ? {
+          id: superAdminRole.id,
+          name: superAdminRole.name,
+          description: superAdminRole.description,
+          isAdmin: superAdminRole.isAdmin,
+        } : undefined,
+      );
     });
-
-    // Save tenant
-    const savedTenant = await this.tenantRepository.save(tenant);
-
-    // Map to response DTO
-    const responseDto = new TenantResponseDto({
-      id: savedTenant.id,
-      name: savedTenant.name,
-      nit: savedTenant.nit,
-      canSendEmail: savedTenant.canSendEmail,
-      isActive: savedTenant.isActive(),
-      createdAt: savedTenant.createdAt,
-      updatedAt: savedTenant.updatedAt,
-    });
-
-    return new TenantCreationResultDto(responseDto);
   }
 }

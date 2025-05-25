@@ -13,12 +13,14 @@ import { CreatePlanDto } from '../../application/dtos/create-plan.dto';
 import { UpdatePlanDto } from '../../application/dtos/update-plan.dto';
 import { serializeBigInt } from '@utils/serializers';
 import { IsPublic } from '@shared/decorators/is-public.decorator';
+import { RequirePermission } from '@modules/auth/decorators/require-permission.decorator';
 
 @Controller('plans')
 export class PlanController {
   constructor(private readonly planService: PlanService) {}
 
   @Get()
+  @RequirePermission('plan:read')
   async findAll(): Promise<any> {
     const plans = await this.planService.findAll();
     return serializeBigInt(plans);
@@ -32,18 +34,21 @@ export class PlanController {
   }
 
   @Get(':id')
+  @RequirePermission('plan:read')
   async findById(@Param('id', ParseIntPipe) id: number): Promise<any> {
     const plan = await this.planService.findById(id);
     return serializeBigInt(plan);
   }
 
   @Post()
+  @RequirePermission('plan:create')
   async create(@Body() createPlanDto: CreatePlanDto): Promise<any> {
     const plan = await this.planService.create(createPlanDto);
     return serializeBigInt(plan);
   }
 
   @Put(':id')
+  @RequirePermission('plan:update')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updatePlanDto: UpdatePlanDto,
@@ -53,6 +58,7 @@ export class PlanController {
   }
 
   @Delete(':id')
+  @RequirePermission('plan:delete')
   async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.planService.delete(id);
   }
