@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - New User Wellcome Email.Template
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { CreateUserDto } from '@modules/users/dtos/create-user.dto';
 
 const buildNewUserWelcomeEmail = (
@@ -8,7 +17,7 @@ const buildNewUserWelcomeEmail = (
   <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #eee; border-radius: 8px;">
     <div style="text-align: center;">
       <img src="https://minio.docma.yilmer.com/assets/docma-logo.png" alt="Logo de Docma" style="width: 100px; margin-bottom: 16px;" />
-      <h2 style="color: #2c3e50;">¡Hola ${user.name}, tu cuenta ha sido creada!</h2>
+      <h2 style="color: #2c3e50;">Â¡Hola ${user.name}, tu cuenta ha sido creada!</h2>
     </div>
 
     <p style="font-size: 16px; color: #333;">
@@ -16,12 +25,12 @@ const buildNewUserWelcomeEmail = (
     </p>
 
     <p style="font-size: 16px; color: #333;">
-      A continuación encontrarás los detalles para iniciar sesión:
+      A continuaciÃ³n encontrarÃ¡s los detalles para iniciar sesiÃ³n:
     </p>
 
     <ul style="font-size: 16px; color: #333; padding-left: 16px;">
-      <li><strong>Correo electrónico:</strong> ${user.email}</li>
-      <li><strong>Contraseña:</strong> ${user.password}</li>
+      <li><strong>Correo electrÃ³nico:</strong> ${user.email}</li>
+      <li><strong>ContraseÃ±a:</strong> ${user.password}</li>
     </ul>
 
     <div style="text-align: center; margin: 24px 0;">
@@ -32,12 +41,12 @@ const buildNewUserWelcomeEmail = (
     </div>
 
     <p style="font-size: 14px; color: #555;">
-      Si tienes problemas para acceder, asegúrate de usar el correo indicado y verifica tu contraseña.
+      Si tienes problemas para acceder, asegÃºrate de usar el correo indicado y verifica tu contraseÃ±a.
     </p>
 
     <hr style="margin: 32px 0;" />
     <p style="font-size: 12px; color: #aaa; text-align: center;">
-      Este mensaje fue enviado automáticamente por Docma. Por favor, no respondas a este correo.
+      Este mensaje fue enviado automÃ¡ticamente por Docma. Por favor, no respondas a este correo.
     </p>
   </div>
 `;

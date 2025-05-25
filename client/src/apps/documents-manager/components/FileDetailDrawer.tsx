@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Filedetaildrawer
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import {Badge, Box, Button, Divider, Drawer, Group, Stack, Text} from '@mantine/core';
 import {
     IconBuilding,
@@ -65,7 +74,7 @@ const FileDetailDrawer = () => {
                             <Group gap="xs">
                                 <IconCalendar size={16}/>
                                 <Text size="sm" fw={500}>
-                                    Fecha de creación:
+                                    Fecha de creaciÃ³n:
                                 </Text>
                                 <Text size="sm">{format(file.createdAt, 'dd/MM/yyyy HH:mm:ss')}</Text>
                             </Group>

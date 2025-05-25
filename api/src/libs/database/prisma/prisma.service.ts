@@ -1,3 +1,13 @@
+/**
+ * File Manager - Prisma Database Service
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
+
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import prismaClient from '@libs/database/prisma/prisma.client';
 

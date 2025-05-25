@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - files.service.spec Tests
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Test, TestingModule } from '@nestjs/testing';
 import { FilesService } from '../files-service';

@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Formatbytes
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 /**
  * Format bytes to a human-readable string
  * @param bytes The number of bytes

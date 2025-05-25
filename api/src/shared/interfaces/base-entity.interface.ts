@@ -1,4 +1,14 @@
 /**
+ * File Manager - Base Entity Interface
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
+
+/**
  * Base entity interface with common audit fields
  * Following Single Responsibility Principle (SRP)
  */

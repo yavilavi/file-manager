@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - credits.module Module
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Module, forwardRef } from '@nestjs/common';
 import { CreditsService } from './application/services/credits.service';
 import { CompanyCreditsRepositoryImpl } from './infrastructure/repositories/company-credits.repository.impl';

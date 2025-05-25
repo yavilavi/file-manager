@@ -1,0 +1,76 @@
+File Manager - Contribution-Only License (COL)
+
+Copyright (c) 2024 File Manager Project
+Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to use
+the Software for personal, educational, and non-commercial purposes, subject
+to the following conditions:
+
+ATTRIBUTION REQUIREMENT:
+All uses of this Software, including but not limited to personal use, educational 
+use, internal business use, and contributions, MUST include proper attribution 
+to the original author. Attribution must include:
+- The original author's name: "Yilmer Avila"
+- Link to author's profile: https://www.linkedin.com/in/yilmeravila/
+- Reference to the original project repository
+- This copyright notice and license terms
+
+Attribution may be provided through:
+- Copyright notices in source code files
+- Documentation and README files
+- About sections in applications
+- Credits sections in user interfaces
+- Academic papers or presentations citing the work
+
+PERMITTED USES:
+1. Personal use and learning (with attribution)
+2. Educational and academic purposes (with attribution)
+3. Internal business use within an organization (with attribution)
+4. Contributing improvements, fixes, and features back to the original repository
+5. Forking for the purpose of contributing back to the original project
+
+PROHIBITED USES:
+1. Commercial distribution or sale of the Software or any derivative works
+2. Creating and distributing independent modified versions or forks
+3. Using the Software as a service for commercial purposes
+4. Sublicensing, selling, or transferring rights to the Software
+5. Distributing modified versions outside of contributions to the original repository
+6. Creating competing products or services based on this Software
+7. Using the Software without proper attribution to the original author
+
+CONTRIBUTION REQUIREMENTS:
+- All contributions must be made to the original repository
+- Contributors retain no exclusive rights to their contributions
+- All contributions become part of this project under the same license terms
+- Contributors must agree that their contributions can be used by the project maintainers
+- Contributions must maintain attribution to the original author
+
+DISCLAIMER:
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+ENFORCEMENT:
+Violation of these terms, including failure to provide proper attribution,
+will result in immediate termination of the license and may result in legal
+action. The original copyright holder reserves all rights not expressly
+granted herein.
+
+For commercial licensing inquiries, please contact the project maintainers.
+
+---
+
+This license ensures that:
+✅ The software remains free for personal and educational use
+✅ Original author receives proper credit for their work
+✅ Contributions flow back to the original project
+✅ Commercial exploitation is prevented
+✅ Community development is encouraged within the original repository
+❌ Independent forks and commercial derivatives are prohibited
+❌ Use without attribution is prohibited 

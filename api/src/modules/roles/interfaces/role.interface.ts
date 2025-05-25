@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - role.interface Interface
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Permission } from '../../permissions/interfaces/permission.interface';
 
 export interface Role {

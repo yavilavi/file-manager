@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Auth
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import apiCall, { publicApiCall } from '../axios.ts';
 import { UserInterface } from '../../types/interfaces/user-interface.ts';
 

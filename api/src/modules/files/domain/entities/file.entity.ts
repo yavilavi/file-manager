@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - file.entity Entity
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 export class FileEntity {
   private constructor(
     private readonly _id: number,

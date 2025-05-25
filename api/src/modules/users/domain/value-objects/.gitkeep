@@ -1,0 +1,10 @@
+# Value Objects
+
+This directory contains value objects for the Users domain.
+
+Value objects should:
+- Be immutable
+- Have no identity
+- Represent concepts through their values
+- Include validation logic
+- Be comparable by value 

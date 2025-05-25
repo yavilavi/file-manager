@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Create Department.Use Case
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Inject, Injectable } from '@nestjs/common';
 import { Department } from '../../domain/entities/department.entity';
 import {

@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Create Tenant.Use Case
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Inject, Injectable, ConflictException } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { TenantEntity } from '../../domain/entities/tenant.entity';

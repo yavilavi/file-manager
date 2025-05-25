@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Credit Transaction.Repository.Impl
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/libs/database/prisma/prisma.service';
 import { CreditTransactionRepository } from '../../domain/repositories/credit-transaction.repository';

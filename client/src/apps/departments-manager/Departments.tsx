@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Departments
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { Button, Group, Table, Modal, TextInput } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
@@ -33,7 +42,7 @@ export default function Departments() {
     onSuccess: () => {
       notifications.show({
         title: 'Departamento creado',
-        message: 'Se creó correctamente',
+        message: 'Se creÃ³ correctamente',
         color: 'green',
         autoClose: 5000,
       });
@@ -62,7 +71,7 @@ export default function Departments() {
     onSuccess: () => {
       notifications.show({
         title: 'Departamento actualizado',
-        message: 'Se actualizó correctamente',
+        message: 'Se actualizÃ³ correctamente',
         color: 'green',
         autoClose: 5000,
       });
@@ -137,7 +146,7 @@ export default function Departments() {
           <Table.Thead>
             <Table.Tr>
               <Table.Th>Nombre</Table.Th>
-              <Table.Th>Fecha de creación</Table.Th>
+              <Table.Th>Fecha de creaciÃ³n</Table.Th>
               <Table.Th key="6">Acciones</Table.Th>
             </Table.Tr>
           </Table.Thead>

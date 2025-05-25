@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Privateroute
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Navigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import useAuthStore from '../../stores/auth.store';

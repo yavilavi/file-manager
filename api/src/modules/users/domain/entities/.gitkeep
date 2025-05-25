@@ -1,0 +1,9 @@
+# Domain Entities
+
+This directory contains the core business entities for the Users domain.
+
+Entities should:
+- Contain business logic and invariants
+- Be independent of external concerns
+- Use value objects for complex properties
+- Follow domain-driven design patterns 

@@ -1,0 +1,9 @@
+# Domain Repository Interfaces
+
+This directory contains repository interfaces for the Users domain.
+
+Repository interfaces should:
+- Define contracts for data access
+- Be independent of implementation details
+- Follow the Repository pattern
+- Use domain entities as return types 

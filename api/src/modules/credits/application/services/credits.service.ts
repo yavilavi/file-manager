@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - credits.service Service
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { CompanyCreditsRepository } from '../../domain/repositories/company-credits.repository';
 import { CreditTransactionRepository } from '../../domain/repositories/credit-transaction.repository';
@@ -61,7 +70,7 @@ export class CreditsService {
           0, // ID will be set by database
           TransactionType.PURCHASE,
           planIncludedCredits,
-          `Créditos incluidos con el plan`,
+          `CrÃ©ditos incluidos con el plan`,
           tenantId,
           null, // No reference ID for plan credits
           new Date(),

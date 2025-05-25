@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Application Bootstrap
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { useQuery } from '@tanstack/react-query';
 import { checkSubdomain } from '../services/api/checkSubdomain.ts';
 

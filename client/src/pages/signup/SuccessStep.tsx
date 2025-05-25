@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Successstep
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Button, Center, Stack, Title, Text } from '@mantine/core';
 import { IconCircleCheck, IconRocket } from '@tabler/icons-react';
 
@@ -18,18 +27,18 @@ function SuccessStep({ subdomain }: SuccessStepProps) {
         <IconCircleCheck size={64} color="green" />
       </Center>
       <Title order={2} ta="center">
-        ¡Registro exitoso!
+        Â¡Registro exitoso!
       </Title>
       <Text c="dimmed" ta="center">
         Tu empresa ha sido registrada correctamente.
       </Text>
 
       <Text c="dimmed" ta="center">
-        Serás redirigido a {redirectUrl} para iniciar sesión.
+        SerÃ¡s redirigido a {redirectUrl} para iniciar sesiÃ³n.
       </Text>
 
       <Button onClick={handleClick} rightSection={<IconRocket size={20} />}>
-        Ir a iniciar sesión
+        Ir a iniciar sesiÃ³n
       </Button>
     </Stack>
   );

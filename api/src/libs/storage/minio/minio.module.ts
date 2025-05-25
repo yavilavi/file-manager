@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - minio.module Module
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { MinioService } from './minio.service';
 

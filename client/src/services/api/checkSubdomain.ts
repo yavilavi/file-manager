@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Application Bootstrap
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import apiCall from '../axios.ts';
 
 export const checkSubdomain = async (subdomain: string) => {

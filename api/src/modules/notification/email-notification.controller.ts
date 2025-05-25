@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - email-notification.controller Controller
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import {
   Body,
   Controller,
@@ -23,6 +32,6 @@ export class EmailNotificationController {
       await this.emailService.sendEmail(dto);
       return { message: 'Correo enviado' };
     }
-    throw new UnauthorizedException('Envío de correo deshabilitado');
+    throw new UnauthorizedException('EnvÃ­o de correo deshabilitado');
   }
 }

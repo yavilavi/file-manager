@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Company
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { 
   Card, 
   Text, 
@@ -17,14 +26,14 @@ export default function Company() {
   if (!user) {
     return (
       <Alert icon={<IconInfoCircle size="1rem" />} title="Error" color="red">
-        No se pudo obtener la información del usuario
+        No se pudo obtener la informaciÃ³n del usuario
       </Alert>
     );
   }
 
   return (
     <Stack gap="md">
-      <Title order={2} mb="xs">Información de la Empresa</Title>
+      <Title order={2} mb="xs">InformaciÃ³n de la Empresa</Title>
 
       {/* Company Data */}
       <Card shadow="sm" padding="md" radius="md" withBorder>
@@ -58,7 +67,7 @@ export default function Company() {
       <Card shadow="sm" padding="md" radius="md" withBorder>
         <Group gap="xs" mb="sm">
           <IconInfoCircle size="1.2rem" />
-          <Title order={4}>Información Adicional</Title>
+          <Title order={4}>InformaciÃ³n Adicional</Title>
         </Group>
         <Grid gutter="md">
           <Grid.Col span={{ base: 12, md: 6 }}>

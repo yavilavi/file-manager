@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Documents
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { Button, FileInput, Group, Progress, Table } from '@mantine/core';
 import { fetchDocuments } from '../../services/api/fetchDocuments.ts';
@@ -45,7 +54,7 @@ export default function Documents() {
       if (data.message === 'EXISTING') {
         notifications.update({
           id: 'default-notification',
-          title: 'Operación fallida',
+          title: 'OperaciÃ³n fallida',
           message: `El archivo ya existe`,
           loading: false,
           autoClose: 3000,
@@ -57,7 +66,7 @@ export default function Documents() {
       }
       notifications.update({
         id: 'default-notification',
-        title: 'Operación exitosa',
+        title: 'OperaciÃ³n exitosa',
         message: `El archivo se ha cargado exitosamente`,
         loading: false,
         autoClose: 3000,
@@ -70,7 +79,7 @@ export default function Documents() {
     onError: (data) => {
       notifications.update({
         id: 'default-notification',
-        title: 'Operación fallida',
+        title: 'OperaciÃ³n fallida',
         message: `${data.message}`,
         loading: false,
         autoClose: 3000,
@@ -125,11 +134,11 @@ export default function Documents() {
           <Table.Thead>
             <Table.Tr key="trh_0">
               <Table.Th key="0">Nombre</Table.Th>
-              <Table.Th key="1">Tamaño</Table.Th>
+              <Table.Th key="1">TamaÃ±o</Table.Th>
               <Table.Th key="3">Creado por</Table.Th>
               <Table.Th key="4">Departamento</Table.Th>
               <Table.Th key="5">Empresa</Table.Th>
-              <Table.Th key="6">Fecha creación</Table.Th>
+              <Table.Th key="6">Fecha creaciÃ³n</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>

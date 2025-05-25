@@ -1,0 +1,10 @@
+# Application Use Cases
+
+This directory contains use cases for the Users application layer.
+
+Use cases should:
+- Orchestrate business operations
+- Be single-purpose and focused
+- Use domain entities and services
+- Handle cross-cutting concerns
+- Implement application business rules 

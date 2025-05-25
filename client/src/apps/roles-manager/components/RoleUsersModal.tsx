@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Roleusersmodal
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { useState } from 'react';
 import { Modal, Title, Text, Group, Button, Stack, ScrollArea, TextInput, ActionIcon, Tooltip, Table, Select } from '@mantine/core';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -62,7 +71,7 @@ export default function RoleUsersModal({
     onError: (error: any) => {
       notifications.show({
         title: 'Error al asignar usuario',
-        message: error.response?.data?.message || 'Ocurrió un error',
+        message: error.response?.data?.message || 'OcurriÃ³ un error',
         color: 'red',
       });
     },
@@ -83,7 +92,7 @@ export default function RoleUsersModal({
     onError: (error: any) => {
       notifications.show({
         title: 'Error al remover usuario',
-        message: error.response?.data?.message || 'Ocurrió un error',
+        message: error.response?.data?.message || 'OcurriÃ³ un error',
         color: 'red',
       });
     },
@@ -96,7 +105,7 @@ export default function RoleUsersModal({
   };
 
   const handleRemoveRole = (userId: number) => {
-    if (window.confirm('¿Estás seguro de eliminar este usuario del rol?')) {
+    if (window.confirm('Â¿EstÃ¡s seguro de eliminar este usuario del rol?')) {
       removeRoleMutation.mutate(userId);
     }
   };
@@ -191,7 +200,7 @@ export default function RoleUsersModal({
                   <td colSpan={4}>
                     <Text c="dimmed" ta="center">
                       {searchQuery 
-                        ? 'No se encontraron usuarios con la búsqueda actual' 
+                        ? 'No se encontraron usuarios con la bÃºsqueda actual' 
                         : 'No hay usuarios asignados a este rol'}
                     </Text>
                   </td>

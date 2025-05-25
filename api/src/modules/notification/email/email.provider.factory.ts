@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Email.Provider.Factory
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { EmailProvider } from '@modules/notification/interfaces/email.provider.interface';
 import { SesProvider } from '@modules/aws/ses/ses.provider';
 import { ConfigService } from '@nestjs/config';

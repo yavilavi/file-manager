@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Is Onlyoffice Editable
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 const wordExtensions = [
   'doc', 'docm', 'docx', 'dot', 'dotm', 'dotx', 'epub', 'fb2', 'fodt',
   'htm', 'html', 'hwp', 'hwpx', 'mht', 'mhtml', 'odt', 'ott', 'pages',

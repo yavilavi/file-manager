@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Privatelayout
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import {AppShell, Burger, Group, Image, Badge} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {Navigate, Route, Routes, useNavigate} from 'react-router';
@@ -79,7 +88,7 @@ export default function PrivateLayout() {
                             style={{ cursor: 'pointer' }}
                             onClick={handleCreditsClick}
                         >
-                            {credits.currentBalance} créditos
+                            {credits.currentBalance} crÃ©ditos
                         </Badge>
                     )}
                 </Group>

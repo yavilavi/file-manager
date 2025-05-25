@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - department-domain.service Service
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Inject, Injectable } from '@nestjs/common';
 import {
   DepartmentRepository,
@@ -45,7 +54,7 @@ export class DepartmentDomainService {
     if (activeDepartments.length <= 1) {
       return {
         canDelete: false,
-        reason: 'No se puede eliminar el último departamento de la empresa',
+        reason: 'No se puede eliminar el Ãºltimo departamento de la empresa',
       };
     }
 

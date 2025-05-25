@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Companyregistration
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import {
   Box,
   Button,
@@ -93,7 +102,7 @@ export default function CompanyRegistration() {
     console.log(form.validate());
     if (form.validate().hasErrors || isOutOfBounds) return;
     if (active === 0 && !data?.available) {
-      form.setFieldError('subdomain', 'Debes elegir un subdominio válido');
+      form.setFieldError('subdomain', 'Debes elegir un subdominio vÃ¡lido');
       return;
     }
     if (active === 1 && form.values.departmentId === -1) {
@@ -102,7 +111,7 @@ export default function CompanyRegistration() {
     }
     if (active === 2 && !form.values.planId) {
       notifications.show({
-        title: 'Selección de plan requerida',
+        title: 'SelecciÃ³n de plan requerida',
         message: 'Debes seleccionar un plan para continuar',
         color: 'red',
       });
@@ -170,7 +179,7 @@ export default function CompanyRegistration() {
     if (form.validate().hasErrors) return;
     if (!form.values.planId) {
       notifications.show({
-        title: 'Selección de plan requerida',
+        title: 'SelecciÃ³n de plan requerida',
         message: 'Debes seleccionar un plan para continuar',
         color: 'red',
       });
@@ -180,7 +189,7 @@ export default function CompanyRegistration() {
     notifications.show({
       id: 'signup-submit',
       title: 'Espera un momento...',
-      message: 'Estamos creando tu espacio de gestión documental',
+      message: 'Estamos creando tu espacio de gestiÃ³n documental',
       loading: true,
       autoClose: false,
     });
@@ -279,7 +288,7 @@ export default function CompanyRegistration() {
             <Stepper.Step
               icon={<IconBuildingCommunity size={18} />}
               label="Empresa"
-              description="Información de la empresa"
+              description="InformaciÃ³n de la empresa"
               allowStepSelect={shouldAllowSelectStep(0)}
               disabled={isSuccess}
             >
@@ -309,7 +318,7 @@ export default function CompanyRegistration() {
                     debounced.length < 3
                       ? 'Escribe al menos 3 letras'
                       : data && !data.available
-                        ? 'Ya está en uso'
+                        ? 'Ya estÃ¡ en uso'
                         : data && data.available
                           ? 'Disponible'
                           : 'Verificando...'
@@ -365,12 +374,12 @@ export default function CompanyRegistration() {
                 mt="md"
               />
               <PasswordInput
-                label="Contraseña"
+                label="ContraseÃ±a"
                 {...form.getInputProps('adminPassword')}
                 mt="md"
               />
               <PasswordInput
-                label="Confirmar contraseña"
+                label="Confirmar contraseÃ±a"
                 {...form.getInputProps('confirmPassword')}
                 mt="md"
               />
@@ -389,7 +398,7 @@ export default function CompanyRegistration() {
             <Stepper.Step
               icon={<IconFileInvoice size={18} />}
               label="Plan"
-              description="Selección de plan"
+              description="SelecciÃ³n de plan"
               allowStepSelect={shouldAllowSelectStep(2)}
               disabled={isSuccess}
             >
@@ -402,8 +411,8 @@ export default function CompanyRegistration() {
 
             <Stepper.Step
               icon={<IconListCheck size={18} />}
-              label="Revisión"
-              description="Confirmar envío"
+              label="RevisiÃ³n"
+              description="Confirmar envÃ­o"
               allowStepSelect={shouldAllowSelectStep(3)}
               loading={isPending}
               disabled={isSuccess}
@@ -441,7 +450,7 @@ export default function CompanyRegistration() {
                 onClick={prevStep}
                 disabled={active === 0}
               >
-                Atrás
+                AtrÃ¡s
               </Button>
               {active < 3 ? (
                 <Button onClick={() => handleStepChange(active + 1)}>

@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Navbar
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { IconArchive, IconBuildings, IconMail, IconUsers, IconBuildingStore, IconCoin, IconPackage } from '@tabler/icons-react';
 import { UserButton } from '../UserButton/UserButton';
 import { NavLink } from 'react-router';
@@ -10,8 +19,8 @@ const links = [
   { icon: IconMail, label: 'Email', path: '/email' },
   { icon: IconUsers, label: 'Usuarios', path: '/users' },
   { icon: IconBuildings, label: 'Departamentos', path: '/departments' },
-  { icon: IconCoin, label: 'Créditos', path: '/credits' },
-  { icon: IconPackage, label: 'Suscripción', path: '/subscription' },
+  { icon: IconCoin, label: 'CrÃ©ditos', path: '/credits' },
+  { icon: IconPackage, label: 'SuscripciÃ³n', path: '/subscription' },
   { icon: IconBuildingStore, label: 'Empresa', path: '/company' },
 ];
 

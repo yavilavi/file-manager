@@ -1,4 +1,14 @@
 /**
+ * File Manager - Shared Interfaces Index
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
+
+/**
  * Centralized exports for all repository interfaces
  * Following DRY principle and improving developer experience
  */

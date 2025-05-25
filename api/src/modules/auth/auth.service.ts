@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - auth.service Service
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import {
   ConflictException,
   Injectable,
@@ -48,7 +57,7 @@ export class AuthService {
 
   async login(tenantId: string, jwtPayload?: JwtPayloadInterface) {
     if (!jwtPayload)
-      throw new UnauthorizedException('Usuario o contraseña inválidos');
+      throw new UnauthorizedException('Usuario o contraseÃ±a invÃ¡lidos');
     const dbUser = await this.usersService.findById(jwtPayload.sub, tenantId);
     if (dbUser) {
       const payload: JwtPayloadInterface = {
@@ -60,7 +69,7 @@ export class AuthService {
         access_token: this.jwtService.sign({ ...payload }, { expiresIn: '8h' }),
       };
     }
-    throw new UnauthorizedException('Usuario o contraseña inválidos');
+    throw new UnauthorizedException('Usuario o contraseÃ±a invÃ¡lidos');
   }
 
   async signup(signupDto: SignupDto) {
@@ -79,7 +88,7 @@ export class AuthService {
 
     if (existingCompany) {
       throw new ConflictException(
-        'Ya hay una compañía registrada con este NIT',
+        'Ya hay una compaÃ±Ã­a registrada con este NIT',
       );
     }
 

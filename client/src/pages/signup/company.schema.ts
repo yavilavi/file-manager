@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Company.Schema
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { z } from 'zod';
 
 const companySchema = z.object({
@@ -7,16 +16,16 @@ const companySchema = z.object({
   nit: z
     .string()
     .min(6, {
-      message: 'El NIT debe tener al menos 6 caractéres',
+      message: 'El NIT debe tener al menos 6 caractÃ©res',
     })
     .max(15, {
-      message: 'El NIT no puede tener más de 15 caractéres',
+      message: 'El NIT no puede tener mÃ¡s de 15 caractÃ©res',
     }),
   subdomain: z
     .string()
-    .min(4, { message: 'El subdominio debe tener al menos 4 caractéres' })
+    .min(4, { message: 'El subdominio debe tener al menos 4 caractÃ©res' })
     .max(15, {
-      message: 'El subdominio no puede tener más de 15 caractéres',
+      message: 'El subdominio no puede tener mÃ¡s de 15 caractÃ©res',
     }),
   departments: z
     .string()

@@ -1,0 +1,10 @@
+# Infrastructure Mappers
+
+This directory contains mappers for the Users infrastructure layer.
+
+Mappers should:
+- Convert between domain entities and external models
+- Handle data transformation
+- Be bidirectional when needed
+- Maintain data integrity
+- Follow the Adapter pattern 

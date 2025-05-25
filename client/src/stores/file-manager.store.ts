@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - File Manager.Store
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { create } from 'zustand';
 import { FileInterface } from '../types/interfaces/file.interface.ts';
 

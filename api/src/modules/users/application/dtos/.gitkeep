@@ -1,0 +1,10 @@
+# Application DTOs
+
+This directory contains Data Transfer Objects for the Users application layer.
+
+DTOs should:
+- Define input/output contracts
+- Include validation rules
+- Be serializable
+- Map between external and internal representations
+- Be independent of domain entities 

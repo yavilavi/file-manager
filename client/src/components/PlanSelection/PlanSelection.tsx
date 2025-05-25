@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Planselection
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { useState } from 'react';
 import { 
   Card, 
@@ -127,7 +136,7 @@ export default function PlanSelection({ onPlanSelected }: PlanSelectionProps) {
               </Text>
               {plan.creditsIncluded > 0 && (
                 <Text fw={500} c="blue" size="sm">
-                  Incluye {plan.creditsIncluded} créditos
+                  Incluye {plan.creditsIncluded} crÃ©ditos
                 </Text>
               )}
             </Stack>

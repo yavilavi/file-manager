@@ -1,0 +1,9 @@
+# Domain Services
+
+This directory contains domain services for the Users domain.
+
+Domain services should:
+- Contain business logic that spans multiple entities
+- Be stateless
+- Use domain entities and value objects
+- Implement complex business rules 

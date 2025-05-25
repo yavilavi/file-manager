@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - plan-repository.interface Interface
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Plan } from '../entities/plan.entity';
 
 export const PLAN_REPOSITORY = 'PLAN_REPOSITORY';

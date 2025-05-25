@@ -1,0 +1,10 @@
+# Infrastructure Repository Implementations
+
+This directory contains concrete repository implementations for the Users infrastructure layer.
+
+Repository implementations should:
+- Implement domain repository interfaces
+- Handle data persistence and retrieval
+- Use external data sources (databases, APIs)
+- Map between domain entities and data models
+- Be replaceable without affecting business logic 

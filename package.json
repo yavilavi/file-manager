@@ -1,7 +1,7 @@
 {
   "name": "file-manager",
   "version": "1.0.0",
-  "description": "",
+  "description": "Docma - Aplicación de gestión documental multitenant con arquitectura limpia",
   "type": "module",
   "scripts": {
     "commit": "commit",
@@ -9,10 +9,34 @@
     "commitlint": "commitlint --edit",
     "test": "echo \"Error: no test specified\""
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "document-management",
+    "multitenant",
+    "clean-architecture",
+    "nestjs",
+    "react",
+    "typescript",
+    "file-management",
+    "educational-project"
+  ],
+  "author": {
+    "name": "Yilmer Avila",
+    "url": "https://www.linkedin.com/in/yilmeravila/"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tu-usuario/file-manager.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tu-usuario/file-manager/issues"
+  },
+  "homepage": "https://github.com/tu-usuario/file-manager#readme",
   "packageManager": "pnpm@10.6.5",
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=8.0.0"
+  },
   "devDependencies": {
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",

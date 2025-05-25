@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Rolepermissionsmodal
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { useState, useMemo } from 'react';
 import { Modal, Title, Text, Group, Button, Checkbox, Stack, ScrollArea, TextInput } from '@mantine/core';
 import { useMutation } from '@tanstack/react-query';
@@ -38,7 +47,7 @@ export default function RolePermissionsModal({
     onError: (error: any) => {
       notifications.show({
         title: 'Error al actualizar permisos',
-        message: error.response?.data?.message || 'Ocurrió un error',
+        message: error.response?.data?.message || 'OcurriÃ³ un error',
         color: 'red',
       });
     },
@@ -99,7 +108,7 @@ export default function RolePermissionsModal({
       <Stack>
         {role.isAdmin ? (
           <Text c="dimmed">
-            Este rol es de administrador y tiene todos los permisos automáticamente.
+            Este rol es de administrador y tiene todos los permisos automÃ¡ticamente.
           </Text>
         ) : (
           <>
@@ -138,7 +147,7 @@ export default function RolePermissionsModal({
 
                 {filteredPermissions.length === 0 && (
                   <Text c="dimmed" ta="center">
-                    No se encontraron permisos con la búsqueda actual
+                    No se encontraron permisos con la bÃºsqueda actual
                   </Text>
                 )}
               </Stack>

@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - prisma-department.repository Repository
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@libs/database/prisma/prisma.service';
 import { Department } from '../../domain/entities/department.entity';

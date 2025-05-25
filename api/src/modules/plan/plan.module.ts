@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - plan.module Module
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Module, forwardRef } from '@nestjs/common';
 import { PlanService } from './application/services/plan.service';
 import { CompanyPlanService } from './application/services/company-plan.service';

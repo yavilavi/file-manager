@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - users.service Service
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import {
   ConflictException,
   Injectable,
@@ -134,7 +143,7 @@ export class UsersService {
     });
 
     if (existing) {
-      throw new ConflictException('El correo electrónico ya está registrado');
+      throw new ConflictException('El correo electrÃ³nico ya estÃ¡ registrado');
     }
     const hashedPassword = await argon2.hash(dto.password);
 

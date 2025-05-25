@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Files Service.Old
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { createHash } from 'crypto';
 import { MinioService } from '@libs/storage/minio/minio.service';

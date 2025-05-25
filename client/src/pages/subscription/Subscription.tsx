@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Subscription
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { useQuery } from '@tanstack/react-query';
 import { 
   Card, 
@@ -75,7 +84,7 @@ export default function Subscription() {
   if (!user) {
     return (
       <Alert icon={<IconInfoCircle size="1rem" />} title="Error" color="red">
-        No se pudo obtener la información del usuario
+        No se pudo obtener la informaciÃ³n del usuario
       </Alert>
     );
   }
@@ -83,7 +92,7 @@ export default function Subscription() {
   return (
     <Stack gap="md">
       <Group justify="space-between" align="center">
-        <Title order={2}>Suscripción y Plan</Title>
+        <Title order={2}>SuscripciÃ³n y Plan</Title>
         <Button variant="light" color="blue">
           Cambiar Plan
         </Button>
@@ -100,7 +109,7 @@ export default function Subscription() {
         </Card>
       ) : planError ? (
         <Alert icon={<IconInfoCircle size="1rem" />} title="Error" color="red">
-          No se pudo cargar la información del plan
+          No se pudo cargar la informaciÃ³n del plan
         </Alert>
       ) : companyPlan ? (
         <Card shadow="sm" padding="md" radius="md" withBorder>
@@ -121,7 +130,7 @@ export default function Subscription() {
                 </div>
                 
                 <div>
-                  <Text size="sm" c="dimmed">Descripción</Text>
+                  <Text size="sm" c="dimmed">DescripciÃ³n</Text>
                   <Text size="sm">{companyPlan.plan?.description}</Text>
                 </div>
 
@@ -160,8 +169,8 @@ export default function Subscription() {
 
                 {companyPlan.plan?.creditsIncluded && companyPlan.plan.creditsIncluded > 0 && (
                   <div>
-                    <Text size="sm" c="dimmed">Créditos Incluidos</Text>
-                    <Text fw={500} c="blue">{companyPlan.plan.creditsIncluded} créditos/mes</Text>
+                    <Text size="sm" c="dimmed">CrÃ©ditos Incluidos</Text>
+                    <Text fw={500} c="blue">{companyPlan.plan.creditsIncluded} crÃ©ditos/mes</Text>
                   </div>
                 )}
               </Stack>
@@ -179,7 +188,7 @@ export default function Subscription() {
         <Card shadow="sm" padding="md" radius="md" withBorder>
           <Group gap="xs" mb="md">
             <IconTrendingUp size="1.4rem" color="orange" />
-            <Title order={3}>Características del Plan</Title>
+            <Title order={3}>CaracterÃ­sticas del Plan</Title>
           </Group>
           
           <Grid gutter="md">
@@ -200,9 +209,9 @@ export default function Subscription() {
                 <Group gap="xs">
                   <IconCreditCard size="1rem" color="green" />
                   <div>
-                    <Text size="sm" fw={500}>Créditos Mensuales</Text>
+                    <Text size="sm" fw={500}>CrÃ©ditos Mensuales</Text>
                     <Text size="xs" c="dimmed">
-                      {companyPlan.plan.creditsIncluded} créditos
+                      {companyPlan.plan.creditsIncluded} crÃ©ditos
                     </Text>
                   </div>
                 </Group>
@@ -244,7 +253,7 @@ export default function Subscription() {
                 <Flex justify="space-between" align="center">
                   <div>
                     <Text fw={500} size="sm">
-                      {transaction.description || 'Compra de créditos'}
+                      {transaction.description || 'Compra de crÃ©ditos'}
                     </Text>
                     <Text size="xs" c="dimmed">
                       {formatDate(transaction.createdAt)}
@@ -252,7 +261,7 @@ export default function Subscription() {
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <Text fw={600} c="green" size="sm">
-                      +{transaction.amount} créditos
+                      +{transaction.amount} crÃ©ditos
                     </Text>
                     <Badge size="xs" color="green" variant="light">
                       Completado

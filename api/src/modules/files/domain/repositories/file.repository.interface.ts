@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - file.repository.interface Interface
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { FileEntity } from '../entities/file.entity';
 import { FileVersionEntity } from '../entities/file-version.entity';
 

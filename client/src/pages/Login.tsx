@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Login
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import {
   Button,
   TextInput,
@@ -36,7 +45,7 @@ export default function Login() {
         return;
       }
       if (!password) {
-        form.setFieldError('password', 'La contraseña es requerida');
+        form.setFieldError('password', 'La contraseÃ±a es requerida');
         return;
       }
       if (username && password) {
@@ -51,7 +60,7 @@ export default function Login() {
       const error = err as AxiosError<{ message: string; statusCode: number; error: string }>;
       console.error('Login error', error);
       notifications.show({
-        title: 'Error al iniciar sesión',
+        title: 'Error al iniciar sesiÃ³n',
         message: `${error.response?.data.message ?? error.message}`,
         color: 'red',
         autoClose: 5000,
@@ -70,10 +79,10 @@ export default function Login() {
     return (
       <Box maw={400} mx="auto" mt={150}>
         <Paper withBorder shadow="md" p="xl" radius="md">
-          <Title order={2} mb="sm">¡Ups! Parece que te perdiste</Title>
+          <Title order={2} mb="sm">Â¡Ups! Parece que te perdiste</Title>
           <Text>
-            El subdominio <b>{subdomain}</b> aún no está registrado por ninguna empresa.
-            ¡Apresúrate y crea tu cuenta antes de que alguien más registre <b>{subdomain}</b>!
+            El subdominio <b>{subdomain}</b> aÃºn no estÃ¡ registrado por ninguna empresa.
+            Â¡ApresÃºrate y crea tu cuenta antes de que alguien mÃ¡s registre <b>{subdomain}</b>!
           </Text>
           <Button
             mt="xl"
@@ -101,7 +110,7 @@ export default function Login() {
             mb="md"
           />
           <Title order={4}>
-            Iniciar sesión
+            Iniciar sesiÃ³n
           </Title>
           <form
             onSubmit={form.onSubmit(handleSubmit)}
@@ -113,7 +122,7 @@ export default function Login() {
               type="email"
             />
             <PasswordInput
-              label="Contraseña"
+              label="ContraseÃ±a"
               mt="md"
               {...form.getInputProps('password')}
             />
@@ -123,7 +132,7 @@ export default function Login() {
               fullWidth
               loading={loginMutation.isPending}
             >
-              Iniciar sesión
+              Iniciar sesiÃ³n
             </Button>
           </form>
         </Stack>

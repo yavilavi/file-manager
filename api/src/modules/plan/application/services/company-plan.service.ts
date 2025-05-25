@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - company-plan.service Service
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import {
   Injectable,
   NotFoundException,
@@ -106,7 +115,7 @@ export class CompanyPlanService {
           createCompanyPlanDto.tenantId,
           {
             amount: plan.creditsIncluded,
-            description: `Créditos incluidos con el plan ${plan.name}`,
+            description: `CrÃ©ditos incluidos con el plan ${plan.name}`,
           },
         );
       } catch (error) {

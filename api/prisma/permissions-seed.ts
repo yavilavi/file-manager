@@ -1,9 +1,18 @@
+﻿/**
+ * File Manager - Permissions Seed
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { PrismaClient, Permission } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function seedPermissions() {
-  console.log('🌱 Seeding permissions...');
+  console.log('ðŸŒ± Seeding permissions...');
 
   const permissionData = [
     // File permissions
@@ -42,9 +51,9 @@ async function seedPermissions() {
     { id: 'notification:send', description: 'Enviar notificaciones' },
     
     // Credit permissions
-    { id: 'credit:read', description: 'Leer créditos' },
-    { id: 'credit:purchase', description: 'Comprar créditos' },
-    { id: 'credit:use', description: 'Usar créditos' },
+    { id: 'credit:read', description: 'Leer crÃ©ditos' },
+    { id: 'credit:purchase', description: 'Comprar crÃ©ditos' },
+    { id: 'credit:use', description: 'Usar crÃ©ditos' },
     
     // Plan permissions
     { id: 'plan:create', description: 'Crear planes' },
@@ -59,7 +68,7 @@ async function seedPermissions() {
     { id: 'company-plan:delete', description: 'Eliminar planes de empresa' },
     
     // Tenant permissions
-    { id: 'tenant:read', description: 'Leer información del tenant' },
+    { id: 'tenant:read', description: 'Leer informaciÃ³n del tenant' },
   ];
 
   const permissions: Permission[] = [];
@@ -77,16 +86,16 @@ async function seedPermissions() {
         },
       });
       permissions.push(permission);
-      console.log(`✅ Permission created/updated: ${permission.id}`);
+      console.log(`âœ… Permission created/updated: ${permission.id}`);
     } catch (error) {
-      console.error(`❌ Error creating permission ${permData.id}:`, error);
+      console.error(`âŒ Error creating permission ${permData.id}:`, error);
     }
   }
 
-  console.log(`🎉 Successfully seeded ${permissions.length} permissions!`);
+  console.log(`ðŸŽ‰ Successfully seeded ${permissions.length} permissions!`);
   
   // Optionally, assign all permissions to admin roles
-  console.log('🔧 Assigning permissions to admin roles...');
+  console.log('ðŸ”§ Assigning permissions to admin roles...');
   
   try {
     const adminRoles = await prisma.role.findMany({
@@ -109,10 +118,10 @@ async function seedPermissions() {
           },
         });
       }
-      console.log(`✅ Assigned all permissions to admin role: ${role.name} (ID: ${role.id})`);
+      console.log(`âœ… Assigned all permissions to admin role: ${role.name} (ID: ${role.id})`);
     }
   } catch (error) {
-    console.error('❌ Error assigning permissions to admin roles:', error);
+    console.error('âŒ Error assigning permissions to admin roles:', error);
   }
 
   return permissions;
@@ -122,7 +131,7 @@ async function main() {
   try {
     await seedPermissions();
   } catch (error) {
-    console.error('❌ Error during permission seeding:', error);
+    console.error('âŒ Error during permission seeding:', error);
     throw error;
   }
 }
@@ -130,10 +139,10 @@ async function main() {
 main()
   .then(async () => {
     await prisma.$disconnect();
-    console.log('🔌 Database connection closed');
+    console.log('ðŸ”Œ Database connection closed');
   })
   .catch(async (e) => {
-    console.error('💥 Fatal error:', e);
+    console.error('ðŸ’¥ Fatal error:', e);
     await prisma.$disconnect();
     process.exit(1);
   }); 

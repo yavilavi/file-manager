@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - local.strategy Strategy
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
@@ -23,7 +32,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       req.tenantId,
     );
     if (!payload) {
-      throw new UnauthorizedException('Usuario o contraseña inválidos');
+      throw new UnauthorizedException('Usuario o contraseÃ±a invÃ¡lidos');
     }
     return payload;
   }

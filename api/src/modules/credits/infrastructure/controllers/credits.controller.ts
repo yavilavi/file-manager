@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - credits.controller Controller
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { CreditsService } from '../../application/services/credits.service';
 import { PurchaseCreditsDto } from '../../application/dtos/purchase-credits.dto';

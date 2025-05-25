@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Minio Storage.Adapter
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Injectable } from '@nestjs/common';
 import { Readable } from 'stream';
 import { MinioService } from '@libs/storage/minio/minio.service';

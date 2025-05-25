@@ -1,4 +1,14 @@
 /**
+ * File Manager - Base Repository Interface
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
+
+/**
  * Base repository interface following SOLID principles
  * Provides common CRUD operations for all entities
  * 

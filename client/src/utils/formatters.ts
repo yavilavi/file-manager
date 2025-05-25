@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Formatters
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 export const formatDate = (date: string | null | undefined): string => {
   if (!date) return 'No disponible';
   
@@ -6,7 +15,7 @@ export const formatDate = (date: string | null | undefined): string => {
     
     // Check if the date object is valid
     if (isNaN(dateObj.getTime())) {
-      return 'Fecha inválida';
+      return 'Fecha invÃ¡lida';
     }
     
     return new Intl.DateTimeFormat('es-ES', {
@@ -18,7 +27,7 @@ export const formatDate = (date: string | null | undefined): string => {
     }).format(dateObj);
   } catch (error) {
     console.warn('Error formatting date:', error, 'Original value:', date);
-    return 'Fecha inválida';
+    return 'Fecha invÃ¡lida';
   }
 };
 

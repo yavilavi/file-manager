@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Documentseditor
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import React from 'react';
 import {fetchEditorConfig} from "../../services/api/fetchEditorConfig.ts";
 import {useQuery} from '@tanstack/react-query';

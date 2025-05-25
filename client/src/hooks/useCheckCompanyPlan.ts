@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Usecheckcompanyplan
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { useEffect } from 'react';
 import { notifications } from '@mantine/notifications';
 import { useFetchCompanyPlan } from './usePlans';

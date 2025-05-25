@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Auth.Store
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 // stores/auth.store.ts
 import { create } from 'zustand';
 import { UserInterface } from '../types/interfaces/user-interface.ts';

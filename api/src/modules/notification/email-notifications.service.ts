@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - email-notifications.service Service
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { EmailProvider } from '@modules/notification/interfaces/email.provider.interface';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -25,7 +34,7 @@ export class EmailNotificationsService {
     const { user, company } = payload;
     const appUrl = `${this.configService.get('protocol') ?? 'http'}://${company.tenantId}.${this.configService.getOrThrow('baseAppUrl')}`;
 
-    const subject = `¡Bienvenido a Docma, ${company.name}!`;
+    const subject = `Â¡Bienvenido a Docma, ${company.name}!`;
     const htmlBody = buildWelcomeEmailTemplate(user.name, company.name, appUrl);
 
     try {
@@ -46,7 +55,7 @@ export class EmailNotificationsService {
     const { user, company } = payload;
     const appUrl = `${this.configService.get('protocol') ?? 'http'}://${company.tenantId}.${this.configService.getOrThrow('baseAppUrl')}`;
 
-    const subject = `¡Bienvenido a Docma, ${user.name}!`;
+    const subject = `Â¡Bienvenido a Docma, ${user.name}!`;
     const htmlBody = buildNewUserWelcomeEmail(user, company.name, appUrl);
 
     try {

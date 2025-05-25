@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - users.module Module
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { PrismaService } from '@libs/database/prisma/prisma.service';

@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - company-credits.entity Entity
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 export class CompanyCreditsEntity {
   constructor(
     private readonly id: number,

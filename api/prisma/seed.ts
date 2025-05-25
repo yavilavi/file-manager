@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Seed
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import {
   PrismaClient,
   Company,
@@ -129,9 +138,9 @@ async function main() {
     { id: 'notification:send', description: 'Enviar notificaciones' },
     
     // Credit permissions
-    { id: 'credit:read', description: 'Leer créditos' },
-    { id: 'credit:purchase', description: 'Comprar créditos' },
-    { id: 'credit:use', description: 'Usar créditos' },
+    { id: 'credit:read', description: 'Leer crÃ©ditos' },
+    { id: 'credit:purchase', description: 'Comprar crÃ©ditos' },
+    { id: 'credit:use', description: 'Usar crÃ©ditos' },
     
     // Plan permissions
     { id: 'plan:create', description: 'Crear planes' },
@@ -146,7 +155,7 @@ async function main() {
     { id: 'company-plan:delete', description: 'Eliminar planes de empresa' },
     
     // Tenant permissions
-    { id: 'tenant:read', description: 'Leer información del tenant' },
+    { id: 'tenant:read', description: 'Leer informaciÃ³n del tenant' },
   ];
 
   for (const permData of permissionData) {

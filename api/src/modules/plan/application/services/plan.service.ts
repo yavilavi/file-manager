@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - plan.service Service
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import {
   IPlanRepository,

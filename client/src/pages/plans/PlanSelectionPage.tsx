@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Planselectionpage
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Box, Container, Paper, Title, Text } from '@mantine/core';
 import PlanSelection from '../../components/PlanSelection/PlanSelection';
 import { useEffect, useState } from 'react';
@@ -24,7 +33,7 @@ export default function PlanSelectionPage() {
     <Container size="xl">
       <Paper p="xl" radius="md" withBorder shadow="md" my="xl">
         <Box mb="xl" ta="center">
-          <Title>Selección de Plan</Title>
+          <Title>SelecciÃ³n de Plan</Title>
           <Text c="dimmed">
             Para continuar usando la plataforma, debes seleccionar un plan
           </Text>

@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Serializers
+ *
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ *
+ * Created: 2024
+ */
 /**
  * Serializes an object or array that may contain BigInt values
  * by converting BigInt to strings

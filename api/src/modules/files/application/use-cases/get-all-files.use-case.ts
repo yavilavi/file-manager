@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Get All Files.Use Case
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Inject, Injectable } from '@nestjs/common';
 import { TenantId } from '../../domain/value-objects/tenant-id.vo';
 import {

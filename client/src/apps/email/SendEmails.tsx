@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - Sendemails
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { useMutation } from '@tanstack/react-query';
 import { Button, Group, Modal, TextInput, Textarea } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
@@ -16,7 +25,7 @@ export default function SendEmails() {
       body: '',
     },
     validate: {
-      to: (value) => (/^[^@]+@[^@]+\.[^@]+$/.test(value) ? null : 'Correo inválido'),
+      to: (value) => (/^[^@]+@[^@]+\.[^@]+$/.test(value) ? null : 'Correo invÃ¡lido'),
       subject: (value) => (value.length < 3 ? 'Asunto muy corto' : null),
       body: (value) => (value.length < 5 ? 'Mensaje muy corto' : null),
     },
@@ -66,7 +75,7 @@ export default function SendEmails() {
       >
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput label="Para" placeholder="usuario@correo.com" {...form.getInputProps('to')} required />
-          <TextInput label="Asunto" placeholder="Título del correo" mt="sm" {...form.getInputProps('subject')}
+          <TextInput label="Asunto" placeholder="TÃ­tulo del correo" mt="sm" {...form.getInputProps('subject')}
                      required />
           <Textarea label="Mensaje" placeholder="Escribe el contenido del correo"
                     mt="sm" {...form.getInputProps('body')} required minRows={4} />

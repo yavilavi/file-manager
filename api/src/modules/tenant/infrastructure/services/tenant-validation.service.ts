@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - tenant-validation.service Service
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { Injectable } from '@nestjs/common';
 import { ITenantValidationService } from '../../domain/services/tenant-validation.service.interface';
 import { TenantIdentifier } from '../../domain/value-objects/tenant-identifier.vo';

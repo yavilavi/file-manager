@@ -1,3 +1,12 @@
+﻿/**
+ * File Manager - company.service Service
+ * 
+ * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
+ * Project: File Manager
+ * License: Contribution-Only License (COL)
+ * 
+ * Created: 2024
+ */
 import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateCompanyDto } from './dtos/create-company.dto';
 import { PrismaService } from '@libs/database/prisma/prisma.service';
@@ -19,7 +28,7 @@ export class CompanyService {
 
     if (existingCompany) {
       throw new ConflictException(
-        'Ya hay una compañía registrada con este NIT',
+        'Ya hay una compaÃ±Ã­a registrada con este NIT',
       );
     }
     return this.prisma.client.company.create({
