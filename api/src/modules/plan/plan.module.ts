@@ -1,13 +1,13 @@
 ﻿/**
  * File Manager - plan.module Module
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { PlanService } from './application/services/plan.service';
 import { CompanyPlanService } from './application/services/company-plan.service';
 import { PlanController } from './infrastructure/controllers/plan.controller';
@@ -17,10 +17,9 @@ import { PrismaCompanyPlanRepository } from './infrastructure/repositories/prism
 import { PLAN_REPOSITORY } from './domain/repositories/plan-repository.interface';
 import { COMPANY_PLAN_REPOSITORY } from './domain/repositories/company-plan-repository.interface';
 import { PrismaService } from '@libs/database/prisma/prisma.service';
-import { CreditsModule } from '../credits/credits.module';
 
 @Module({
-  imports: [forwardRef(() => CreditsModule)],
+  imports: [],
   controllers: [PlanController, CompanyPlanController],
   providers: [
     PrismaService,

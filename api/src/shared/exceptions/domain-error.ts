@@ -1,10 +1,10 @@
 /**
  * File Manager - Domain Error Base Classes
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
@@ -26,7 +26,7 @@ export abstract class DomainError extends Error {
   ) {
     super(message);
     this.name = this.constructor.name;
-    
+
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, this.constructor);
@@ -61,11 +61,7 @@ export abstract class DomainError extends Error {
  * Following Liskov Substitution Principle (LSP)
  */
 export abstract class EntityNotFoundError extends DomainError {
-  constructor(
-    entityName: string,
-    identifier: string | number,
-    cause?: Error,
-  ) {
+  constructor(entityName: string, identifier: string | number, cause?: Error) {
     super(
       `${entityName} with identifier '${identifier}' was not found`,
       `${entityName.toUpperCase()}_NOT_FOUND`,
@@ -99,11 +95,7 @@ export abstract class ValidationError extends DomainError {
  * Following Single Responsibility Principle (SRP)
  */
 export abstract class BusinessRuleViolationError extends DomainError {
-  constructor(
-    rule: string,
-    context: string,
-    cause?: Error,
-  ) {
+  constructor(rule: string, context: string, cause?: Error) {
     super(
       `Business rule violation: ${rule} in context: ${context}`,
       'BUSINESS_RULE_VIOLATION',
@@ -123,14 +115,10 @@ export abstract class PermissionError extends DomainError {
     context?: string,
     cause?: Error,
   ) {
-    const message = context 
+    const message = context
       ? `Permission denied: Cannot ${action} ${resource} in context: ${context}`
       : `Permission denied: Cannot ${action} ${resource}`;
-    
-    super(
-      message,
-      'PERMISSION_DENIED',
-      cause,
-    );
+
+    super(message, 'PERMISSION_DENIED', cause);
   }
-} 
+}

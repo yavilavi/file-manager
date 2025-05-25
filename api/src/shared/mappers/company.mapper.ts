@@ -1,16 +1,20 @@
 /**
  * File Manager - Company Mapper
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
 import { Injectable } from '@nestjs/common';
 import { BaseRelationalMapper } from './base-mapper';
-import { ICompany, ICompanyWithRelations, ICreateCompanyData } from '@shared/interfaces';
+import {
+  ICompany,
+  ICompanyWithRelations,
+  ICreateCompanyData,
+} from '@shared/interfaces/company-repository.interface';
 import { Company as PrismaCompany } from '@prisma/client';
 
 /**
@@ -42,7 +46,6 @@ export class CompanyMapper extends BaseRelationalMapper<
   ICompanyWithRelations,
   CompanyDto
 > {
-
   /**
    * Convert from Prisma model to domain entity
    */
@@ -50,7 +53,7 @@ export class CompanyMapper extends BaseRelationalMapper<
     this.validateRequired<PrismaCompany>(
       persistence,
       ['id', 'name', 'nit', 'tenantId', 'createdAt', 'updatedAt'],
-      'Company'
+      'Company',
     );
 
     return {
@@ -69,17 +72,18 @@ export class CompanyMapper extends BaseRelationalMapper<
    */
   toDomainWithRelations(persistence: any): ICompanyWithRelations {
     const baseCompany = this.toDomain(persistence);
-    
+
     return {
       ...baseCompany,
-      departments: persistence.departments?.map((dept: any) => ({
-        id: dept.id,
-        name: dept.name,
-        tenantId: dept.tenantId,
-        createdAt: dept.createdAt,
-        updatedAt: dept.updatedAt,
-        deletedAt: dept.deletedAt,
-      })) || [],
+      departments:
+        persistence.departments?.map((dept: any) => ({
+          id: dept.id,
+          name: dept.name,
+          tenantId: dept.tenantId,
+          createdAt: dept.createdAt,
+          updatedAt: dept.updatedAt,
+          deletedAt: dept.deletedAt,
+        })) || [],
       users: persistence.users || [],
       _count: persistence._count,
     };
@@ -88,7 +92,9 @@ export class CompanyMapper extends BaseRelationalMapper<
   /**
    * Convert from domain entity to Prisma model
    */
-  toPersistence(domain: ICompany): Omit<PrismaCompany, 'id' | 'createdAt' | 'updatedAt'> {
+  toPersistence(
+    domain: ICompany,
+  ): Omit<PrismaCompany, 'id' | 'createdAt' | 'updatedAt'> {
     return this.cleanObject({
       name: domain.name,
       nit: domain.nit,
@@ -129,7 +135,9 @@ export class CompanyMapper extends BaseRelationalMapper<
   /**
    * Convert from ICreateCompanyData to domain entity
    */
-  fromCreateCompanyData(data: ICreateCompanyData): Omit<ICompany, 'id' | 'createdAt' | 'updatedAt'> {
+  fromCreateCompanyData(
+    data: ICreateCompanyData,
+  ): Omit<ICompany, 'id' | 'createdAt' | 'updatedAt'> {
     return this.cleanObject({
       name: data.name,
       nit: data.nit,
@@ -138,4 +146,4 @@ export class CompanyMapper extends BaseRelationalMapper<
       deletedAt: null,
     });
   }
-} 
+}

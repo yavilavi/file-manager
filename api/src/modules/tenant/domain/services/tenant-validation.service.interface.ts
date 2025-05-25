@@ -1,10 +1,10 @@
 ﻿/**
  * File Manager - tenant-validation.service.interface Interface
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 export const TENANT_VALIDATION_SERVICE = 'TENANT_VALIDATION_SERVICE';

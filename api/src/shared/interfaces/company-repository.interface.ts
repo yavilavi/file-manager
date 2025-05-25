@@ -1,10 +1,10 @@
 /**
  * File Manager - Company Repository Interface
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
@@ -106,7 +106,10 @@ export interface ICompanyRepository extends IRepository<ICompany, number> {
    * @param includeRelations - Whether to include departments and users count
    * @returns Promise with company or null if not found
    */
-  findByIdWithRelations(id: number, includeRelations?: boolean): Promise<ICompanyWithRelations | null>;
+  findByIdWithRelations(
+    id: number,
+    includeRelations?: boolean,
+  ): Promise<ICompanyWithRelations | null>;
 
   /**
    * Find all companies with optional filtering
@@ -114,14 +117,19 @@ export interface ICompanyRepository extends IRepository<ICompany, number> {
    * @param includeRelations - Whether to include related data
    * @returns Promise with array of companies
    */
-  findAllWithFilters(filters?: ICompanyFilters, includeRelations?: boolean): Promise<ICompanyWithRelations[]>;
+  findAllWithFilters(
+    filters?: ICompanyFilters,
+    includeRelations?: boolean,
+  ): Promise<ICompanyWithRelations[]>;
 
   /**
    * Create a new company with departments
    * @param companyData - Company creation data
    * @returns Promise with created company
    */
-  createCompany(companyData: ICreateCompanyData): Promise<ICompanyWithRelations>;
+  createCompany(
+    companyData: ICreateCompanyData,
+  ): Promise<ICompanyWithRelations>;
 
   /**
    * Update company by ID
@@ -129,7 +137,10 @@ export interface ICompanyRepository extends IRepository<ICompany, number> {
    * @param updates - Company update data
    * @returns Promise with updated company or null if not found
    */
-  updateCompany(id: number, updates: IUpdateCompanyData): Promise<ICompanyWithRelations | null>;
+  updateCompany(
+    id: number,
+    updates: IUpdateCompanyData,
+  ): Promise<ICompanyWithRelations | null>;
 
   /**
    * Update company by tenant ID
@@ -137,7 +148,10 @@ export interface ICompanyRepository extends IRepository<ICompany, number> {
    * @param updates - Company update data
    * @returns Promise with updated company or null if not found
    */
-  updateByTenantId(tenantId: string, updates: IUpdateCompanyData): Promise<ICompanyWithRelations | null>;
+  updateByTenantId(
+    tenantId: string,
+    updates: IUpdateCompanyData,
+  ): Promise<ICompanyWithRelations | null>;
 
   /**
    * Soft delete company by ID
@@ -208,5 +222,22 @@ export interface ICompanyRepository extends IRepository<ICompany, number> {
    * @param canSendEmail - New email capability status
    * @returns Promise with updated company
    */
-  toggleEmailCapability(tenantId: string, canSendEmail: boolean): Promise<ICompanyWithRelations | null>;
-} 
+  toggleEmailCapability(
+    tenantId: string,
+    canSendEmail: boolean,
+  ): Promise<ICompanyWithRelations | null>;
+
+  /**
+   * Create a new company with departments (alias for createCompany)
+   * @param companyData - Company creation data
+   * @returns Promise with created company including departments
+   */
+  createCompanyWithDepartments(
+    companyData: ICreateCompanyData,
+  ): Promise<ICompanyWithRelations>;
+}
+
+/**
+ * Token for dependency injection
+ */
+export const COMPANY_REPOSITORY = Symbol('CompanyRepository');

@@ -1,17 +1,17 @@
 /**
  * File Manager - Base Repository Interface
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
 /**
  * Base repository interface following SOLID principles
  * Provides common CRUD operations for all entities
- * 
+ *
  * @template T - Entity type
  * @template K - Primary key type (number, string, etc.)
  */
@@ -65,4 +65,4 @@ export interface IRepository<T, K = number> {
    * @returns Promise with count
    */
   count(filters?: Record<string, any>): Promise<number>;
-} 
+}

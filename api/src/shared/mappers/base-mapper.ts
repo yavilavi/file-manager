@@ -1,17 +1,17 @@
 /**
  * File Manager - Base Mapper Classes
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
 /**
  * Base mapper interface following SOLID principles
  * Following Interface Segregation Principle (ISP) and Dependency Inversion Principle (DIP)
- * 
+ *
  * @template TDomain - Domain entity type
  * @template TPersistence - Persistence model type
  * @template TDto - Data Transfer Object type
@@ -29,7 +29,9 @@ export interface IMapper<TDomain, TPersistence, TDto = any> {
    * @param domain - Domain entity
    * @returns Persistence model data
    */
-  toPersistence(domain: TDomain): Omit<TPersistence, 'id' | 'createdAt' | 'updatedAt'>;
+  toPersistence(
+    domain: TDomain,
+  ): Omit<TPersistence, 'id' | 'createdAt' | 'updatedAt'>;
 
   /**
    * Convert from domain entity to DTO
@@ -49,14 +51,14 @@ export interface IMapper<TDomain, TPersistence, TDto = any> {
 /**
  * Base mapper class with common functionality
  * Following Single Responsibility Principle (SRP) and Template Method Pattern
- * 
+ *
  * @template TDomain - Domain entity type
  * @template TPersistence - Persistence model type
  * @template TDto - Data Transfer Object type
  */
-export abstract class BaseMapper<TDomain, TPersistence, TDto = any> 
-  implements IMapper<TDomain, TPersistence, TDto> {
-
+export abstract class BaseMapper<TDomain, TPersistence, TDto = any>
+  implements IMapper<TDomain, TPersistence, TDto>
+{
   /**
    * Convert from persistence model to domain entity
    * Template method - subclasses implement the specific mapping logic
@@ -67,7 +69,9 @@ export abstract class BaseMapper<TDomain, TPersistence, TDto = any>
    * Convert from domain entity to persistence model
    * Template method - subclasses implement the specific mapping logic
    */
-  abstract toPersistence(domain: TDomain): Omit<TPersistence, 'id' | 'createdAt' | 'updatedAt'>;
+  abstract toPersistence(
+    domain: TDomain,
+  ): Omit<TPersistence, 'id' | 'createdAt' | 'updatedAt'>;
 
   /**
    * Convert from domain entity to DTO
@@ -86,15 +90,17 @@ export abstract class BaseMapper<TDomain, TPersistence, TDto = any>
    * Following DRY principle
    */
   toDomainList(persistenceList: TPersistence[]): TDomain[] {
-    return persistenceList.map(item => this.toDomain(item));
+    return persistenceList.map((item) => this.toDomain(item));
   }
 
   /**
    * Batch convert from domain entities to persistence models
    * Following DRY principle
    */
-  toPersistenceList(domainList: TDomain[]): Omit<TPersistence, 'id' | 'createdAt' | 'updatedAt'>[] {
-    return domainList.map(item => this.toPersistence(item));
+  toPersistenceList(
+    domainList: TDomain[],
+  ): Omit<TPersistence, 'id' | 'createdAt' | 'updatedAt'>[] {
+    return domainList.map((item) => this.toPersistence(item));
   }
 
   /**
@@ -102,15 +108,17 @@ export abstract class BaseMapper<TDomain, TPersistence, TDto = any>
    * Following DRY principle
    */
   toDtoList(domainList: TDomain[]): TDto[] {
-    return domainList.map(item => this.toDto(item));
+    return domainList.map((item) => this.toDto(item));
   }
 
   /**
    * Batch convert from DTOs to domain entities
    * Following DRY principle
    */
-  fromDtoList(dtoList: TDto[]): Omit<TDomain, 'id' | 'createdAt' | 'updatedAt'>[] {
-    return dtoList.map(item => this.fromDto(item));
+  fromDtoList(
+    dtoList: TDto[],
+  ): Omit<TDomain, 'id' | 'createdAt' | 'updatedAt'>[] {
+    return dtoList.map((item) => this.fromDto(item));
   }
 
   /**
@@ -120,12 +128,12 @@ export abstract class BaseMapper<TDomain, TPersistence, TDto = any>
   protected safeConvert<TInput, TOutput>(
     input: TInput | null | undefined,
     converter: (input: TInput) => TOutput,
-    defaultValue?: TOutput
+    defaultValue?: TOutput,
   ): TOutput | undefined {
     if (input === null || input === undefined) {
       return defaultValue;
     }
-    
+
     try {
       return converter(input);
     } catch (error) {
@@ -141,15 +149,15 @@ export abstract class BaseMapper<TDomain, TPersistence, TDto = any>
   protected validateRequired<T>(
     obj: any,
     fields: (keyof T)[],
-    entityName: string
+    entityName: string,
   ): void {
-    const missingFields = fields.filter(field => 
-      obj[field] === null || obj[field] === undefined
+    const missingFields = fields.filter(
+      (field) => obj[field] === null || obj[field] === undefined,
     );
 
     if (missingFields.length > 0) {
       throw new Error(
-        `Missing required fields in ${entityName}: ${missingFields.join(', ')}`
+        `Missing required fields in ${entityName}: ${missingFields.join(', ')}`,
       );
     }
   }
@@ -160,13 +168,13 @@ export abstract class BaseMapper<TDomain, TPersistence, TDto = any>
    */
   protected cleanObject<T extends Record<string, any>>(obj: T): T {
     const cleaned = {} as T;
-    
+
     for (const [key, value] of Object.entries(obj)) {
       if (value !== undefined) {
         cleaned[key as keyof T] = value;
       }
     }
-    
+
     return cleaned;
   }
 
@@ -180,11 +188,19 @@ export abstract class BaseMapper<TDomain, TPersistence, TDto = any>
     deletedAt?: Date | null;
   } {
     return {
-      createdAt: source.createdAt instanceof Date ? source.createdAt : new Date(source.createdAt),
-      updatedAt: source.updatedAt instanceof Date ? source.updatedAt : new Date(source.updatedAt),
-      deletedAt: source.deletedAt ? 
-        (source.deletedAt instanceof Date ? source.deletedAt : new Date(source.deletedAt)) : 
-        null
+      createdAt:
+        source.createdAt instanceof Date
+          ? source.createdAt
+          : new Date(source.createdAt),
+      updatedAt:
+        source.updatedAt instanceof Date
+          ? source.updatedAt
+          : new Date(source.updatedAt),
+      deletedAt: source.deletedAt
+        ? source.deletedAt instanceof Date
+          ? source.deletedAt
+          : new Date(source.deletedAt)
+        : null,
     };
   }
 }
@@ -192,30 +208,33 @@ export abstract class BaseMapper<TDomain, TPersistence, TDto = any>
 /**
  * Base mapper for entities with relations
  * Following Interface Segregation Principle (ISP)
- * 
+ *
  * @template TDomain - Domain entity type
  * @template TPersistence - Persistence model type
  * @template TDomainWithRelations - Domain entity with relations type
  * @template TDto - Data Transfer Object type
  */
 export abstract class BaseRelationalMapper<
-  TDomain, 
-  TPersistence, 
-  TDomainWithRelations, 
-  TDto = any
+  TDomain,
+  TPersistence,
+  TDomainWithRelations,
+  TDto = any,
 > extends BaseMapper<TDomain, TPersistence, TDto> {
-
   /**
    * Convert from persistence model with relations to domain entity with relations
    * Template method - subclasses implement the specific mapping logic
    */
-  abstract toDomainWithRelations(persistence: TPersistence & any): TDomainWithRelations;
+  abstract toDomainWithRelations(
+    persistence: TPersistence & any,
+  ): TDomainWithRelations;
 
   /**
    * Batch convert with relations
    * Following DRY principle
    */
-  toDomainWithRelationsList(persistenceList: (TPersistence & any)[]): TDomainWithRelations[] {
-    return persistenceList.map(item => this.toDomainWithRelations(item));
+  toDomainWithRelationsList(
+    persistenceList: (TPersistence & any)[],
+  ): TDomainWithRelations[] {
+    return persistenceList.map((item) => this.toDomainWithRelations(item));
   }
-} 
+}

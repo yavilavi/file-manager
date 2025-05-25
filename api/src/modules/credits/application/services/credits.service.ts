@@ -1,13 +1,13 @@
 ﻿/**
  * File Manager - credits.service Service
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
-import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { CompanyCreditsRepository } from '../../domain/repositories/company-credits.repository';
 import { CreditTransactionRepository } from '../../domain/repositories/credit-transaction.repository';
 import { CompanyCreditsEntity } from '../../domain/entities/company-credits.entity';
@@ -17,8 +17,14 @@ import { PurchaseCreditsDto } from '../dtos/purchase-credits.dto';
 import { UseCreditsDto } from '../dtos/use-credits.dto';
 import { CompanyCreditsDto } from '../dtos/company-credits.dto';
 import { CreditTransactionDto } from '../dtos/credit-transaction.dto';
-import { CompanyPlanService } from '../../../plan/application/services/company-plan.service';
+import { PlanInfoService } from './plan-info.service';
 
+/**
+ * Refactored CreditsService without circular dependency
+ * Following Single Responsibility Principle (SRP) - only handles credit operations
+ * Following Dependency Inversion Principle (DIP) - depends on abstractions
+ * Circular dependency resolved by using PlanInfoService instead of CompanyPlanService
+ */
 @Injectable()
 export class CreditsService {
   constructor(
@@ -26,8 +32,7 @@ export class CreditsService {
     private readonly companyCreditsRepository: CompanyCreditsRepository,
     @Inject('CreditTransactionRepository')
     private readonly creditTransactionRepository: CreditTransactionRepository,
-    @Inject(forwardRef(() => CompanyPlanService))
-    private readonly companyPlanService: CompanyPlanService,
+    private readonly planInfoService: PlanInfoService,
   ) {}
 
   async getCompanyCredits(tenantId: string): Promise<CompanyCreditsDto> {
@@ -38,10 +43,9 @@ export class CreditsService {
       // Get the company's plan to determine included credits
       let planIncludedCredits = 0;
       try {
-        const companyPlan =
-          await this.companyPlanService.findByTenantId(tenantId);
-        if (companyPlan.plan && companyPlan.plan.creditsIncluded > 0) {
-          planIncludedCredits = companyPlan.plan.creditsIncluded;
+        const planInfo = await this.planInfoService.getActivePlanInfo(tenantId);
+        if (planInfo && planInfo.creditsIncluded > 0) {
+          planIncludedCredits = planInfo.creditsIncluded;
         }
       } catch {
         // If no plan is found, start with 0 credits
@@ -70,7 +74,7 @@ export class CreditsService {
           0, // ID will be set by database
           TransactionType.PURCHASE,
           planIncludedCredits,
-          `CrÃ©ditos incluidos con el plan`,
+          `Créditos incluidos con el plan`,
           tenantId,
           null, // No reference ID for plan credits
           new Date(),
@@ -165,14 +169,21 @@ export class CreditsService {
     return this.mapToCompanyCreditsDto(updatedCompanyCredits);
   }
 
-  async getTransactionHistory(
+  async getCreditTransactions(
     tenantId: string,
   ): Promise<CreditTransactionDto[]> {
     const transactions =
       await this.creditTransactionRepository.findByTenantId(tenantId);
-    return transactions.map((transaction) =>
-      this.mapToCreditTransactionDto(transaction),
-    );
+
+    return transactions.map((transaction) => ({
+      id: transaction.getId(),
+      transactionType: transaction.getTransactionType(),
+      amount: transaction.getAmount(),
+      description: transaction.getDescription(),
+      tenantId: transaction.getTenantId(),
+      referenceId: transaction.getReferenceId(),
+      createdAt: transaction.getCreatedAt(),
+    }));
   }
 
   private mapToCompanyCreditsDto(
@@ -186,20 +197,6 @@ export class CreditsService {
       lastPurchaseAt: entity.getLastPurchaseAt(),
       createdAt: entity.getCreatedAt(),
       updatedAt: entity.getUpdatedAt(),
-    };
-  }
-
-  private mapToCreditTransactionDto(
-    entity: CreditTransactionEntity,
-  ): CreditTransactionDto {
-    return {
-      id: entity.getId(),
-      transactionType: entity.getTransactionType(),
-      amount: entity.getAmount(),
-      description: entity.getDescription(),
-      tenantId: entity.getTenantId(),
-      referenceId: entity.getReferenceId(),
-      createdAt: entity.getCreatedAt(),
     };
   }
 }

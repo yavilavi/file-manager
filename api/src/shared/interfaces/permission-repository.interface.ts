@@ -1,10 +1,10 @@
 /**
  * File Manager - Permission Repository Interface
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
@@ -51,14 +51,18 @@ export interface IPermissionFilters extends Omit<IEntityFilters, 'tenantId'> {
  * Dependency Inversion Principle (DIP) - depend on abstraction, not concretion
  * Note: Permissions are global (not tenant-scoped) but usage is controlled by roles
  */
-export interface IPermissionRepository extends IRepository<IPermission, string> {
+export interface IPermissionRepository
+  extends IRepository<IPermission, string> {
   /**
    * Find permission by resource and action
    * @param resource - Resource name (e.g., "users", "files")
    * @param action - Action name (e.g., "create", "read", "update", "delete")
    * @returns Promise with permission or null if not found
    */
-  findByResourceAction(resource: string, action: string): Promise<IPermission | null>;
+  findByResourceAction(
+    resource: string,
+    action: string,
+  ): Promise<IPermission | null>;
 
   /**
    * Find all permissions for a specific resource
@@ -101,7 +105,10 @@ export interface IPermissionRepository extends IRepository<IPermission, string> 
    * @param updates - Permission update data
    * @returns Promise with updated permission or null if not found
    */
-  updatePermission(id: string, updates: IUpdatePermissionData): Promise<IPermission | null>;
+  updatePermission(
+    id: string,
+    updates: IUpdatePermissionData,
+  ): Promise<IPermission | null>;
 
   /**
    * Delete permission (hard delete - use with caution)
@@ -149,4 +156,9 @@ export interface IPermissionRepository extends IRepository<IPermission, string> 
    * @returns Promise with boolean indicating existence
    */
   permissionExists(id: string): Promise<boolean>;
-} 
+}
+
+/**
+ * Token for dependency injection
+ */
+export const PERMISSION_REPOSITORY = Symbol('PermissionRepository');

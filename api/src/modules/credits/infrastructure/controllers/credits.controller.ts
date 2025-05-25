@@ -1,10 +1,10 @@
 ﻿/**
  * File Manager - credits.controller Controller
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
@@ -55,6 +55,6 @@ export class CreditsController {
     @Req() req: Request,
   ): Promise<CreditTransactionDto[]> {
     const tenantId = req.user.data.tenantId;
-    return this.creditsService.getTransactionHistory(tenantId);
+    return this.creditsService.getCreditTransactions(tenantId);
   }
 }

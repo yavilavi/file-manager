@@ -1,10 +1,10 @@
 ﻿/**
  * File Manager - role-initialization.service Service
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 import { Injectable } from '@nestjs/common';
@@ -30,7 +30,8 @@ export class RoleInitializationService {
     const superAdminRole = await client.role.create({
       data: {
         name: 'Super Administrador',
-        description: 'Rol con acceso completo a todas las funcionalidades del sistema',
+        description:
+          'Rol con acceso completo a todas las funcionalidades del sistema',
         tenantId,
         isAdmin: true,
       },
@@ -41,10 +42,12 @@ export class RoleInitializationService {
 
     // Assign all permissions to the super admin role
     if (allPermissions.length > 0) {
-      const rolePermissions = allPermissions.map((permission: { id: string }) => ({
-        roleId: superAdminRole.id,
-        permissionId: permission.id,
-      }));
+      const rolePermissions = allPermissions.map(
+        (permission: { id: string }) => ({
+          roleId: superAdminRole.id,
+          permissionId: permission.id,
+        }),
+      );
 
       await client.rolePermission.createMany({
         data: rolePermissions,
@@ -60,4 +63,4 @@ export class RoleInitializationService {
       },
     });
   }
-} 
+}

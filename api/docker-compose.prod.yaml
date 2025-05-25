@@ -59,6 +59,15 @@ services:
       - backend
     environment:
       DB_URL: $DB_URL
+  seed:
+    image: file-manager:latest
+    command:
+      - "start:seed"
+    depends_on:
+      - migrate
+      - backend
+    environment:
+      DB_URL: $DB_URL
   database:
     image: 'postgres:16.8-alpine'
     environment:

@@ -1,14 +1,18 @@
 /**
  * File Manager - User Domain Errors
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
-import { EntityNotFoundError, ValidationError, BusinessRuleViolationError } from './domain-error';
+import {
+  EntityNotFoundError,
+  ValidationError,
+  BusinessRuleViolationError,
+} from './domain-error';
 
 /**
  * Thrown when a user is not found
@@ -99,11 +103,16 @@ export class InvalidDepartmentError extends ValidationError {
  * Following Security and Business Rule principles
  */
 export class UserTenantMismatchError extends BusinessRuleViolationError {
-  constructor(userId: number, userTenant: string, resourceTenant: string, cause?: Error) {
+  constructor(
+    userId: number,
+    userTenant: string,
+    resourceTenant: string,
+    cause?: Error,
+  ) {
     super(
       'Users can only access resources within their tenant',
       `User ${userId} (tenant: ${userTenant}) accessing resource (tenant: ${resourceTenant})`,
       cause,
     );
   }
-} 
+}

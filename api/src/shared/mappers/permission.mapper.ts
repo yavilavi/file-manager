@@ -1,10 +1,10 @@
 /**
  * File Manager - Permission Mapper
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
@@ -28,8 +28,11 @@ export interface PermissionDto {
  * Single Responsibility: Only handles Permission entity transformations
  */
 @Injectable()
-export class PermissionMapper extends BaseMapper<IPermission, PrismaPermission, PermissionDto> {
-
+export class PermissionMapper extends BaseMapper<
+  IPermission,
+  PrismaPermission,
+  PermissionDto
+> {
   /**
    * Convert from Prisma model to domain entity
    */
@@ -37,7 +40,7 @@ export class PermissionMapper extends BaseMapper<IPermission, PrismaPermission, 
     this.validateRequired<PrismaPermission>(
       persistence,
       ['id', 'description', 'createdAt', 'updatedAt'],
-      'Permission'
+      'Permission',
     );
 
     return {
@@ -50,7 +53,9 @@ export class PermissionMapper extends BaseMapper<IPermission, PrismaPermission, 
   /**
    * Convert from domain entity to Prisma model
    */
-  toPersistence(domain: IPermission): Omit<PrismaPermission, 'id' | 'createdAt' | 'updatedAt'> {
+  toPersistence(
+    domain: IPermission,
+  ): Omit<PrismaPermission, 'id' | 'createdAt' | 'updatedAt'> {
     return this.cleanObject({
       description: domain.description,
     });
@@ -71,7 +76,9 @@ export class PermissionMapper extends BaseMapper<IPermission, PrismaPermission, 
   /**
    * Convert from DTO to domain entity (for creation)
    */
-  fromDto(dto: PermissionDto): Omit<IPermission, 'id' | 'createdAt' | 'updatedAt'> {
+  fromDto(
+    dto: PermissionDto,
+  ): Omit<IPermission, 'id' | 'createdAt' | 'updatedAt'> {
     return this.cleanObject({
       description: dto.description,
     });
@@ -80,7 +87,9 @@ export class PermissionMapper extends BaseMapper<IPermission, PrismaPermission, 
   /**
    * Convert from ICreatePermissionData to domain entity
    */
-  fromCreatePermissionData(data: ICreatePermissionData): Omit<IPermission, 'createdAt' | 'updatedAt'> {
+  fromCreatePermissionData(
+    data: ICreatePermissionData,
+  ): Omit<IPermission, 'createdAt' | 'updatedAt'> {
     return this.cleanObject({
       id: data.id,
       description: data.description,
@@ -110,4 +119,4 @@ export class PermissionMapper extends BaseMapper<IPermission, PrismaPermission, 
     const pattern = /^[a-zA-Z0-9_-]+:[a-zA-Z0-9_-]+$/;
     return pattern.test(permissionId);
   }
-} 
+}

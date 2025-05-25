@@ -1,14 +1,18 @@
 /**
  * File Manager - Tenant Domain Errors
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
-import { EntityNotFoundError, ValidationError, BusinessRuleViolationError } from './domain-error';
+import {
+  EntityNotFoundError,
+  ValidationError,
+  BusinessRuleViolationError,
+} from './domain-error';
 
 /**
  * Thrown when a tenant is not found
@@ -84,4 +88,4 @@ export class TenantLimitExceededError extends BusinessRuleViolationError {
       cause,
     );
   }
-} 
+}

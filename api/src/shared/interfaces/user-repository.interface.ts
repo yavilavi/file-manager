@@ -1,15 +1,18 @@
 /**
  * File Manager - User Repository Interface
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
 import { IRepository } from './base-repository.interface';
-import { ITenantSoftDeletableEntity, IEntityFilters } from './base-entity.interface';
+import {
+  ITenantSoftDeletableEntity,
+  IEntityFilters,
+} from './base-entity.interface';
 
 /**
  * User entity interface based on Prisma schema
@@ -28,6 +31,7 @@ export interface IUser extends ITenantSoftDeletableEntity {
  * Following Interface Segregation Principle (ISP)
  */
 export interface IUserWithRelations extends Omit<IUser, 'password'> {
+  password?: string; // Optional password for authentication scenarios
   department?: {
     id: number;
     name: string;
@@ -86,7 +90,11 @@ export interface IUserRepository extends IRepository<IUser, number> {
    * @param includePassword - Whether to include password in result
    * @returns Promise with user or null if not found
    */
-  findByEmail(email: string, tenantId?: string, includePassword?: boolean): Promise<IUserWithRelations | null>;
+  findByEmail(
+    email: string,
+    tenantId?: string,
+    includePassword?: boolean,
+  ): Promise<IUserWithRelations | null>;
 
   /**
    * Find user by ID within tenant scope with relations
@@ -95,7 +103,22 @@ export interface IUserRepository extends IRepository<IUser, number> {
    * @param includePassword - Whether to include password in result
    * @returns Promise with user or null if not found
    */
-  findByIdWithRelations(id: number, tenantId?: string, includePassword?: boolean): Promise<IUserWithRelations | null>;
+  findByIdWithRelations(
+    id: number,
+    tenantId?: string,
+    includePassword?: boolean,
+  ): Promise<IUserWithRelations | null>;
+
+  /**
+   * Find user by ID within tenant scope (alternative to findByIdWithRelations)
+   * @param id - User ID
+   * @param tenantId - Optional tenant identifier
+   * @returns Promise with user or null if not found
+   */
+  findUserById(
+    id: number,
+    tenantId?: string,
+  ): Promise<IUserWithRelations | null>;
 
   /**
    * Find all users within tenant scope
@@ -104,7 +127,11 @@ export interface IUserRepository extends IRepository<IUser, number> {
    * @param includePassword - Whether to include password in results
    * @returns Promise with array of users
    */
-  findAllByTenant(tenantId: string, filters?: IUserFilters, includePassword?: boolean): Promise<IUserWithRelations[]>;
+  findAllByTenant(
+    tenantId: string,
+    filters?: IUserFilters,
+    includePassword?: boolean,
+  ): Promise<IUserWithRelations[]>;
 
   /**
    * Create a new user
@@ -121,7 +148,12 @@ export interface IUserRepository extends IRepository<IUser, number> {
    * @param includePassword - Whether to include password in result
    * @returns Promise with updated user or null if not found
    */
-  updateUser(id: number, tenantId: string, updates: IUpdateUserData, includePassword?: boolean): Promise<IUserWithRelations | null>;
+  updateUser(
+    id: number,
+    tenantId: string,
+    updates: IUpdateUserData,
+    includePassword?: boolean,
+  ): Promise<IUserWithRelations | null>;
 
   /**
    * Soft delete user by ID within tenant scope
@@ -138,7 +170,11 @@ export interface IUserRepository extends IRepository<IUser, number> {
    * @param excludeUserId - Optional user ID to exclude from check
    * @returns Promise with boolean indicating existence
    */
-  emailExists(email: string, tenantId?: string, excludeUserId?: number): Promise<boolean>;
+  emailExists(
+    email: string,
+    tenantId?: string,
+    excludeUserId?: number,
+  ): Promise<boolean>;
 
   /**
    * Count active users within tenant
@@ -146,4 +182,9 @@ export interface IUserRepository extends IRepository<IUser, number> {
    * @returns Promise with count
    */
   countActiveByTenant(tenantId: string): Promise<number>;
-} 
+}
+
+/**
+ * Token for dependency injection
+ */
+export const USER_REPOSITORY = Symbol('UserRepository');

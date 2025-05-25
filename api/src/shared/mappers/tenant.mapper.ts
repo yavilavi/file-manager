@@ -1,16 +1,20 @@
 /**
  * File Manager - Tenant Mapper
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
 import { Injectable } from '@nestjs/common';
 import { BaseRelationalMapper } from './base-mapper';
-import { ITenant, ITenantWithInfo, ICreateTenantData } from '@shared/interfaces';
+import {
+  ITenant,
+  ITenantWithInfo,
+  ICreateTenantData,
+} from '@shared/interfaces';
 import { Company as PrismaCompany } from '@prisma/client';
 
 /**
@@ -55,7 +59,6 @@ export class TenantMapper extends BaseRelationalMapper<
   ITenantWithInfo,
   TenantDto
 > {
-
   /**
    * Convert from Prisma Company model to Tenant domain entity
    */
@@ -63,7 +66,7 @@ export class TenantMapper extends BaseRelationalMapper<
     this.validateRequired<PrismaCompany>(
       persistence,
       ['id', 'name', 'nit', 'tenantId', 'createdAt', 'updatedAt'],
-      'Tenant'
+      'Tenant',
     );
 
     return {
@@ -82,35 +85,43 @@ export class TenantMapper extends BaseRelationalMapper<
    */
   toDomainWithRelations(persistence: any): ITenantWithInfo {
     const baseTenant = this.toDomain(persistence);
-    
+
     return {
       ...baseTenant,
-      stats: persistence._count ? {
-        usersCount: persistence._count.users || 0,
-        departmentsCount: persistence._count.departments || 0,
-        filesCount: persistence._count.files || 0,
-        activeUsersCount: persistence._count.activeUsers || 0,
-        storageUsed: persistence.companyPlan?.storageUsed || BigInt(0),
-      } : undefined,
-      plan: persistence.companyPlan?.plan ? {
-        id: persistence.companyPlan.plan.id,
-        name: persistence.companyPlan.plan.name,
-        storageSize: persistence.companyPlan.plan.storageSize,
-        creditsIncluded: persistence.companyPlan.plan.creditsIncluded,
-        isActive: persistence.companyPlan.plan.isActive,
-      } : undefined,
-      credits: persistence.credits ? {
-        totalPurchased: persistence.credits.totalPurchased,
-        currentBalance: persistence.credits.currentBalance,
-        lastPurchaseAt: persistence.credits.lastPurchaseAt,
-      } : undefined,
+      stats: persistence._count
+        ? {
+            usersCount: persistence._count.users || 0,
+            departmentsCount: persistence._count.departments || 0,
+            filesCount: persistence._count.files || 0,
+            activeUsersCount: persistence._count.activeUsers || 0,
+            storageUsed: persistence.companyPlan?.storageUsed || BigInt(0),
+          }
+        : undefined,
+      plan: persistence.companyPlan?.plan
+        ? {
+            id: persistence.companyPlan.plan.id,
+            name: persistence.companyPlan.plan.name,
+            storageSize: persistence.companyPlan.plan.storageSize,
+            creditsIncluded: persistence.companyPlan.plan.creditsIncluded,
+            isActive: persistence.companyPlan.plan.isActive,
+          }
+        : undefined,
+      credits: persistence.credits
+        ? {
+            totalPurchased: persistence.credits.totalPurchased,
+            currentBalance: persistence.credits.currentBalance,
+            lastPurchaseAt: persistence.credits.lastPurchaseAt,
+          }
+        : undefined,
     };
   }
 
   /**
    * Convert from Tenant domain entity to Prisma Company model
    */
-  toPersistence(domain: ITenant): Omit<PrismaCompany, 'id' | 'createdAt' | 'updatedAt'> {
+  toPersistence(
+    domain: ITenant,
+  ): Omit<PrismaCompany, 'id' | 'createdAt' | 'updatedAt'> {
     return this.cleanObject({
       name: domain.name,
       nit: domain.nit,
@@ -150,7 +161,9 @@ export class TenantMapper extends BaseRelationalMapper<
   /**
    * Convert from ICreateTenantData to domain entity
    */
-  fromCreateTenantData(data: ICreateTenantData): Omit<ITenant, 'id' | 'createdAt' | 'updatedAt'> {
+  fromCreateTenantData(
+    data: ICreateTenantData,
+  ): Omit<ITenant, 'id' | 'createdAt' | 'updatedAt'> {
     return this.cleanObject({
       tenantId: data.tenantId,
       name: data.name,
@@ -171,4 +184,4 @@ export class TenantMapper extends BaseRelationalMapper<
       credits: domain.credits,
     };
   }
-} 
+}

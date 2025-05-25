@@ -1,10 +1,10 @@
 ﻿/**
  * File Manager - create-user.dto DTO
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';

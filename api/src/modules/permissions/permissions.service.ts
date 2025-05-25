@@ -1,112 +1,207 @@
 ﻿/**
  * File Manager - permissions.service Service
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@libs/database/prisma/prisma.service';
+import { Injectable, Inject } from '@nestjs/common';
+import {
+  IPermissionRepository,
+  PERMISSION_REPOSITORY,
+} from '@shared/interfaces/permission-repository.interface';
+import { PermissionDomainService } from './domain/services/permission-domain.service';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { Permission } from './interfaces/permission.interface';
 
-interface CountResult {
-  count: string | number;
-}
-
+/**
+ * Refactored PermissionsService following Clean Architecture principles
+ * Following Single Responsibility Principle (SRP) - delegates to repository and domain service
+ * Following Dependency Inversion Principle (DIP) - depends on abstractions
+ */
 @Injectable()
 export class PermissionsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    @Inject(PERMISSION_REPOSITORY)
+    private readonly permissionRepository: IPermissionRepository,
+    private readonly permissionDomainService: PermissionDomainService,
+  ) {}
 
+  /**
+   * Create a new permission
+   * @param createPermissionDto - Permission creation data
+   * @returns Promise with created permission
+   */
   async create(createPermissionDto: CreatePermissionDto): Promise<Permission> {
-    const result = await this.prisma.client.$queryRaw<Permission[]>`
-      INSERT INTO "permission" ("id", "description", "createdAt", "updatedAt")
-      VALUES (${createPermissionDto.id}, ${createPermissionDto.description}, NOW(), NOW())
-      RETURNING *
-    `;
-    return result[0];
+    const createdPermission = await this.permissionRepository.createPermission({
+      id: createPermissionDto.id,
+      description: createPermissionDto.description,
+    });
+
+    return this.toPermissionInterface(createdPermission);
   }
 
+  /**
+   * Find all permissions
+   * @returns Promise with array of permissions
+   */
   async findAll(): Promise<Permission[]> {
-    return this.prisma.client.$queryRaw<Permission[]>`
-      SELECT * FROM "permission"
-      ORDER BY "id" ASC
-    `;
+    const permissions = await this.permissionRepository.findAll();
+    return permissions.map((permission) =>
+      this.toPermissionInterface(permission),
+    );
   }
 
+  /**
+   * Find permission by ID
+   * @param id - Permission ID
+   * @returns Promise with permission or null if not found
+   */
   async findById(id: string): Promise<Permission | null> {
-    const results = await this.prisma.client.$queryRaw<Permission[]>`
-      SELECT * FROM "permission"
-      WHERE "id" = ${id}
-    `;
-    return results[0] || null;
+    const permission = await this.permissionRepository.findById(id);
+    return permission ? this.toPermissionInterface(permission) : null;
   }
 
+  /**
+   * Find multiple permissions by IDs
+   * @param ids - Array of permission IDs
+   * @returns Promise with array of permissions
+   */
   async findByIds(ids: string[]): Promise<Permission[]> {
     if (ids.length === 0) return [];
 
-    // For simplicity, we'll create a query for each ID and combine results
-    const allPermissions: Permission[] = [];
-    for (const id of ids) {
-      const permissions = await this.prisma.client.$queryRaw<Permission[]>`
-        SELECT * FROM "permission"
-        WHERE "id" = ${id}
-      `;
-      allPermissions.push(...permissions);
+    const permissions = await Promise.all(
+      ids.map((id) => this.permissionRepository.findById(id)),
+    );
+
+    return permissions
+      .filter((permission) => permission !== null)
+      .map((permission) => this.toPermissionInterface(permission));
+  }
+
+  /**
+   * Remove permission by ID
+   * @param id - Permission ID
+   * @returns Promise with deleted permission
+   */
+  async remove(id: string): Promise<Permission> {
+    const permission = await this.permissionRepository.findById(id);
+    if (!permission) {
+      throw new Error(`Permission with ID ${id} not found`);
     }
 
-    return allPermissions;
+    await this.permissionRepository.deletePermission(id);
+    return this.toPermissionInterface(permission);
   }
 
-  async remove(id: string): Promise<Permission> {
-    const result = await this.prisma.client.$queryRaw<Permission[]>`
-      DELETE FROM "permission"
-      WHERE "id" = ${id}
-      RETURNING *
-    `;
-    return result[0];
-  }
-
+  /**
+   * Check if user has specific permission
+   * @param userId - User ID
+   * @param permissionId - Permission ID
+   * @param tenantId - Tenant ID
+   * @returns Promise with boolean indicating if user has permission
+   */
   async hasPermission(
     userId: number,
     permissionId: string,
     tenantId: string,
   ): Promise<boolean> {
-    // First check if user exists and get roles
-    const user = await this.prisma.client.user.findFirst({
-      where: {
-        id: userId,
-        tenantId,
-      },
-    });
+    return await this.permissionDomainService.hasPermission(
+      userId,
+      permissionId,
+      tenantId,
+    );
+  }
 
-    if (!user) {
-      return false;
-    }
+  /**
+   * Check if user has any of the specified permissions
+   * @param userId - User ID
+   * @param permissionIds - Array of permission IDs
+   * @param tenantId - Tenant ID
+   * @returns Promise with boolean indicating if user has any permission
+   */
+  async hasAnyPermission(
+    userId: number,
+    permissionIds: string[],
+    tenantId: string,
+  ): Promise<boolean> {
+    return await this.permissionDomainService.hasAnyPermission(
+      userId,
+      permissionIds,
+      tenantId,
+    );
+  }
 
-    // Check for admin role with raw query
-    const adminRoleResult = await this.prisma.client.$queryRaw<CountResult[]>`
-      SELECT COUNT(*) as count
-      FROM "user_role" ur
-      JOIN "role" r ON ur."roleId" = r."id"
-      WHERE ur."userId" = ${userId} AND r."isAdmin" = true AND r."tenantId" = ${tenantId}
-    `;
+  /**
+   * Get all permissions for a user
+   * @param userId - User ID
+   * @param tenantId - Tenant ID
+   * @returns Promise with array of permission IDs
+   */
+  async getUserPermissions(
+    userId: number,
+    tenantId: string,
+  ): Promise<string[]> {
+    return await this.permissionDomainService.getUserPermissions(
+      userId,
+      tenantId,
+    );
+  }
 
-    // If user has admin role, they have all permissions
-    if (Number(adminRoleResult[0].count) > 0) {
-      return true;
-    }
+  /**
+   * Find permissions by resource
+   * @param resource - Resource name
+   * @returns Promise with array of permissions
+   */
+  async findByResource(resource: string): Promise<Permission[]> {
+    const permissions =
+      await this.permissionRepository.findByResource(resource);
+    return permissions.map((permission) =>
+      this.toPermissionInterface(permission),
+    );
+  }
 
-    // Check for specific permission
-    const permissionResult = await this.prisma.client.$queryRaw<CountResult[]>`
-      SELECT COUNT(*) as count
-      FROM "user_role" ur
-      JOIN "role_permission" rp ON ur."roleId" = rp."roleId"
-      WHERE ur."userId" = ${userId} AND rp."permissionId" = ${permissionId}
-    `;
+  /**
+   * Find permissions by action
+   * @param action - Action name
+   * @returns Promise with array of permissions
+   */
+  async findByAction(action: string): Promise<Permission[]> {
+    const permissions = await this.permissionRepository.findByAction(action);
+    return permissions.map((permission) =>
+      this.toPermissionInterface(permission),
+    );
+  }
 
-    return Number(permissionResult[0].count) > 0;
+  /**
+   * Get unique resources from all permissions
+   * @returns Promise with array of unique resource names
+   */
+  async getUniqueResources(): Promise<string[]> {
+    return await this.permissionRepository.getUniqueResources();
+  }
+
+  /**
+   * Get unique actions from all permissions
+   * @returns Promise with array of unique action names
+   */
+  async getUniqueActions(): Promise<string[]> {
+    return await this.permissionRepository.getUniqueActions();
+  }
+
+  /**
+   * Convert domain permission to interface
+   * @param permission - Domain permission entity
+   * @returns Permission interface
+   */
+  private toPermissionInterface(permission: any): Permission {
+    return {
+      id: permission.id,
+      description: permission.description,
+      createdAt: permission.createdAt,
+      updatedAt: permission.updatedAt,
+    };
   }
 }

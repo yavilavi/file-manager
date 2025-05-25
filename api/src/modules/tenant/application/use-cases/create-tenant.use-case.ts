@@ -1,10 +1,10 @@
 ﻿/**
  * File Manager - Create Tenant.Use Case
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 import { Inject, Injectable, ConflictException } from '@nestjs/common';
@@ -92,9 +92,7 @@ export class CreateTenantUseCase {
         where: { email: dto.initialUser.email },
       });
       if (existingUser) {
-        throw new ConflictException(
-          'A user with this email already exists',
-        );
+        throw new ConflictException('A user with this email already exists');
       }
     }
 
@@ -116,7 +114,7 @@ export class CreateTenantUseCase {
       // Create initial user if provided
       if (dto.initialUser) {
         const hashedPassword = await argon2.hash(dto.initialUser.password);
-        
+
         const createdUser = await tx.user.create({
           data: {
             name: dto.initialUser.name,
@@ -166,12 +164,14 @@ export class CreateTenantUseCase {
         responseDto,
         'Tenant created successfully with super admin role',
         initialUser,
-        superAdminRole ? {
-          id: superAdminRole.id,
-          name: superAdminRole.name,
-          description: superAdminRole.description,
-          isAdmin: superAdminRole.isAdmin,
-        } : undefined,
+        superAdminRole
+          ? {
+              id: superAdminRole.id,
+              name: superAdminRole.name,
+              description: superAdminRole.description,
+              isAdmin: superAdminRole.isAdmin,
+            }
+          : undefined,
       );
     });
   }

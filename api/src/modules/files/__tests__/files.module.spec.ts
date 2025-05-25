@@ -1,10 +1,10 @@
 ﻿/**
  * File Manager - files.module.spec Tests
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 import { Test, TestingModule } from '@nestjs/testing';

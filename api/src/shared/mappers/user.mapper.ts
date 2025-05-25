@@ -1,10 +1,10 @@
 /**
  * File Manager - User Mapper
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
@@ -80,7 +80,6 @@ export class UserMapper extends BaseRelationalMapper<
   IUserWithRelations,
   UserDto
 > {
-
   /**
    * Convert from Prisma model to domain entity
    * Following Single Responsibility Principle
@@ -89,7 +88,7 @@ export class UserMapper extends BaseRelationalMapper<
     this.validateRequired<PrismaUser>(
       persistence,
       ['id', 'name', 'email', 'tenantId', 'createdAt', 'updatedAt'],
-      'User'
+      'User',
     );
 
     return {
@@ -109,25 +108,31 @@ export class UserMapper extends BaseRelationalMapper<
    * Convert from Prisma model with relations to domain entity with relations
    * Following Interface Segregation Principle
    */
-  toDomainWithRelations(persistence: PrismaUserWithRelations): IUserWithRelations {
+  toDomainWithRelations(
+    persistence: PrismaUserWithRelations,
+  ): IUserWithRelations {
     const baseUser = this.toDomain(persistence);
-    
+
     // Remove password from the result to match IUserWithRelations interface
     const { password, ...userWithoutPassword } = baseUser;
-    
+
     return {
       ...userWithoutPassword,
-      department: persistence.department ? {
-        id: persistence.department.id,
-        name: persistence.department.name,
-      } : null,
-      company: persistence.company ? {
-        id: persistence.company.id,
-        name: persistence.company.name,
-        nit: persistence.company.nit,
-        tenantId: persistence.company.tenantId,
-        canSendEmail: persistence.company.canSendEmail,
-      } : null,
+      department: persistence.department
+        ? {
+            id: persistence.department.id,
+            name: persistence.department.name,
+          }
+        : null,
+      company: persistence.company
+        ? {
+            id: persistence.company.id,
+            name: persistence.company.name,
+            nit: persistence.company.nit,
+            tenantId: persistence.company.tenantId,
+            canSendEmail: persistence.company.canSendEmail,
+          }
+        : null,
     };
   }
 
@@ -135,7 +140,9 @@ export class UserMapper extends BaseRelationalMapper<
    * Convert from domain entity to Prisma model
    * Following Single Responsibility Principle
    */
-  toPersistence(domain: IUser): Omit<PrismaUser, 'id' | 'createdAt' | 'updatedAt'> {
+  toPersistence(
+    domain: IUser,
+  ): Omit<PrismaUser, 'id' | 'createdAt' | 'updatedAt'> {
     return this.cleanObject({
       name: domain.name,
       email: domain.email,
@@ -203,7 +210,9 @@ export class UserMapper extends BaseRelationalMapper<
    * Convert from CreateUserDto to domain entity (for creation)
    * Following Single Responsibility Principle
    */
-  fromCreateDto(dto: CreateUserDto): Omit<IUser, 'id' | 'createdAt' | 'updatedAt'> {
+  fromCreateDto(
+    dto: CreateUserDto,
+  ): Omit<IUser, 'id' | 'createdAt' | 'updatedAt'> {
     return this.cleanObject({
       name: dto.name,
       email: dto.email.toLowerCase(), // Normalize email
@@ -219,7 +228,9 @@ export class UserMapper extends BaseRelationalMapper<
    * Convert from ICreateUserData to domain entity
    * Following Adapter pattern
    */
-  fromCreateUserData(data: ICreateUserData): Omit<IUser, 'id' | 'createdAt' | 'updatedAt'> {
+  fromCreateUserData(
+    data: ICreateUserData,
+  ): Omit<IUser, 'id' | 'createdAt' | 'updatedAt'> {
     return this.cleanObject({
       name: data.name,
       email: data.email.toLowerCase(),
@@ -236,7 +247,7 @@ export class UserMapper extends BaseRelationalMapper<
    * Following DRY principle
    */
   toDtoWithRelationsList(domainList: IUserWithRelations[]): UserDto[] {
-    return domainList.map(item => this.toDtoWithRelations(item));
+    return domainList.map((item) => this.toDtoWithRelations(item));
   }
 
   /**
@@ -260,4 +271,4 @@ export class UserMapper extends BaseRelationalMapper<
       email: domain.email,
     };
   }
-} 
+}

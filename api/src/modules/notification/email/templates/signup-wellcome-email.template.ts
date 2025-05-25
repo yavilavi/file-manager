@@ -1,10 +1,10 @@
 ﻿/**
  * File Manager - Signup Wellcome Email.Template
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 const buildSignupWelcomeEmailTemplate = (

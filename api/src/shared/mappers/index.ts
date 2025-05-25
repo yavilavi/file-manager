@@ -1,10 +1,10 @@
 /**
  * File Manager - Mappers Index
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
@@ -38,4 +38,4 @@ export const MAPPER_TOKENS = {
 /**
  * Type definitions for mapper injection
  */
-export type MapperTokens = typeof MAPPER_TOKENS[keyof typeof MAPPER_TOKENS]; 
+export type MapperTokens = (typeof MAPPER_TOKENS)[keyof typeof MAPPER_TOKENS];

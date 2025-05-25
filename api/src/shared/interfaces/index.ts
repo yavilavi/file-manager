@@ -1,10 +1,10 @@
 /**
  * File Manager - Shared Interfaces Index
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
@@ -34,7 +34,7 @@ export * from './jwt-payload.interface';
  */
 export const REPOSITORY_TOKENS = {
   USER_REPOSITORY: 'USER_REPOSITORY',
-  ROLE_REPOSITORY: 'ROLE_REPOSITORY', 
+  ROLE_REPOSITORY: 'ROLE_REPOSITORY',
   PERMISSION_REPOSITORY: 'PERMISSION_REPOSITORY',
   COMPANY_REPOSITORY: 'COMPANY_REPOSITORY',
   TENANT_REPOSITORY: 'TENANT_REPOSITORY',
@@ -43,4 +43,5 @@ export const REPOSITORY_TOKENS = {
 /**
  * Type helper for repository tokens
  */
-export type RepositoryToken = typeof REPOSITORY_TOKENS[keyof typeof REPOSITORY_TOKENS]; 
+export type RepositoryToken =
+  (typeof REPOSITORY_TOKENS)[keyof typeof REPOSITORY_TOKENS];

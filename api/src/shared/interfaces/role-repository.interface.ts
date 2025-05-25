@@ -1,15 +1,18 @@
 /**
  * File Manager - Role Repository Interface
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
 import { IRepository } from './base-repository.interface';
-import { ITenantSoftDeletableEntity, IEntityFilters } from './base-entity.interface';
+import {
+  ITenantSoftDeletableEntity,
+  IEntityFilters,
+} from './base-entity.interface';
 import { IPermission } from './permission-repository.interface';
 
 /**
@@ -80,7 +83,10 @@ export interface IRoleRepository extends IRepository<IRole, number> {
    * @param tenantId - Tenant identifier
    * @returns Promise with role or null if not found
    */
-  findByName(name: string, tenantId: string): Promise<IRoleWithPermissions | null>;
+  findByName(
+    name: string,
+    tenantId: string,
+  ): Promise<IRoleWithPermissions | null>;
 
   /**
    * Find role by ID with permissions
@@ -88,7 +94,10 @@ export interface IRoleRepository extends IRepository<IRole, number> {
    * @param tenantId - Tenant identifier
    * @returns Promise with role or null if not found
    */
-  findByIdWithPermissions(id: number, tenantId: string): Promise<IRoleWithPermissions | null>;
+  findByIdWithPermissions(
+    id: number,
+    tenantId: string,
+  ): Promise<IRoleWithPermissions | null>;
 
   /**
    * Find all roles within tenant scope
@@ -97,7 +106,11 @@ export interface IRoleRepository extends IRepository<IRole, number> {
    * @param includePermissions - Whether to include permissions
    * @returns Promise with array of roles
    */
-  findAllByTenant(tenantId: string, filters?: IRoleFilters, includePermissions?: boolean): Promise<IRoleWithPermissions[]>;
+  findAllByTenant(
+    tenantId: string,
+    filters?: IRoleFilters,
+    includePermissions?: boolean,
+  ): Promise<IRoleWithPermissions[]>;
 
   /**
    * Create a new role
@@ -113,7 +126,11 @@ export interface IRoleRepository extends IRepository<IRole, number> {
    * @param updates - Role update data
    * @returns Promise with updated role or null if not found
    */
-  updateRole(id: number, tenantId: string, updates: IUpdateRoleData): Promise<IRoleWithPermissions | null>;
+  updateRole(
+    id: number,
+    tenantId: string,
+    updates: IUpdateRoleData,
+  ): Promise<IRoleWithPermissions | null>;
 
   /**
    * Soft delete role by ID within tenant scope
@@ -130,7 +147,11 @@ export interface IRoleRepository extends IRepository<IRole, number> {
    * @param excludeRoleId - Optional role ID to exclude from check
    * @returns Promise with boolean indicating existence
    */
-  nameExists(name: string, tenantId: string, excludeRoleId?: number): Promise<boolean>;
+  nameExists(
+    name: string,
+    tenantId: string,
+    excludeRoleId?: number,
+  ): Promise<boolean>;
 
   /**
    * Add permissions to role
@@ -162,7 +183,10 @@ export interface IRoleRepository extends IRepository<IRole, number> {
    * @param tenantId - Tenant identifier
    * @returns Promise with array of roles
    */
-  findUserRoles(userId: number, tenantId: string): Promise<IRoleWithPermissions[]>;
+  findUserRoles(
+    userId: number,
+    tenantId: string,
+  ): Promise<IRoleWithPermissions[]>;
 
   /**
    * Find users assigned to a role
@@ -195,4 +219,4 @@ export interface IRoleRepository extends IRepository<IRole, number> {
    * @returns Promise indicating success
    */
   setUserRoles(userId: number, roleIds: number[]): Promise<boolean>;
-} 
+}

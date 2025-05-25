@@ -1,14 +1,18 @@
 /**
  * File Manager - Permission Domain Errors
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
-import { EntityNotFoundError, ValidationError, BusinessRuleViolationError } from './domain-error';
+import {
+  EntityNotFoundError,
+  ValidationError,
+  BusinessRuleViolationError,
+} from './domain-error';
 
 /**
  * Thrown when a permission is not found
@@ -99,11 +103,16 @@ export class InvalidPermissionDescriptionError extends ValidationError {
  * Following Business Process pattern
  */
 export class BulkPermissionOperationError extends BusinessRuleViolationError {
-  constructor(operation: string, failedCount: number, totalCount: number, cause?: Error) {
+  constructor(
+    operation: string,
+    failedCount: number,
+    totalCount: number,
+    cause?: Error,
+  ) {
     super(
       `Bulk permission ${operation} partially failed`,
       `${failedCount}/${totalCount} operations failed`,
       cause,
     );
   }
-} 
+}

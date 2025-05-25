@@ -1,10 +1,10 @@
 ﻿/**
  * File Manager - tenant-initialization.service Service
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 import { Injectable } from '@nestjs/common';
@@ -41,7 +41,8 @@ export class TenantInitializationService {
     return await this.prisma.client.role.create({
       data: {
         name: 'Super Administrador',
-        description: 'Rol con acceso completo a todas las funcionalidades del sistema',
+        description:
+          'Rol con acceso completo a todas las funcionalidades del sistema',
         tenantId,
         isAdmin: true,
       },
@@ -81,11 +82,14 @@ export class TenantInitializationService {
     });
   }
 
-  async createInitialUserForTenant(tenantId: string, userData: {
-    name: string;
-    email: string;
-    password: string;
-  }): Promise<number> {
+  async createInitialUserForTenant(
+    tenantId: string,
+    userData: {
+      name: string;
+      email: string;
+      password: string;
+    },
+  ): Promise<number> {
     const user = await this.prisma.client.user.create({
       data: {
         name: userData.name,
@@ -98,4 +102,4 @@ export class TenantInitializationService {
 
     return user.id;
   }
-} 
+}

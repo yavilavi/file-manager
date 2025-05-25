@@ -1,18 +1,14 @@
 ﻿/**
  * File Manager - company-plan.service Service
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
-import {
-  Injectable,
-  NotFoundException,
-  Inject,
-  forwardRef,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   ICompanyPlanRepository,
   COMPANY_PLAN_REPOSITORY,
@@ -24,8 +20,14 @@ import {
   IPlanRepository,
   PLAN_REPOSITORY,
 } from '../../domain/repositories/plan-repository.interface';
-import { CreditsService } from '../../../credits/application/services/credits.service';
+import { CompanyPlanCreatedEvent } from '../../domain/events/company-plan-created.event';
 
+/**
+ * Refactored CompanyPlanService without circular dependency
+ * Following Single Responsibility Principle (SRP) - only handles company plan operations
+ * Following Open/Closed Principle (OCP) - uses events for extension
+ * Circular dependency resolved by emitting domain events instead of direct service calls
+ */
 @Injectable()
 export class CompanyPlanService {
   constructor(
@@ -35,8 +37,7 @@ export class CompanyPlanService {
     @Inject(PLAN_REPOSITORY)
     private readonly planRepository: IPlanRepository,
 
-    @Inject(forwardRef(() => CreditsService))
-    private readonly creditsService: CreditsService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async findAll(): Promise<CompanyPlan[]> {
@@ -108,19 +109,27 @@ export class CompanyPlanService {
     const createdCompanyPlan =
       await this.companyPlanRepository.create(companyPlan);
 
-    // Grant included credits if the plan has any
+    // Emit domain event for credits granting (replaces direct service call)
     if (plan.creditsIncluded > 0) {
       try {
-        await this.creditsService.purchaseCredits(
-          createCompanyPlanDto.tenantId,
-          {
-            amount: plan.creditsIncluded,
-            description: `CrÃ©ditos incluidos con el plan ${plan.name}`,
-          },
+        const event = new CompanyPlanCreatedEvent({
+          companyPlanId: createdCompanyPlan.id,
+          tenantId: createdCompanyPlan.tenantId,
+          planId: plan.id,
+          planName: plan.name,
+          creditsIncluded: plan.creditsIncluded,
+          startDate: createdCompanyPlan.startDate,
+          endDate: createdCompanyPlan.endDate,
+        });
+
+        this.eventEmitter.emit(CompanyPlanCreatedEvent.EVENT_NAME, event);
+
+        console.log(
+          `Emitted CompanyPlanCreatedEvent for tenant ${createdCompanyPlan.tenantId} with ${plan.creditsIncluded} credits`,
         );
       } catch (error) {
         // Log error but don't fail the plan creation
-        console.error('Failed to grant included credits:', error);
+        console.error('Failed to emit CompanyPlanCreatedEvent:', error);
       }
     }
 
@@ -131,10 +140,9 @@ export class CompanyPlanService {
     id: number,
     updateCompanyPlanDto: UpdateCompanyPlanDto,
   ): Promise<CompanyPlan> {
-    // Check if company plan exists
-    await this.findById(id);
+    const existingCompanyPlan = await this.findById(id);
 
-    // Check if plan exists if planId is provided
+    // If changing plan, validate new plan exists
     if (updateCompanyPlanDto.planId) {
       const plan = await this.planRepository.findById(
         updateCompanyPlanDto.planId,
@@ -146,19 +154,27 @@ export class CompanyPlanService {
       }
     }
 
-    // Create update data object with the correct types
     const updateData: Partial<CompanyPlan> = {};
 
-    if (updateCompanyPlanDto.planId)
+    if (updateCompanyPlanDto.planId !== undefined) {
       updateData.planId = updateCompanyPlanDto.planId;
-    if (updateCompanyPlanDto.startDate)
+    }
+    if (updateCompanyPlanDto.startDate !== undefined) {
       updateData.startDate = new Date(updateCompanyPlanDto.startDate);
-    if (updateCompanyPlanDto.endDate)
+    }
+    if (updateCompanyPlanDto.endDate !== undefined) {
       updateData.endDate = new Date(updateCompanyPlanDto.endDate);
-    if (updateCompanyPlanDto.isActive !== undefined)
+    }
+    if (updateCompanyPlanDto.isActive !== undefined) {
       updateData.isActive = updateCompanyPlanDto.isActive;
+    }
 
     return this.companyPlanRepository.update(id, updateData);
+  }
+
+  async deactivate(id: number): Promise<void> {
+    const companyPlan = await this.findById(id);
+    await this.companyPlanRepository.deactivate(id);
   }
 
   async updateStorageUsed(
@@ -166,16 +182,5 @@ export class CompanyPlanService {
     storageUsed: bigint,
   ): Promise<CompanyPlan> {
     return this.companyPlanRepository.updateStorageUsed(tenantId, storageUsed);
-  }
-
-  async deactivate(id: number): Promise<void> {
-    // Check if company plan exists
-    await this.findById(id);
-
-    return this.companyPlanRepository.deactivate(id);
-  }
-
-  async findActive(): Promise<CompanyPlan[]> {
-    return this.companyPlanRepository.findActive();
   }
 }

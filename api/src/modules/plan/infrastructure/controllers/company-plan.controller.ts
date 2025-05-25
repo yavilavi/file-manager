@@ -1,10 +1,10 @@
 ﻿/**
  * File Manager - company-plan.controller Controller
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 import {
@@ -31,13 +31,6 @@ export class CompanyPlanController {
   @RequirePermission('company-plan:read')
   async findAll(): Promise<any> {
     const companyPlans = await this.companyPlanService.findAll();
-    return serializeBigInt(companyPlans);
-  }
-
-  @Get('active')
-  @RequirePermission('company-plan:read')
-  async findActive(): Promise<any> {
-    const companyPlans = await this.companyPlanService.findActive();
     return serializeBigInt(companyPlans);
   }
 

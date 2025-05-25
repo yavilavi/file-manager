@@ -1,16 +1,21 @@
 /**
  * File Manager - Role Mapper
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
 import { Injectable } from '@nestjs/common';
 import { BaseRelationalMapper } from './base-mapper';
-import { IRole, IRoleWithPermissions, ICreateRoleData, IPermission } from '@shared/interfaces';
+import {
+  IRole,
+  IRoleWithPermissions,
+  ICreateRoleData,
+  IPermission,
+} from '@shared/interfaces';
 import { Role as PrismaRole } from '@prisma/client';
 
 /**
@@ -65,7 +70,6 @@ export class RoleMapper extends BaseRelationalMapper<
   IRoleWithPermissions,
   RoleDto
 > {
-
   /**
    * Convert from Prisma model to domain entity
    * Following Single Responsibility Principle
@@ -74,7 +78,7 @@ export class RoleMapper extends BaseRelationalMapper<
     this.validateRequired<PrismaRole>(
       persistence,
       ['id', 'name', 'tenantId', 'createdAt', 'updatedAt'],
-      'Role'
+      'Role',
     );
 
     return {
@@ -92,17 +96,20 @@ export class RoleMapper extends BaseRelationalMapper<
    * Convert from Prisma model with relations to domain entity with relations
    * Following Interface Segregation Principle
    */
-  toDomainWithRelations(persistence: PrismaRoleWithRelations): IRoleWithPermissions {
+  toDomainWithRelations(
+    persistence: PrismaRoleWithRelations,
+  ): IRoleWithPermissions {
     const baseRole = this.toDomain(persistence);
-    
+
     return {
       ...baseRole,
-      permissions: persistence.rolePermissions?.map(rp => ({
-        id: rp.permission.id,
-        description: rp.permission.description,
-        createdAt: rp.permission.createdAt,
-        updatedAt: rp.permission.updatedAt,
-      })) || [],
+      permissions:
+        persistence.rolePermissions?.map((rp) => ({
+          id: rp.permission.id,
+          description: rp.permission.description,
+          createdAt: rp.permission.createdAt,
+          updatedAt: rp.permission.updatedAt,
+        })) || [],
     };
   }
 
@@ -110,7 +117,9 @@ export class RoleMapper extends BaseRelationalMapper<
    * Convert from domain entity to Prisma model
    * Following Single Responsibility Principle
    */
-  toPersistence(domain: IRole): Omit<PrismaRole, 'id' | 'createdAt' | 'updatedAt'> {
+  toPersistence(
+    domain: IRole,
+  ): Omit<PrismaRole, 'id' | 'createdAt' | 'updatedAt'> {
     return this.cleanObject({
       name: domain.name,
       description: domain.description,
@@ -165,7 +174,9 @@ export class RoleMapper extends BaseRelationalMapper<
    * Convert from CreateRoleDto to domain entity (for creation)
    * Following Single Responsibility Principle
    */
-  fromCreateDto(dto: CreateRoleDto): Omit<IRole, 'id' | 'createdAt' | 'updatedAt'> {
+  fromCreateDto(
+    dto: CreateRoleDto,
+  ): Omit<IRole, 'id' | 'createdAt' | 'updatedAt'> {
     return this.cleanObject({
       name: dto.name,
       description: dto.description || null,
@@ -179,7 +190,9 @@ export class RoleMapper extends BaseRelationalMapper<
    * Convert from ICreateRoleData to domain entity
    * Following Adapter pattern
    */
-  fromCreateRoleData(data: ICreateRoleData): Omit<IRole, 'id' | 'createdAt' | 'updatedAt'> {
+  fromCreateRoleData(
+    data: ICreateRoleData,
+  ): Omit<IRole, 'id' | 'createdAt' | 'updatedAt'> {
     return this.cleanObject({
       name: data.name,
       description: data.description || null,
@@ -194,7 +207,7 @@ export class RoleMapper extends BaseRelationalMapper<
    * Following DRY principle
    */
   toDtoWithPermissionsList(domainList: IRoleWithPermissions[]): RoleDto[] {
-    return domainList.map(item => this.toDtoWithPermissions(item));
+    return domainList.map((item) => this.toDtoWithPermissions(item));
   }
 
   /**
@@ -218,4 +231,4 @@ export class RoleMapper extends BaseRelationalMapper<
     const { tenantId, ...summaryDto } = dto;
     return summaryDto;
   }
-} 
+}

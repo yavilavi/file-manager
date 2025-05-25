@@ -1,10 +1,10 @@
 /**
  * File Manager - Tenant Repository Interface
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
@@ -91,7 +91,7 @@ export interface ITenantWithInfo extends ITenant {
 /**
  * Tenant repository interface following SOLID principles
  * Dependency Inversion Principle (DIP) - depend on abstraction, not concretion
- * 
+ *
  * Note: This interface represents tenant operations that conceptually map to Company operations
  * in the database, but provides a tenant-centric view of the data
  */
@@ -116,7 +116,10 @@ export interface ITenantRepository extends IRepository<ITenant, string> {
    * @param includeStats - Whether to include aggregated statistics
    * @returns Promise with array of tenants
    */
-  findAllWithFilters(filters?: ITenantFilters, includeStats?: boolean): Promise<ITenantWithInfo[]>;
+  findAllWithFilters(
+    filters?: ITenantFilters,
+    includeStats?: boolean,
+  ): Promise<ITenantWithInfo[]>;
 
   /**
    * Create a new tenant (company)
@@ -131,7 +134,10 @@ export interface ITenantRepository extends IRepository<ITenant, string> {
    * @param updates - Tenant update data
    * @returns Promise with updated tenant or null if not found
    */
-  updateTenant(tenantId: string, updates: IUpdateTenantData): Promise<ITenantWithInfo | null>;
+  updateTenant(
+    tenantId: string,
+    updates: IUpdateTenantData,
+  ): Promise<ITenantWithInfo | null>;
 
   /**
    * Soft delete tenant by tenant ID
@@ -189,7 +195,10 @@ export interface ITenantRepository extends IRepository<ITenant, string> {
    * @param canSendEmail - New email capability status
    * @returns Promise with updated tenant
    */
-  toggleEmailCapability(tenantId: string, canSendEmail: boolean): Promise<ITenantWithInfo | null>;
+  toggleEmailCapability(
+    tenantId: string,
+    canSendEmail: boolean,
+  ): Promise<ITenantWithInfo | null>;
 
   /**
    * Initialize tenant with default data
@@ -197,15 +206,18 @@ export interface ITenantRepository extends IRepository<ITenant, string> {
    * @param initData - Initialization data
    * @returns Promise indicating success
    */
-  initializeTenant(tenantId: string, initData: {
-    adminUser: {
-      name: string;
-      email: string;
-      password: string;
-    };
-    departments: string[];
-    defaultPermissions?: string[];
-  }): Promise<boolean>;
+  initializeTenant(
+    tenantId: string,
+    initData: {
+      adminUser: {
+        name: string;
+        email: string;
+        password: string;
+      };
+      departments: string[];
+      defaultPermissions?: string[];
+    },
+  ): Promise<boolean>;
 
   /**
    * Get tenant by company ID (internal mapping)
@@ -227,4 +239,4 @@ export interface ITenantRepository extends IRepository<ITenant, string> {
    * @returns Promise indicating success
    */
   restoreTenant(tenantId: string): Promise<boolean>;
-} 
+}

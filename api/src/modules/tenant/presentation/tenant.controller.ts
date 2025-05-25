@@ -1,10 +1,10 @@
 ﻿/**
  * File Manager - tenant.controller Controller
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 import {
@@ -77,13 +77,18 @@ export class TenantController {
       if (!body.initialUser.name || body.initialUser.name.trim().length === 0) {
         throw new BadRequestException('Initial user name is required');
       }
-      if (!body.initialUser.email || body.initialUser.email.trim().length === 0) {
+      if (
+        !body.initialUser.email ||
+        body.initialUser.email.trim().length === 0
+      ) {
         throw new BadRequestException('Initial user email is required');
       }
       if (!body.initialUser.password || body.initialUser.password.length < 6) {
-        throw new BadRequestException('Initial user password must be at least 6 characters long');
+        throw new BadRequestException(
+          'Initial user password must be at least 6 characters long',
+        );
       }
-      
+
       // Basic email validation
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(body.initialUser.email)) {

@@ -1,14 +1,18 @@
 /**
  * File Manager - Role Domain Errors
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
-import { EntityNotFoundError, ValidationError, BusinessRuleViolationError } from './domain-error';
+import {
+  EntityNotFoundError,
+  ValidationError,
+  BusinessRuleViolationError,
+} from './domain-error';
 
 /**
  * Thrown when a role is not found
@@ -77,7 +81,12 @@ export class AdminRoleModificationError extends BusinessRuleViolationError {
  * Following Domain validation pattern
  */
 export class InvalidRolePermissionError extends ValidationError {
-  constructor(roleId: number, permissionId: string, reason: string, cause?: Error) {
+  constructor(
+    roleId: number,
+    permissionId: string,
+    reason: string,
+    cause?: Error,
+  ) {
     super(
       'Role',
       'permissions',
@@ -93,11 +102,16 @@ export class InvalidRolePermissionError extends ValidationError {
  * Following Security and Multi-tenancy pattern
  */
 export class RoleTenantMismatchError extends BusinessRuleViolationError {
-  constructor(roleId: number, roleTenant: string, targetTenant: string, cause?: Error) {
+  constructor(
+    roleId: number,
+    roleTenant: string,
+    targetTenant: string,
+    cause?: Error,
+  ) {
     super(
       'Roles can only be assigned within their tenant',
       `Role ${roleId} (tenant: ${roleTenant}) being assigned to tenant: ${targetTenant}`,
       cause,
     );
   }
-} 
+}

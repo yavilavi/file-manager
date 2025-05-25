@@ -1,10 +1,10 @@
 /**
  * File Manager - Base Entity Interface
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
@@ -37,7 +37,9 @@ export interface ITenantEntity extends IBaseEntity {
 /**
  * Combined interface for entities that support both tenancy and soft delete
  */
-export interface ITenantSoftDeletableEntity extends ITenantEntity, ISoftDeletableEntity {}
+export interface ITenantSoftDeletableEntity
+  extends ITenantEntity,
+    ISoftDeletableEntity {}
 
 /**
  * Interface for entities with user ownership
@@ -56,4 +58,4 @@ export interface IEntityFilters {
   createdBefore?: Date;
   updatedAfter?: Date;
   updatedBefore?: Date;
-} 
+}

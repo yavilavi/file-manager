@@ -1,10 +1,10 @@
 ﻿/**
  * File Manager - tenant.repository.interface Interface
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 import { TenantEntity } from '../entities/tenant.entity';

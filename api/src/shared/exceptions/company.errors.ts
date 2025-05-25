@@ -1,14 +1,18 @@
 /**
  * File Manager - Company Domain Errors
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 
-import { EntityNotFoundError, ValidationError, BusinessRuleViolationError } from './domain-error';
+import {
+  EntityNotFoundError,
+  ValidationError,
+  BusinessRuleViolationError,
+} from './domain-error';
 
 /**
  * Thrown when a company is not found
@@ -90,4 +94,4 @@ export class CompanyInactiveError extends BusinessRuleViolationError {
       cause,
     );
   }
-} 
+}

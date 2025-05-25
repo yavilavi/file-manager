@@ -1,10 +1,10 @@
 ﻿/**
  * File Manager - files.controller Controller
- * 
+ *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
  * License: Contribution-Only License (COL)
- * 
+ *
  * Created: 2024
  */
 import {
@@ -167,5 +167,4 @@ export class FilesController {
       throw new UnauthorizedException('Token invÃ¡lido o expirado');
     }
   }
-
 }
