@@ -8,7 +8,7 @@
  * Created: 2024
  */
 import { Button, Center, Stack, Title, Text } from '@mantine/core';
-import { IconCircleCheck, IconRocket } from '@tabler/icons-react';
+import { IconCircleCheck } from '@tabler/icons-react';
 
 interface SuccessStepProps {
   subdomain: string;
@@ -16,10 +16,6 @@ interface SuccessStepProps {
 
 function SuccessStep({ subdomain }: SuccessStepProps) {
   const redirectUrl = `${window.location.protocol}//${subdomain}.${import.meta.env.VITE_APP_BASE_URL}`;
-
-  const handleClick = () => {
-    window.location.href = redirectUrl;
-  };
 
   return (
     <Stack align="center" justify="center" mt="xl">

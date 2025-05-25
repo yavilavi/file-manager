@@ -56,7 +56,7 @@ export default function Users() {
     validate: {
       name: (value) => (value.length < 2 ? 'Nombre muy corto' : null),
       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Email inválido'),
-      password: (value, values) => {
+      password: (value) => {
         if (!editingUser) return (value.length < 6 ? 'Contraseña muy corta' : null);
         if (editingUser && value.length > 0) return (value.length < 6 ? 'Contraseña muy corta' : null);
         return null;

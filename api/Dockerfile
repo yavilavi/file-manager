@@ -1,7 +1,7 @@
 # Etapa base común
-FROM node:22.14.0-slim AS base
+FROM node:22.15.1-slim AS base
 RUN apt-get update -y && apt-get install -y openssl curl wget && \
-    npm i -g pnpm@10.6.5
+    npm i -g pnpm@10.11.0
 
 # Etapa de dependencias y build
 FROM base AS builder
