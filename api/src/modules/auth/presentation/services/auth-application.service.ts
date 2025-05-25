@@ -1,5 +1,5 @@
-﻿/**
- * File Manager - auth.service Service
+/**
+ * File Manager - Auth Application Service (Presentation Layer)
  *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
@@ -8,25 +8,26 @@
  * Created: 2024
  */
 import { Injectable } from '@nestjs/common';
-import { SignupDto } from '@modules/auth/dtos/signup.dto';
-import {
-  AuthenticationUseCase,
-  ValidateUserCommand,
-  LoginCommand,
-} from './application/use-cases/authentication.use-case';
+import { SignupDto } from '../dtos/signup.dto';
+import { AuthenticationUseCase } from '../../application/use-cases/authentication.use-case';
 import {
   CompanyOnboardingUseCase,
   OnboardCompanyCommand,
-} from './application/use-cases/company-onboarding.use-case';
-import { JwtPayloadInterface } from '@shared/interfaces/jwt-payload.interface';
+} from '../../application/use-cases/company-onboarding.use-case';
+import {
+  ValidateUserCommand,
+  LoginCommand,
+  ValidateUserResult,
+} from '../../application/dtos/authentication.dto';
 
 /**
- * Refactored AuthService following Clean Architecture principles
+ * Auth Application Service (Presentation Layer)
+ * Following Clean Architecture - this is an adapter that orchestrates use cases
  * Following Single Responsibility Principle (SRP) - delegates to specific use cases
  * Following Dependency Inversion Principle (DIP) - depends on use case abstractions
  */
 @Injectable()
-export class AuthService {
+export class AuthApplicationService {
   constructor(
     private readonly authenticationUseCase: AuthenticationUseCase,
     private readonly companyOnboardingUseCase: CompanyOnboardingUseCase,
@@ -37,13 +38,13 @@ export class AuthService {
    * @param username - User email
    * @param pass - User password
    * @param tenantId - Optional tenant ID
-   * @returns JWT payload or false if invalid
+   * @returns Validation result with JWT payload if valid
    */
   async validateUser(
     username: string,
     pass: string,
     tenantId?: string,
-  ): Promise<false | JwtPayloadInterface> {
+  ): Promise<ValidateUserResult> {
     const command: ValidateUserCommand = {
       email: username,
       password: pass,
@@ -59,7 +60,10 @@ export class AuthService {
    * @param jwtPayload - JWT payload from validation
    * @returns Access token
    */
-  async login(tenantId: string, jwtPayload?: JwtPayloadInterface) {
+  async login(
+    tenantId: string,
+    jwtPayload?: { aud: string; sub: number; iss: string },
+  ) {
     const command: LoginCommand = {
       tenantId,
       jwtPayload: jwtPayload!,

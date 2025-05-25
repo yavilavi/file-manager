@@ -1,5 +1,5 @@
-﻿/**
- * File Manager - jwt-auth.guard Guard
+/**
+ * File Manager - JWT Auth Guard (Presentation Layer)
  *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
@@ -13,6 +13,11 @@ import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { IS_PUBLIC_KEY } from '@shared/decorators/is-public.decorator';
 
+/**
+ * JWT Authentication Guard
+ * Following Single Responsibility Principle (SRP) - only handles JWT auth
+ * Part of presentation layer (interface adapters)
+ */
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(private reflector: Reflector) {
@@ -35,4 +40,4 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
     return super.canActivate(context);
   }
-}
+} 

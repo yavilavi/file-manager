@@ -1,5 +1,5 @@
-﻿/**
- * File Manager - local.strategy Strategy
+/**
+ * File Manager - Local Strategy (Infrastructure Layer)
  *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
@@ -10,12 +10,17 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthService } from '@modules/auth/auth.service';
+import { AuthApplicationService } from '../../presentation/services/auth-application.service';
 import { Request } from 'express';
 
+/**
+ * Local Authentication Strategy
+ * Following Single Responsibility Principle (SRP) - only handles local auth strategy
+ * Part of infrastructure layer (frameworks & drivers)
+ */
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private authService: AuthService) {
+  constructor(private authApplicationService: AuthApplicationService) {
     super({
       passReqToCallback: true,
     });
@@ -26,14 +31,14 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     username: string,
     password: string,
   ): Promise<any> {
-    const payload = await this.authService.validateUser(
+    const result = await this.authApplicationService.validateUser(
       username,
       password,
       req.tenantId,
     );
-    if (!payload) {
-      throw new UnauthorizedException('Usuario o contraseÃ±a invÃ¡lidos');
+    if (!result.isValid || !result.jwtPayload) {
+      throw new UnauthorizedException('Usuario o contraseña inválidos');
     }
-    return payload;
+    return result.jwtPayload;
   }
-}
+} 

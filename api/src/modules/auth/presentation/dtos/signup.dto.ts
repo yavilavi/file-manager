@@ -1,5 +1,5 @@
-﻿/**
- * File Manager - signup.dto DTO
+/**
+ * File Manager - Signup DTO (Presentation Layer)
  *
  * Original Author: Yilmer Avila (https://www.linkedin.com/in/yilmeravila/)
  * Project: File Manager
@@ -12,6 +12,10 @@ import { CreateUserDto } from '@modules/users/dtos/create-user.dto';
 import { Type } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
 
+/**
+ * Signup DTO for API input
+ * Part of presentation layer (interface adapters)
+ */
 export class SignupDto {
   @ValidateNested()
   @Type(() => CreateCompanyDto)

@@ -18,32 +18,31 @@ import {
   Get,
   Body,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { LocalAuthGuard } from '@modules/auth/guards/local-auth/local-auth.guard';
+import { SignupDto } from '@modules/auth';
 import { Request as Req } from 'express';
-import { JwtPayloadInterface } from '@shared/interfaces/jwt-payload.interface';
 import { IsPublic } from '@shared/decorators/is-public.decorator';
-import { SignupDto } from '@modules/auth/dtos/signup.dto';
+import { AuthApplicationService } from '@modules/auth/presentation/services/auth-application.service';
+import { LocalAuthGuard } from '@modules/auth/presentation/guards/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authApplicationService: AuthApplicationService) {}
 
   @IsPublic()
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
   login(@Request() req: Req) {
-    return this.authService.login(
+    return this.authApplicationService.login(
       req.tenantId,
-      req.user as unknown as JwtPayloadInterface,
+      req.user as unknown as { aud: string; sub: number; iss: string },
     );
   }
 
   @IsPublic()
   @Post('signup')
   signup(@Body() signupDto: SignupDto) {
-    return this.authService.signup(signupDto);
+    return this.authApplicationService.signup(signupDto);
   }
 
   @Get('me')
