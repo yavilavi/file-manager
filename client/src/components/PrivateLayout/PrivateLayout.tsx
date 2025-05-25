@@ -88,7 +88,7 @@ export default function PrivateLayout() {
                             style={{ cursor: 'pointer' }}
                             onClick={handleCreditsClick}
                         >
-                            {credits.currentBalance} crÃ©ditos
+                            {credits.currentBalance} créditos
                         </Badge>
                     )}
                 </Group>

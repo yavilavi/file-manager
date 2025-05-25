@@ -41,6 +41,7 @@ import companySchema from './company.schema.ts';
 import administratorSchema from './administrator.schema.ts';
 import { AxiosError } from 'axios';
 import PlanSelection from '../../components/PlanSelection/PlanSelection.tsx';
+import { useFetchActivePlans } from '../../hooks/usePlans.ts';
 
 export default function CompanyRegistration() {
   const [active, setActive] = useState(0);
@@ -55,6 +56,9 @@ export default function CompanyRegistration() {
       window.location.href = `${window.location.protocol}//app.${import.meta.env.VITE_APP_BASE_URL}/signup`;
     }
   }, [subdomain]);
+
+  // Fetch available plans
+  const { data: plans } = useFetchActivePlans();
 
   const form = useForm({
     initialValues: {
@@ -102,7 +106,7 @@ export default function CompanyRegistration() {
     console.log(form.validate());
     if (form.validate().hasErrors || isOutOfBounds) return;
     if (active === 0 && !data?.available) {
-      form.setFieldError('subdomain', 'Debes elegir un subdominio vÃ¡lido');
+      form.setFieldError('subdomain', 'Debes elegir un subdominio válido');
       return;
     }
     if (active === 1 && form.values.departmentId === -1) {
@@ -111,7 +115,7 @@ export default function CompanyRegistration() {
     }
     if (active === 2 && !form.values.planId) {
       notifications.show({
-        title: 'SelecciÃ³n de plan requerida',
+        title: 'Selección de plan requerida',
         message: 'Debes seleccionar un plan para continuar',
         color: 'red',
       });
@@ -179,7 +183,7 @@ export default function CompanyRegistration() {
     if (form.validate().hasErrors) return;
     if (!form.values.planId) {
       notifications.show({
-        title: 'SelecciÃ³n de plan requerida',
+        title: 'Selección de plan requerida',
         message: 'Debes seleccionar un plan para continuar',
         color: 'red',
       });
@@ -189,7 +193,7 @@ export default function CompanyRegistration() {
     notifications.show({
       id: 'signup-submit',
       title: 'Espera un momento...',
-      message: 'Estamos creando tu espacio de gestiÃ³n documental',
+      message: 'Estamos creando tu espacio de gestión documental',
       loading: true,
       autoClose: false,
     });
@@ -288,7 +292,7 @@ export default function CompanyRegistration() {
             <Stepper.Step
               icon={<IconBuildingCommunity size={18} />}
               label="Empresa"
-              description="InformaciÃ³n de la empresa"
+              description="Información de la empresa"
               allowStepSelect={shouldAllowSelectStep(0)}
               disabled={isSuccess}
             >
@@ -318,7 +322,7 @@ export default function CompanyRegistration() {
                     debounced.length < 3
                       ? 'Escribe al menos 3 letras'
                       : data && !data.available
-                        ? 'Ya estÃ¡ en uso'
+                        ? 'Ya está en uso'
                         : data && data.available
                           ? 'Disponible'
                           : 'Verificando...'
@@ -374,12 +378,12 @@ export default function CompanyRegistration() {
                 mt="md"
               />
               <PasswordInput
-                label="ContraseÃ±a"
+                label="Contraseña"
                 {...form.getInputProps('adminPassword')}
                 mt="md"
               />
               <PasswordInput
-                label="Confirmar contraseÃ±a"
+                label="Confirmar contraseña"
                 {...form.getInputProps('confirmPassword')}
                 mt="md"
               />
@@ -398,7 +402,7 @@ export default function CompanyRegistration() {
             <Stepper.Step
               icon={<IconFileInvoice size={18} />}
               label="Plan"
-              description="SelecciÃ³n de plan"
+              description="Selección de plan"
               allowStepSelect={shouldAllowSelectStep(2)}
               disabled={isSuccess}
             >
@@ -411,8 +415,8 @@ export default function CompanyRegistration() {
 
             <Stepper.Step
               icon={<IconListCheck size={18} />}
-              label="RevisiÃ³n"
-              description="Confirmar envÃ­o"
+              label="Revisión"
+              description="Confirmar envío"
               allowStepSelect={shouldAllowSelectStep(3)}
               loading={isPending}
               disabled={isSuccess}
@@ -433,6 +437,7 @@ export default function CompanyRegistration() {
                       (option) => option.value === form.values.departmentId.toString(),
                     )?.label || '',
                 }}
+                plan={plans?.find(plan => plan.id === form.values.planId)}
               />
             </Stepper.Step>
 
@@ -450,7 +455,7 @@ export default function CompanyRegistration() {
                 onClick={prevStep}
                 disabled={active === 0}
               >
-                AtrÃ¡s
+                Atrás
               </Button>
               {active < 3 ? (
                 <Button onClick={() => handleStepChange(active + 1)}>

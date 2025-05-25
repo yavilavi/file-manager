@@ -138,7 +138,7 @@ export default function Documents() {
               <Table.Th key="3">Creado por</Table.Th>
               <Table.Th key="4">Departamento</Table.Th>
               <Table.Th key="5">Empresa</Table.Th>
-              <Table.Th key="6">Fecha creaciÃ³n</Table.Th>
+              <Table.Th key="6">Fecha creación</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>

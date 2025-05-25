@@ -15,14 +15,14 @@ const buildSignupWelcomeEmailTemplate = (
   <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #eee; border-radius: 8px;">
     <div style="text-align: center;">
       <img src="https://minio.docma.yilmer.com/assets/docma-logo.png" alt="Docma Logo" style="width: 100px; margin-bottom: 16px;" />
-      <h2 style="color: #2c3e50;">Â¡Bienvenido a Docma, ${name}!</h2>
+      <h2 style="color: #2c3e50;">¡Bienvenido a Docma, ${name}!</h2>
     </div>
     
     <p style="font-size: 16px; color: #333;">
       Gracias por registrar <strong>${company}</strong> en Docma. Estamos emocionados de tenerte a bordo.
     </p>
     <p style="font-size: 16px; color: #333;">
-      Pronto recibiras un correo con los datos de inicio de sesiÃ³n.
+      Pronto recibirás un correo con los datos de inicio de sesión.
     </p>
 
 
@@ -38,12 +38,12 @@ const buildSignupWelcomeEmailTemplate = (
     </div>
 
     <p style="font-size: 14px; color: #777;">
-      Â¿Necesitas ayuda? ContÃ¡ctanos en <a href="mailto:yilmer@avila.dev">soporte@avila.dev</a>.
+      ¿Necesitas ayuda? Contáctanos en <a href="mailto:yilmer@avila.dev">soporte@avila.dev</a>.
     </p>
 
     <hr style="margin: 32px 0;" />
     <p style="font-size: 12px; color: #aaa; text-align: center;">
-      Este mensaje fue enviado automÃ¡ticamente por Docma. No respondas a este correo.
+      Este mensaje fue enviado automáticamente por Docma. No respondas a este correo.
     </p>
   </div>
 `;

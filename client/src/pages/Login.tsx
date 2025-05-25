@@ -44,8 +44,8 @@ export default function Login() {
         form.setFieldError('username', 'El correo es requerido');
         return;
       }
-      if (!password) {
-        form.setFieldError('password', 'La contraseÃ±a es requerida');
+      if (!password || password.trim() === '') {
+        form.setFieldError('password', 'La contraseña es requerida');
         return;
       }
       if (username && password) {
@@ -60,7 +60,7 @@ export default function Login() {
       const error = err as AxiosError<{ message: string; statusCode: number; error: string }>;
       console.error('Login error', error);
       notifications.show({
-        title: 'Error al iniciar sesiÃ³n',
+        title: 'Error al iniciar sesión',
         message: `${error.response?.data.message ?? error.message}`,
         color: 'red',
         autoClose: 5000,
@@ -79,10 +79,10 @@ export default function Login() {
     return (
       <Box maw={400} mx="auto" mt={150}>
         <Paper withBorder shadow="md" p="xl" radius="md">
-          <Title order={2} mb="sm">Â¡Ups! Parece que te perdiste</Title>
+          <Title order={2} mb="sm">¡Ups! Parece que te perdiste</Title>
           <Text>
-            El subdominio <b>{subdomain}</b> aÃºn no estÃ¡ registrado por ninguna empresa.
-            Â¡ApresÃºrate y crea tu cuenta antes de que alguien mÃ¡s registre <b>{subdomain}</b>!
+            El subdominio <b>{subdomain}</b> aún no está registrado por ninguna empresa.
+            ¡Apresúrate y crea tu cuenta antes de que alguien más registre <b>{subdomain}</b>!
           </Text>
           <Button
             mt="xl"
@@ -110,7 +110,7 @@ export default function Login() {
             mb="md"
           />
           <Title order={4}>
-            Iniciar sesiÃ³n
+            Iniciar sesión
           </Title>
           <form
             onSubmit={form.onSubmit(handleSubmit)}
@@ -122,7 +122,7 @@ export default function Login() {
               type="email"
             />
             <PasswordInput
-              label="ContraseÃ±a"
+              label="Contraseña"
               mt="md"
               {...form.getInputProps('password')}
             />
@@ -132,7 +132,7 @@ export default function Login() {
               fullWidth
               loading={loginMutation.isPending}
             >
-              Iniciar sesiÃ³n
+              Iniciar sesión
             </Button>
           </form>
         </Stack>

@@ -16,16 +16,16 @@ const companySchema = z.object({
   nit: z
     .string()
     .min(6, {
-      message: 'El NIT debe tener al menos 6 caractÃ©res',
+      message: 'El NIT debe tener al menos 6 caracteres',
     })
     .max(15, {
-      message: 'El NIT no puede tener mÃ¡s de 15 caractÃ©res',
+      message: 'El NIT no puede tener más de 15 caracteres',
     }),
   subdomain: z
     .string()
-    .min(4, { message: 'El subdominio debe tener al menos 4 caractÃ©res' })
+    .min(4, { message: 'El subdominio debe tener al menos 4 caracteres' })
     .max(15, {
-      message: 'El subdominio no puede tener mÃ¡s de 15 caractÃ©res',
+      message: 'El subdominio no puede tener más de 15 caracteres',
     }),
   departments: z
     .string()

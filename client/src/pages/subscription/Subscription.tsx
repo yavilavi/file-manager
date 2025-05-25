@@ -28,6 +28,7 @@ import { fetchCompanyPlan } from '../../services/api/plans';
 import { fetchCreditTransactions } from '../../services/api/credits';
 import useAuthStore from '../../stores/auth.store';
 import { formatDate } from '../../utils/formatters';
+import { notifications } from '@mantine/notifications';
 
 export default function Subscription() {
   const user = useAuthStore((state) => state.user);
@@ -82,9 +83,14 @@ export default function Subscription() {
   const purchaseTransactions = transactions?.filter(t => t.transactionType === 'PURCHASE') || [];
 
   if (!user) {
+    notifications.show({
+      title: 'Error',
+      message: 'No se pudo obtener la información del usuario',
+      color: 'red',
+    });
     return (
       <Alert icon={<IconInfoCircle size="1rem" />} title="Error" color="red">
-        No se pudo obtener la informaciÃ³n del usuario
+        No se pudo obtener la información del usuario
       </Alert>
     );
   }
@@ -92,7 +98,7 @@ export default function Subscription() {
   return (
     <Stack gap="md">
       <Group justify="space-between" align="center">
-        <Title order={2}>SuscripciÃ³n y Plan</Title>
+        <Title order={2}>Suscripción y Plan</Title>
         <Button variant="light" color="blue">
           Cambiar Plan
         </Button>
@@ -109,7 +115,7 @@ export default function Subscription() {
         </Card>
       ) : planError ? (
         <Alert icon={<IconInfoCircle size="1rem" />} title="Error" color="red">
-          No se pudo cargar la informaciÃ³n del plan
+          No se pudo cargar la información del plan
         </Alert>
       ) : companyPlan ? (
         <Card shadow="sm" padding="md" radius="md" withBorder>
@@ -130,7 +136,7 @@ export default function Subscription() {
                 </div>
                 
                 <div>
-                  <Text size="sm" c="dimmed">DescripciÃ³n</Text>
+                  <Text size="sm" c="dimmed">Descripción</Text>
                   <Text size="sm">{companyPlan.plan?.description}</Text>
                 </div>
 
@@ -169,8 +175,8 @@ export default function Subscription() {
 
                 {companyPlan.plan?.creditsIncluded && companyPlan.plan.creditsIncluded > 0 && (
                   <div>
-                    <Text size="sm" c="dimmed">CrÃ©ditos Incluidos</Text>
-                    <Text fw={500} c="blue">{companyPlan.plan.creditsIncluded} crÃ©ditos/mes</Text>
+                    <Text size="sm" c="dimmed">Créditos Incluidos</Text>
+                    <Text fw={500} c="blue">{companyPlan.plan.creditsIncluded} créditos/mes</Text>
                   </div>
                 )}
               </Stack>
@@ -188,7 +194,7 @@ export default function Subscription() {
         <Card shadow="sm" padding="md" radius="md" withBorder>
           <Group gap="xs" mb="md">
             <IconTrendingUp size="1.4rem" color="orange" />
-            <Title order={3}>CaracterÃ­sticas del Plan</Title>
+            <Title order={3}>Características del Plan</Title>
           </Group>
           
           <Grid gutter="md">
@@ -209,9 +215,9 @@ export default function Subscription() {
                 <Group gap="xs">
                   <IconCreditCard size="1rem" color="green" />
                   <div>
-                    <Text size="sm" fw={500}>CrÃ©ditos Mensuales</Text>
+                    <Text size="sm" fw={500}>Créditos Mensuales</Text>
                     <Text size="xs" c="dimmed">
-                      {companyPlan.plan.creditsIncluded} crÃ©ditos
+                      {companyPlan.plan.creditsIncluded} créditos
                     </Text>
                   </div>
                 </Group>
@@ -253,7 +259,7 @@ export default function Subscription() {
                 <Flex justify="space-between" align="center">
                   <div>
                     <Text fw={500} size="sm">
-                      {transaction.description || 'Compra de crÃ©ditos'}
+                      {transaction.description || 'Compra de créditos'}
                     </Text>
                     <Text size="xs" c="dimmed">
                       {formatDate(transaction.createdAt)}
@@ -261,7 +267,7 @@ export default function Subscription() {
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <Text fw={600} c="green" size="sm">
-                      +{transaction.amount} crÃ©ditos
+                      +{transaction.amount} créditos
                     </Text>
                     <Badge size="xs" color="green" variant="light">
                       Completado

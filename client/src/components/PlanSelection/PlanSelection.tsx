@@ -136,7 +136,7 @@ export default function PlanSelection({ onPlanSelected }: PlanSelectionProps) {
               </Text>
               {plan.creditsIncluded > 0 && (
                 <Text fw={500} c="blue" size="sm">
-                  Incluye {plan.creditsIncluded} crÃ©ditos
+                  Incluye {plan.creditsIncluded} créditos
                 </Text>
               )}
             </Stack>

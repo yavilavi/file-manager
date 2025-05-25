@@ -17,7 +17,7 @@ function LogoutButton() {
   return (
     <div className={classes.logoutButton} onClick={logout}>
       <IconLogout size={20} stroke={1.5} className={classes.mainLinkIcon} />
-      <span>Cerrar sesiÃ³n</span>
+      <span>Cerrar sesión</span>
     </div>
   );
 }

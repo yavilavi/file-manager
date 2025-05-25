@@ -27,6 +27,7 @@ import { IconInfoCircle, IconCoin, IconHistory, IconTrendingUp, IconCreditCard }
 import { fetchCompanyCredits, fetchCreditTransactions } from '../../services/api/credits';
 import useAuthStore from '../../stores/auth.store';
 import { formatDate } from '../../utils/formatters';
+import { notifications } from '@mantine/notifications';
 
 export default function Credits() {
   const user = useAuthStore((state) => state.user);
@@ -62,16 +63,21 @@ export default function Credits() {
   };
 
   if (!user) {
+    notifications.show({
+      title: 'Error',
+      message: 'No se pudo obtener la información del usuario',
+      color: 'red',
+    });
     return (
       <Alert icon={<IconInfoCircle size="1rem" />} title="Error" color="red">
-        No se pudo obtener la informaciÃ³n del usuario
+        No se pudo obtener la información del usuario
       </Alert>
     );
   }
 
   return (
     <Stack gap="md">
-      <Title order={2} mb="xs">GestiÃ³n de CrÃ©ditos</Title>
+      <Title order={2} mb="xs">Gestión de Créditos</Title>
 
       {/* Credits Overview Cards */}
       <Grid gutter="md">
@@ -88,7 +94,7 @@ export default function Credits() {
               <Text c="red" size="sm">Error</Text>
             ) : credits ? (
               <Text fw={700} size="xl" c="blue">
-                {credits.currentBalance} crÃ©ditos
+                {credits.currentBalance} créditos
               </Text>
             ) : (
               <Text c="dimmed" size="sm">--</Text>
@@ -107,7 +113,7 @@ export default function Credits() {
               <Skeleton height={24} />
             ) : credits ? (
               <Text fw={600} size="lg" c="green">
-                {credits.totalPurchased} crÃ©ditos
+                {credits.totalPurchased} créditos
               </Text>
             ) : (
               <Text c="dimmed" size="sm">--</Text>
@@ -126,7 +132,7 @@ export default function Credits() {
               <Skeleton height={24} />
             ) : credits ? (
               <Text fw={600} size="lg" c="orange">
-                {credits.totalPurchased - credits.currentBalance} crÃ©ditos
+                {credits.totalPurchased - credits.currentBalance} créditos
               </Text>
             ) : (
               <Text c="dimmed" size="sm">--</Text>
@@ -139,7 +145,7 @@ export default function Credits() {
           <Card shadow="sm" padding="md" radius="md" withBorder>
             <Group gap="xs" mb="sm">
               <IconHistory size="1.2rem" color="gray" />
-              <Text size="sm" fw={500}>Ãšltima Compra</Text>
+              <Text size="sm" fw={500}>Última Compra</Text>
             </Group>
             {creditsLoading ? (
               <Skeleton height={24} />
@@ -161,7 +167,7 @@ export default function Credits() {
       <Card shadow="sm" padding="md" radius="md" withBorder>
         <Group gap="xs" mb="md">
           <IconCoin size="1.4rem" />
-          <Title order={3}>InformaciÃ³n Detallada de CrÃ©ditos</Title>
+          <Title order={3}>Información Detallada de Créditos</Title>
         </Group>
         
         {creditsLoading ? (
@@ -172,13 +178,13 @@ export default function Credits() {
           </Grid>
         ) : creditsError ? (
           <Alert icon={<IconInfoCircle size="1rem" />} title="Error" color="red">
-            No se pudieron cargar los crÃ©ditos: {creditsError.message}
+            No se pudieron cargar los créditos: {creditsError.message}
           </Alert>
         ) : credits ? (
           <Grid gutter="md">
             <Grid.Col span={{ base: 12, sm: 4 }}>
               <Flex justify="space-between" align="center">
-                <Text size="sm" c="dimmed">CrÃ©ditos Disponibles</Text>
+                <Text size="sm" c="dimmed">Créditos Disponibles</Text>
                 <Text fw={600} size="lg" c="blue">{credits.currentBalance}</Text>
               </Flex>
             </Grid.Col>
@@ -196,7 +202,7 @@ export default function Credits() {
             </Grid.Col>
           </Grid>
         ) : (
-          <Text c="dimmed" ta="center">No hay informaciÃ³n de crÃ©ditos disponible</Text>
+          <Text c="dimmed" ta="center">No hay información de créditos disponible</Text>
         )}
       </Card>
 
@@ -221,7 +227,7 @@ export default function Credits() {
                   <Table.Th>Fecha</Table.Th>
                   <Table.Th>Tipo</Table.Th>
                   <Table.Th>Cantidad</Table.Th>
-                  <Table.Th>DescripciÃ³n</Table.Th>
+                  <Table.Th>Descripción</Table.Th>
                   <Table.Th>Estado</Table.Th>
                 </Table.Tr>
               </Table.Thead>
@@ -249,12 +255,12 @@ export default function Credits() {
                         fw={600}
                       >
                         {transaction.transactionType === 'PURCHASE' ? '+' : '-'}
-                        {transaction.amount} crÃ©ditos
+                        {transaction.amount} créditos
                       </Text>
                     </Table.Td>
                     <Table.Td>
                       <Text size="sm">
-                        {transaction.description || 'Sin descripciÃ³n'}
+                        {transaction.description || 'Sin descripción'}
                       </Text>
                     </Table.Td>
                     <Table.Td>
@@ -270,7 +276,7 @@ export default function Credits() {
         ) : (
           <Paper p="md" bg="gray.1">
             <Text c="dimmed" ta="center">
-              No hay movimientos de crÃ©ditos registrados
+              No hay movimientos de créditos registrados
             </Text>
           </Paper>
         )}

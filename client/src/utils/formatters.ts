@@ -15,7 +15,7 @@ export const formatDate = (date: string | null | undefined): string => {
     
     // Check if the date object is valid
     if (isNaN(dateObj.getTime())) {
-      return 'Fecha invÃ¡lida';
+      return 'Fecha inválida';
     }
     
     return new Intl.DateTimeFormat('es-ES', {
@@ -27,7 +27,7 @@ export const formatDate = (date: string | null | undefined): string => {
     }).format(dateObj);
   } catch (error) {
     console.warn('Error formatting date:', error, 'Original value:', date);
-    return 'Fecha invÃ¡lida';
+    return 'Fecha inválida';
   }
 };
 

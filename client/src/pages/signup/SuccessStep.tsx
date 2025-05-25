@@ -33,12 +33,12 @@ function SuccessStep({ subdomain }: SuccessStepProps) {
         Tu empresa ha sido registrada correctamente.
       </Text>
 
-      <Text c="dimmed" ta="center">
-        SerÃ¡s redirigido a {redirectUrl} para iniciar sesiÃ³n.
+      <Text>
+        Serás redirigido a {redirectUrl} para iniciar sesión.
       </Text>
 
-      <Button onClick={handleClick} rightSection={<IconRocket size={20} />}>
-        Ir a iniciar sesiÃ³n
+      <Button component="a" href={redirectUrl} mt="xl" fullWidth>
+        Ir a iniciar sesión
       </Button>
     </Stack>
   );

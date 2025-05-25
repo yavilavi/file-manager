@@ -19,8 +19,8 @@ const links = [
   { icon: IconMail, label: 'Email', path: '/email' },
   { icon: IconUsers, label: 'Usuarios', path: '/users' },
   { icon: IconBuildings, label: 'Departamentos', path: '/departments' },
-  { icon: IconCoin, label: 'CrÃ©ditos', path: '/credits' },
-  { icon: IconPackage, label: 'SuscripciÃ³n', path: '/subscription' },
+  { icon: IconCoin, label: 'Créditos', path: '/credits' },
+  { icon: IconPackage, label: 'Suscripción', path: '/subscription' },
   { icon: IconBuildingStore, label: 'Empresa', path: '/company' },
 ];
 

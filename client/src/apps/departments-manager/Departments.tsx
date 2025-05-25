@@ -42,7 +42,7 @@ export default function Departments() {
     onSuccess: () => {
       notifications.show({
         title: 'Departamento creado',
-        message: 'Se creÃ³ correctamente',
+        message: 'Se creó correctamente',
         color: 'green',
         autoClose: 5000,
       });
@@ -71,7 +71,7 @@ export default function Departments() {
     onSuccess: () => {
       notifications.show({
         title: 'Departamento actualizado',
-        message: 'Se actualizÃ³ correctamente',
+        message: 'Se actualizó correctamente',
         color: 'green',
         autoClose: 5000,
       });
@@ -146,7 +146,7 @@ export default function Departments() {
           <Table.Thead>
             <Table.Tr>
               <Table.Th>Nombre</Table.Th>
-              <Table.Th>Fecha de creaciÃ³n</Table.Th>
+              <Table.Th>Fecha de creación</Table.Th>
               <Table.Th key="6">Acciones</Table.Th>
             </Table.Tr>
           </Table.Thead>

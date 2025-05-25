@@ -40,7 +40,7 @@ const ReviewStep = ({ company, admin, plan }: ReviewStepProps) => {
   return (
     <Paper withBorder p="md" radius="md" shadow="sm">
       <Title order={3} size="sm" mb="md">
-        Revisa que la informaciÃ³n sea correcta antes de enviar
+        Revisa que la información sea correcta antes de enviar
       </Title>
       <Divider my="sm" />
       <Stack gap="sm">
@@ -82,7 +82,7 @@ const ReviewStep = ({ company, admin, plan }: ReviewStepProps) => {
                 </List.Item>
                 <List.Item key={'plan--desc'}>
                   <Text>
-                    <strong>DescripciÃ³n:</strong> {plan.description}
+                    <strong>Descripción:</strong> {plan.description}
                   </Text>
                 </List.Item>
                 <List.Item key={'plan--storage'}>

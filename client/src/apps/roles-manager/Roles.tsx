@@ -90,7 +90,7 @@ export default function Roles() {
     onSuccess: () => {
       notifications.show({
         title: 'Rol creado',
-        message: 'El rol se creÃ³ correctamente',
+        message: 'El rol se creó correctamente',
         color: 'green',
       });
       refetch();
@@ -100,7 +100,7 @@ export default function Roles() {
     onError: (error: any) => {
       notifications.show({
         title: 'Error al crear rol',
-        message: error.response?.data?.message || 'OcurriÃ³ un error',
+        message: error.response?.data?.message || 'Ocurrió un error',
         color: 'red',
       });
     },
@@ -112,7 +112,7 @@ export default function Roles() {
     onSuccess: () => {
       notifications.show({
         title: 'Rol actualizado',
-        message: 'El rol se actualizÃ³ correctamente',
+        message: 'El rol se actualizó correctamente',
         color: 'green',
       });
       refetch();
@@ -122,7 +122,7 @@ export default function Roles() {
     onError: (error: any) => {
       notifications.show({
         title: 'Error al actualizar rol',
-        message: error.response?.data?.message || 'OcurriÃ³ un error',
+        message: error.response?.data?.message || 'Ocurrió un error',
         color: 'red',
       });
     },
@@ -134,7 +134,7 @@ export default function Roles() {
     onSuccess: () => {
       notifications.show({
         title: 'Rol eliminado',
-        message: 'El rol se eliminÃ³ correctamente',
+        message: 'El rol se eliminó correctamente',
         color: 'green',
       });
       refetch();
@@ -142,7 +142,7 @@ export default function Roles() {
     onError: (error: any) => {
       notifications.show({
         title: 'Error al eliminar rol',
-        message: error.response?.data?.message || 'OcurriÃ³ un error',
+        message: error.response?.data?.message || 'Ocurrió un error',
         color: 'red',
       });
     },
@@ -174,7 +174,7 @@ export default function Roles() {
   };
 
   const handleDeleteRole = (role: RoleInterface) => {
-    if (window.confirm(`Â¿EstÃ¡s seguro de eliminar el rol "${role.name}"?`)) {
+    if (window.confirm(`¿Estás seguro de eliminar el rol "${role.name}"?`)) {
       deleteRoleMutation.mutate(role.id);
     }
   };
@@ -216,7 +216,7 @@ export default function Roles() {
           <thead>
             <tr>
               <th>Nombre</th>
-              <th>DescripciÃ³n</th>
+              <th>Descripción</th>
               <th>Permisos</th>
               <th>Usuarios</th>
               <th>Admin</th>
@@ -249,7 +249,7 @@ export default function Roles() {
                     </Tooltip>
                   </Group>
                 </td>
-                <td>{role.isAdmin ? 'SÃ­' : 'No'}</td>
+                <td>{role.isAdmin ? 'Sí' : 'No'}</td>
                 <td>{format(new Date(role.createdAt), 'dd/MM/yyyy')}</td>
                 <td>
                   <Group gap="xs">
@@ -298,8 +298,8 @@ export default function Roles() {
             />
             
             <Textarea
-              label="DescripciÃ³n"
-              placeholder="DescripciÃ³n del rol y sus funciones"
+              label="Descripción"
+              placeholder="Descripción del rol y sus funciones"
               {...form.getInputProps('description')}
             />
             
@@ -322,7 +322,7 @@ export default function Roles() {
               />
               {form.values.isAdmin && (
                 <Text size="xs" color="dimmed" mt={5}>
-                  Los administradores tienen todos los permisos automÃ¡ticamente
+                  Los administradores tienen todos los permisos automáticamente
                 </Text>
               )}
             </Box>

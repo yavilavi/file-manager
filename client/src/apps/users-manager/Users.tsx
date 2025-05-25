@@ -55,14 +55,14 @@ export default function Users() {
 
     validate: {
       name: (value) => (value.length < 2 ? 'Nombre muy corto' : null),
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Email invÃ¡lido'),
-      password: (value) => {
-        if (!editingUser) return (value.length < 6 ? 'ContraseÃ±a muy corta' : null);
-        if (editingUser && value.length > 0) return (value.length < 6 ? 'ContraseÃ±a muy corta' : null);
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Email inválido'),
+      password: (value, values) => {
+        if (!editingUser) return (value.length < 6 ? 'Contraseña muy corta' : null);
+        if (editingUser && value.length > 0) return (value.length < 6 ? 'Contraseña muy corta' : null);
         return null;
       },
       confirmPassword: (value, values) =>
-        value !== values.password && !editingUser ? 'Las contraseÃ±as no coinciden' : null,
+        value !== values.password && !editingUser ? 'Las contraseñas no coinciden' : null,
       departmentId: (value) => (!value ? 'Selecciona un departamento' : null),
     },
   });
@@ -74,7 +74,7 @@ export default function Users() {
   });
 
   const updateUserMutation = useMutation({
-    mutationFn: updateUser, // crea esta funciÃ³n en /services/api/updateUser.ts
+    mutationFn: updateUser, // crea esta función en /services/api/updateUser.ts
     onSuccess: () => {
       notifications.show({
         title: 'Usuario actualizado',
@@ -137,7 +137,7 @@ export default function Users() {
       notifications.show({
         id: 'user-creation-notification',
         title: 'Usuario creado',
-        message: 'El usuario se creÃ³ correctamente',
+        message: 'El usuario se creó correctamente',
         color: 'green',
         autoClose: 5000,
       });
@@ -195,14 +195,14 @@ export default function Users() {
             mt="md"
           />
           <PasswordInput
-            label={`ContraseÃ±a ${editingUser ? '(opcional)' : ''}`}
+            label={`Contraseña ${editingUser ? '(opcional)' : ''}`}
             placeholder="********"
             {...form.getInputProps('password')}
             required={!editingUser}
             mt="md"
           />
           {!editingUser && <PasswordInput
-            label="Confirmar contraseÃ±a"
+            label="Confirmar contraseña"
             placeholder="********"
             {...form.getInputProps('confirmPassword')}
             required={!editingUser}
@@ -236,7 +236,7 @@ export default function Users() {
               <Table.Th key="2">Departamento</Table.Th>
               <Table.Th key="3">Empresa</Table.Th>
               <Table.Th key="4">Estado</Table.Th>
-              <Table.Th key="5">Fecha creaciÃ³n</Table.Th>
+              <Table.Th key="5">Fecha creación</Table.Th>
               <Table.Th key="6">Acciones</Table.Th>
             </Table.Tr>
           </Table.Thead>

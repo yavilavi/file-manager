@@ -33,7 +33,7 @@ export default function PlanSelectionPage() {
     <Container size="xl">
       <Paper p="xl" radius="md" withBorder shadow="md" my="xl">
         <Box mb="xl" ta="center">
-          <Title>SelecciÃ³n de Plan</Title>
+          <Title>Selección de Plan</Title>
           <Text c="dimmed">
             Para continuar usando la plataforma, debes seleccionar un plan
           </Text>
