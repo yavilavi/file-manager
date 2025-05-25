@@ -24,8 +24,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request as Req } from 'express';
-import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth/jwt-auth.guard';
-import { RequirePermission } from '@modules/auth/decorators/require-permission.decorator';
 import { CreateDepartmentDto } from '../../application/dtos/create-department.dto';
 import { UpdateDepartmentDto } from '../../application/dtos/update-department.dto';
 import { DepartmentResponseDto } from '../../application/dtos/department-response.dto';
@@ -33,6 +31,7 @@ import { CreateDepartmentUseCase } from '../../application/use-cases/create-depa
 import { GetAllDepartmentsUseCase } from '../../application/use-cases/get-all-departments.use-case';
 import { UpdateDepartmentUseCase } from '../../application/use-cases/update-department.use-case';
 import { DeleteDepartmentUseCase } from '../../application/use-cases/delete-department.use-case';
+import { JwtAuthGuard, RequiredPermission } from '@modules/auth';
 
 @Controller('departments')
 @UseGuards(JwtAuthGuard)
@@ -45,7 +44,7 @@ export class DepartmentController {
   ) {}
 
   @Get()
-  @RequirePermission('department:read')
+  @RequiredPermission('department:read')
   async getAllDepartments(
     @Request() req: Req,
   ): Promise<DepartmentResponseDto[]> {
@@ -57,7 +56,7 @@ export class DepartmentController {
   }
 
   @Post()
-  @RequirePermission('department:create')
+  @RequiredPermission('department:create')
   @HttpCode(HttpStatus.CREATED)
   async createDepartment(
     @Body() dto: CreateDepartmentDto,
@@ -81,7 +80,7 @@ export class DepartmentController {
   }
 
   @Patch(':id')
-  @RequirePermission('department:update')
+  @RequiredPermission('department:update')
   async updateDepartment(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateDepartmentDto,
@@ -109,7 +108,7 @@ export class DepartmentController {
   }
 
   @Delete(':id')
-  @RequirePermission('department:delete')
+  @RequiredPermission('department:delete')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteDepartment(
     @Param('id', ParseIntPipe) id: number,

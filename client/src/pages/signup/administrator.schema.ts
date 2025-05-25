@@ -23,9 +23,9 @@ const administratorSchema = z
     adminEmail: z.string().email({ message: 'El email no es válido' }),
     adminPassword: z
       .string()
-      .min(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
-      .max(10, {
-        message: 'La contraseña no puede tener más de 10 caracteres',
+      .min(8, { message: 'La contraseña debe tener al menos 8 caracteres' })
+      .max(12, {
+        message: 'La contraseña no puede tener más de 12 caracteres',
       }),
     departmentId: z
       .number({

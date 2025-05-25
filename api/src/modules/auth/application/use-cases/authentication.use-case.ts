@@ -9,83 +9,81 @@
  */
 
 import { Injectable, Inject, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
 import {
   IPasswordHashingService,
   PASSWORD_HASHING_SERVICE,
 } from '@shared/interfaces/password-hashing.interface';
-import {
-  IUserRepository,
-  USER_REPOSITORY,
-} from '@shared/interfaces/user-repository.interface';
-import { JwtPayloadInterface } from '@shared/interfaces/jwt-payload.interface';
-
-export interface LoginCommand {
-  tenantId: string;
-  jwtPayload: JwtPayloadInterface;
-}
-
-export interface LoginResult {
-  access_token: string;
-}
-
-export interface ValidateUserCommand {
-  email: string;
-  password: string;
-  tenantId?: string;
-}
+import { 
+  IUserCredentialsRepository, 
+  USER_CREDENTIALS_REPOSITORY 
+} from '../../domain/repositories/user-credentials.repository.interface';
+import { AuthenticationDomainService } from '../../domain/services/authentication.domain-service';
+import { JwtApplicationService } from '../services/jwt.service';
+import { Email } from '@shared/domain/value-objects/email.value-object';
+import { 
+  ValidateUserCommand, 
+  LoginCommand, 
+  LoginResult, 
+  ValidateUserResult 
+} from '../dtos/authentication.dto';
 
 /**
  * Authentication Use Case
  * Following Single Responsibility Principle (SRP) - only handles authentication logic
  * Following Dependency Inversion Principle (DIP) - depends on abstractions
+ * Following Clean Architecture - orchestrates domain services and repositories
  */
 @Injectable()
 export class AuthenticationUseCase {
   constructor(
-    private readonly configService: ConfigService,
-    private readonly jwtService: JwtService,
-    @Inject(USER_REPOSITORY)
-    private readonly userRepository: IUserRepository,
+    private readonly jwtApplicationService: JwtApplicationService,
+    @Inject(USER_CREDENTIALS_REPOSITORY)
+    private readonly userCredentialsRepository: IUserCredentialsRepository,
     @Inject(PASSWORD_HASHING_SERVICE)
     private readonly passwordHashingService: IPasswordHashingService,
+    private readonly authenticationDomainService: AuthenticationDomainService,
   ) {}
 
   /**
    * Validate user credentials
    * @param command - Contains email, password and optional tenantId
-   * @returns JWT payload or false if invalid
+   * @returns Validation result with JWT payload if valid
    */
-  async validateUser(
-    command: ValidateUserCommand,
-  ): Promise<false | JwtPayloadInterface> {
+  async validateUser(command: ValidateUserCommand): Promise<ValidateUserResult> {
     const { email, password, tenantId } = command;
 
-    const user = await this.userRepository.findByEmail(
-      email.toLowerCase(),
+    // Create email value object
+    const emailVO = Email.create(email);
+
+    // Find user credentials
+    const credentials = await this.userCredentialsRepository.findByEmail(
+      emailVO,
       tenantId,
-      true, // includePassword
     );
 
-    if (!user || !user.isActive) {
-      return false;
-    }
-
-    const passwordIsValid = await this.passwordHashingService.verify(
-      user.password!,
+    // Validate credentials using domain service
+    const isValid = await this.authenticationDomainService.validateCredentials(
+      credentials,
       password,
+      this.passwordHashingService,
     );
 
-    if (user.isActive && passwordIsValid) {
-      return {
-        aud: this.configService.getOrThrow<string>('jwt.aud'),
-        sub: user.id,
-        iss: this.configService.getOrThrow<string>('jwt.iss'),
-      };
+    if (!isValid || !credentials) {
+      return { isValid: false };
     }
 
-    return false;
+    // Create JWT payload using domain service
+    const jwtConfig = this.jwtApplicationService.getJwtConfig();
+
+    const jwtPayload = this.authenticationDomainService.createAuthPayload(
+      credentials,
+      jwtConfig,
+    );
+
+    return {
+      isValid: true,
+      jwtPayload,
+    };
   }
 
   /**
@@ -100,23 +98,21 @@ export class AuthenticationUseCase {
       throw new UnauthorizedException('Usuario o contraseña inválidos');
     }
 
-    const dbUser = await this.userRepository.findUserById(
+    // Verify user still exists and is active
+    const credentials = await this.userCredentialsRepository.findById(
       jwtPayload.sub,
       tenantId,
     );
 
-    if (!dbUser) {
+    if (
+      !credentials ||
+      !this.authenticationDomainService.canUserAuthenticate(credentials)
+    ) {
       throw new UnauthorizedException('Usuario o contraseña inválidos');
     }
 
-    const payload: JwtPayloadInterface = {
-      aud: this.configService.getOrThrow<string>('jwt.aud'),
-      sub: dbUser.id,
-      iss: this.configService.getOrThrow<string>('jwt.iss'),
-    };
-
     return {
-      access_token: this.jwtService.sign({ ...payload }, { expiresIn: '8h' }),
+      access_token: this.jwtApplicationService.generateAccessToken(jwtPayload),
     };
   }
 }

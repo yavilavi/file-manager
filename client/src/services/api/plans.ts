@@ -7,7 +7,7 @@
  * 
  * Created: 2024
  */
-import axiosInstance, { publicApiCall } from '../axios';
+import apiCall from '../axios.ts';
 
 export interface Plan {
   id: number;
@@ -40,22 +40,12 @@ export interface CreateCompanyPlanDto {
   endDate?: string;
 }
 
-export const fetchPlans = async (): Promise<Plan[]> => {
-  const response = await axiosInstance.get<Plan[]>('/plans');
-  return response.data;
-};
-
 export const fetchActivePlans = async (): Promise<Plan[]> => {
-  const response = await publicApiCall.get<Plan[]>('/plans/active');
+  const response = await apiCall.get<Plan[]>('/plans/active');
   return response.data;
 };
 
 export const fetchCompanyPlan = async (tenantId: string): Promise<CompanyPlan> => {
-  const response = await axiosInstance.get<CompanyPlan>(`/company-plans/tenant/${tenantId}`);
+  const response = await apiCall.get<CompanyPlan>(`/company-plans/tenant/${tenantId}`);
   return response.data;
 };
-
-export const createCompanyPlan = async (data: CreateCompanyPlanDto): Promise<CompanyPlan> => {
-  const response = await axiosInstance.post<CompanyPlan>('/company-plans', data);
-  return response.data;
-}; 

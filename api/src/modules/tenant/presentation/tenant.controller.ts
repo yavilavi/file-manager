@@ -17,7 +17,6 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { IsPublic } from '@shared/decorators/is-public.decorator';
-import { RequirePermission } from '@modules/auth/decorators/require-permission.decorator';
 
 // Use Cases
 import { CheckSubdomainAvailabilityUseCase } from '../application/use-cases/check-subdomain-availability.use-case';
@@ -34,6 +33,7 @@ import {
   TenantCreationResultDto,
   TenantResponseDto,
 } from '../application/dtos/create-tenant.dto';
+import { RequiredPermission } from '@modules/auth';
 
 @Controller('tenant')
 export class TenantController {
@@ -41,7 +41,8 @@ export class TenantController {
     private readonly checkSubdomainAvailabilityUseCase: CheckSubdomainAvailabilityUseCase,
     private readonly createTenantUseCase: CreateTenantUseCase,
     private readonly getTenantByIdUseCase: GetTenantByIdUseCase,
-  ) {}
+  ) {
+  }
 
   @IsPublic()
   @Get('check-subdomain')
@@ -108,7 +109,7 @@ export class TenantController {
   }
 
   @Get(':tenantId')
-  @RequirePermission('tenant:read')
+  @RequiredPermission('tenant:read')
   async getTenantById(
     @Param('tenantId') tenantId: string,
   ): Promise<TenantResponseDto> {

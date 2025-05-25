@@ -8,19 +8,13 @@
  * Created: 2024
  */
 
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '@libs/database/prisma/prisma.service';
-import {
-  CompanyCreationUseCase,
-  CreateCompanyCommand,
-} from './company-creation.use-case';
-import {
-  UserRegistrationUseCase,
-  RegisterUserCommand,
-} from './user-registration.use-case';
 import { RoleInitializationService } from '@modules/tenant/application/services/role-initialization.service';
+import * as argon2 from 'argon2';
+import { Department } from '@prisma/client';
 
 export interface OnboardCompanyCommand {
   company: {
@@ -43,9 +37,10 @@ export interface OnboardingResult {
 }
 
 /**
- * Company Onboarding Use Case
+ * Company Onboarding Use Case - Atomic Implementation
  * Following Single Responsibility Principle (SRP) - orchestrates company signup process
  * Following Open/Closed Principle (OCP) - open for extension via events
+ * ATOMIC: All operations succeed or fail together
  */
 @Injectable()
 export class CompanyOnboardingUseCase {
@@ -54,12 +49,10 @@ export class CompanyOnboardingUseCase {
     private readonly prisma: PrismaService,
     private readonly eventEmitter: EventEmitter2,
     private readonly roleInitializationService: RoleInitializationService,
-    private readonly companyCreationUseCase: CompanyCreationUseCase,
-    private readonly userRegistrationUseCase: UserRegistrationUseCase,
   ) {}
 
   /**
-   * Execute complete company onboarding process
+   * Execute complete company onboarding process atomically
    * @param command - Company and user data
    * @returns Promise with redirect URL
    */
@@ -67,49 +60,60 @@ export class CompanyOnboardingUseCase {
     return await this.prisma.client.$transaction(async (tx) => {
       const { company, user } = command;
 
-      // 1. Create company with departments (excluding user department initially)
-      const otherDepartments = company.departments.filter(
-        (_, index) => index !== user.departmentId,
-      );
+      // 1. Check if company with NIT already exists (validation)
+      const existingCompany = await tx.company.findFirst({
+        where: { nit: company.nit, deletedAt: null },
+        select: { nit: true },
+      });
 
-      const companyCommand: CreateCompanyCommand = {
-        name: company.name,
-        nit: company.nit,
-        tenantId: company.tenantId,
-        departments: otherDepartments,
-      };
+      if (existingCompany) {
+        throw new ConflictException(
+          'Ya hay una compañía registrada con este NIT',
+        );
+      }
 
-      const companyResult =
-        await this.companyCreationUseCase.execute(companyCommand);
-
-      // 2. Create user department via direct transaction
-      const userDepartment = company.departments[user.departmentId];
-      const createdUserDepartment = await tx.department.create({
+      // 2. Create company atomically
+      const createdCompany = await tx.company.create({
         data: {
-          name: userDepartment.name,
-          company: {
-            connect: {
-              id: companyResult.company.id,
-              tenantId: company.tenantId,
-            },
-          },
+          name: company.name,
+          nit: company.nit,
+          tenantId: company.tenantId,
+          canSendEmail: false,
         },
       });
 
-      // 3. Register admin user
-      const userCommand: RegisterUserCommand = {
-        name: user.name,
-        email: user.email,
-        password: user.password,
-        tenantId: company.tenantId,
-        departmentId: createdUserDepartment.id,
-        isActive: true,
-      };
+      // 3. Create all departments atomically
+      const createdDepartments: Department[] = [];
+      for (let i = 0; i < company.departments.length; i++) {
+        const department = await tx.department.create({
+          data: {
+            name: company.departments[i].name,
+            tenantId: company.tenantId,
+          },
+        });
+        createdDepartments.push(department);
+      }
 
-      const createdUser =
-        await this.userRegistrationUseCase.execute(userCommand);
+      // 4. Get user's department
+      const userDepartment = createdDepartments[user.departmentId];
+      if (!userDepartment) {
+        throw new Error(`Invalid department index: ${user.departmentId}`);
+      }
 
-      // 4. Create company plan if provided
+      // 5. Hash password and create admin user atomically
+      const hashedPassword = await argon2.hash(user.password);
+      const createdUser = await tx.user.create({
+        data: {
+          name: user.name,
+          email: user.email,
+          password: hashedPassword,
+          tenantId: company.tenantId,
+          departmentId: userDepartment.id,
+          isActive: true,
+        },
+      });
+
+      // 6. Create company plan if provided
       if (company.planId) {
         await tx.companyPlan.create({
           data: {
@@ -122,35 +126,59 @@ export class CompanyOnboardingUseCase {
         });
       }
 
-      // 5. Initialize super admin role and assign to user
+      // 7. Initialize company credits (required for operations)
+      await tx.companyCredits.create({
+        data: {
+          tenantId: company.tenantId,
+          totalPurchased: 0,
+          currentBalance: 0,
+        },
+      });
+
+      // 8. Initialize super admin role and assign to user atomically
       await this.roleInitializationService.initializeSuperAdminRole({
         tenantId: company.tenantId,
         userId: createdUser.id,
         tx,
       });
 
-      // 6. Emit events for side effects
-      this.eventEmitter.emit('company.created', {
-        company: command.company,
-        user: command.user,
-      });
-
-      this.eventEmitter.emit('user.created', {
-        user: {
-          name: user.name,
-          email: user.email,
-          password: user.password,
-        },
-        company: {
-          name: company.name,
-          tenantId: company.tenantId,
-        },
-      });
-
-      // 7. Generate redirect URL
+      // 9. Generate redirect URL
       const protocol = this.configService.get('protocol') ?? 'http';
       const baseUrl = this.configService.getOrThrow('baseAppUrl');
       const redirectUrl = `${protocol}://${company.tenantId}.${baseUrl}`;
+
+      // 10. Emit events for side effects (after successful transaction)
+      // Note: Events are emitted synchronously to ensure they happen after commit
+      setImmediate(() => {
+        this.eventEmitter.emit('company.created', {
+          company: {
+            id: createdCompany.id,
+            ...command.company,
+          },
+          user: {
+            id: createdUser.id,
+            ...command.user,
+          },
+          departments: createdDepartments.map((dept, index) => ({
+            id: dept.id,
+            name: dept.name,
+            index,
+          })),
+        });
+
+        this.eventEmitter.emit('user.created', {
+          user: {
+            id: createdUser.id,
+            name: user.name,
+            email: user.email,
+          },
+          company: {
+            id: createdCompany.id,
+            name: company.name,
+            tenantId: company.tenantId,
+          },
+        });
+      });
 
       return { redirectUrl };
     });

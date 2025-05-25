@@ -21,42 +21,43 @@ import { CompanyPlanService } from '../../application/services/company-plan.serv
 import { CreateCompanyPlanDto } from '../../application/dtos/create-company-plan.dto';
 import { UpdateCompanyPlanDto } from '../../application/dtos/update-company-plan.dto';
 import { serializeBigInt } from '@utils/serializers';
-import { RequirePermission } from '@modules/auth/decorators/require-permission.decorator';
+import { RequiredPermission } from '@modules/auth';
+
 
 @Controller('company-plans')
 export class CompanyPlanController {
   constructor(private readonly companyPlanService: CompanyPlanService) {}
 
   @Get()
-  @RequirePermission('company-plan:read')
+  @RequiredPermission('company-plan:read')
   async findAll(): Promise<any> {
     const companyPlans = await this.companyPlanService.findAll();
     return serializeBigInt(companyPlans);
   }
 
   @Get(':id')
-  @RequirePermission('company-plan:read')
+  @RequiredPermission('company-plan:read')
   async findById(@Param('id', ParseIntPipe) id: number): Promise<any> {
     const companyPlan = await this.companyPlanService.findById(id);
     return serializeBigInt(companyPlan);
   }
 
   @Get(':id/with-plan')
-  @RequirePermission('company-plan:read')
+  @RequiredPermission('company-plan:read')
   async findWithPlan(@Param('id', ParseIntPipe) id: number): Promise<any> {
     const companyPlan = await this.companyPlanService.findWithPlan(id);
     return serializeBigInt(companyPlan);
   }
 
   @Get('tenant/:tenantId')
-  @RequirePermission('company-plan:read')
+  @RequiredPermission('company-plan:read')
   async findByTenantId(@Param('tenantId') tenantId: string): Promise<any> {
     const companyPlan = await this.companyPlanService.findByTenantId(tenantId);
     return serializeBigInt(companyPlan);
   }
 
   @Post()
-  @RequirePermission('company-plan:create')
+  @RequiredPermission('company-plan:create')
   async create(
     @Body() createCompanyPlanDto: CreateCompanyPlanDto,
   ): Promise<any> {
@@ -66,7 +67,7 @@ export class CompanyPlanController {
   }
 
   @Put(':id')
-  @RequirePermission('company-plan:update')
+  @RequiredPermission('company-plan:update')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCompanyPlanDto: UpdateCompanyPlanDto,
@@ -79,7 +80,7 @@ export class CompanyPlanController {
   }
 
   @Delete(':id')
-  @RequirePermission('company-plan:delete')
+  @RequiredPermission('company-plan:delete')
   async deactivate(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.companyPlanService.deactivate(id);
   }

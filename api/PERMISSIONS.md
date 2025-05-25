@@ -75,13 +75,13 @@ import { RequirePermission } from '@modules/auth/decorators/require-permission.d
 @Controller('files')
 export class FilesController {
   @Get()
-  @RequirePermission('file:read')
+  @RequiredPermission('file:read')
   async getAllFiles() {
     // Lógica del endpoint
   }
 
   @Post()
-  @RequirePermission('file:create')
+  @RequiredPermission('file:create')
   async createFile() {
     // Lógica del endpoint
   }

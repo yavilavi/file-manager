@@ -22,15 +22,15 @@ import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { Request } from 'express';
-import { RequirePermission } from '../auth/decorators/require-permission.decorator';
 import { Role, UserRole } from './interfaces/role.interface';
+import { RequiredPermission } from '@modules/auth';
 
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Post()
-  @RequirePermission('role:create')
+  @RequiredPermission('role:create')
   create(
     @Body() createRoleDto: CreateRoleDto,
     @Req() request: Request,
@@ -40,14 +40,14 @@ export class RolesController {
   }
 
   @Get()
-  @RequirePermission('role:read')
+  @RequiredPermission('role:read')
   findAll(@Req() request: Request): Promise<Role[]> {
     const tenantId = request['tenantId'];
     return this.rolesService.findAll(tenantId);
   }
 
   @Get(':id')
-  @RequirePermission('role:read')
+  @RequiredPermission('role:read')
   findOne(
     @Param('id', ParseIntPipe) id: number,
     @Req() request: Request,
@@ -57,7 +57,7 @@ export class RolesController {
   }
 
   @Get(':id/users')
-  @RequirePermission('role:read')
+  @RequiredPermission('role:read')
   getRoleUsers(
     @Param('id', ParseIntPipe) id: number,
     @Req() request: Request,
@@ -67,7 +67,7 @@ export class RolesController {
   }
 
   @Patch(':id')
-  @RequirePermission('role:update')
+  @RequiredPermission('role:update')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateRoleDto: UpdateRoleDto,
@@ -78,7 +78,7 @@ export class RolesController {
   }
 
   @Delete(':id')
-  @RequirePermission('role:delete')
+  @RequiredPermission('role:delete')
   remove(
     @Param('id', ParseIntPipe) id: number,
     @Req() request: Request,
@@ -88,7 +88,7 @@ export class RolesController {
   }
 
   @Post('users/:userId/roles/:roleId')
-  @RequirePermission('role:assign')
+  @RequiredPermission('role:assign')
   assignRole(
     @Param('userId', ParseIntPipe) userId: number,
     @Param('roleId', ParseIntPipe) roleId: number,
@@ -99,7 +99,7 @@ export class RolesController {
   }
 
   @Delete('users/:userId/roles/:roleId')
-  @RequirePermission('role:assign')
+  @RequiredPermission('role:assign')
   removeRole(
     @Param('userId', ParseIntPipe) userId: number,
     @Param('roleId', ParseIntPipe) roleId: number,
@@ -110,7 +110,7 @@ export class RolesController {
   }
 
   @Get('users/:userId/roles')
-  @RequirePermission('role:read')
+  @RequiredPermission('role:read')
   getUserRoles(
     @Param('userId', ParseIntPipe) userId: number,
     @Req() request: Request,

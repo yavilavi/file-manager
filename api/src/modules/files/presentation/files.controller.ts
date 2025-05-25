@@ -29,7 +29,7 @@ import { Request as Req, Response as Res } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayloadInterface } from '@shared/interfaces/jwt-payload.interface';
 import { IsPublic } from '@shared/decorators/is-public.decorator';
-import { RequirePermission } from '../../auth/decorators/require-permission.decorator';
+import { RequiredPermission } from '@modules/auth';
 
 // Use Cases
 import { UploadFileUseCase } from '../application/use-cases/upload-file.use-case';
@@ -57,7 +57,7 @@ export class FilesController {
   ) {}
 
   @Post('upload')
-  @RequirePermission('file:create')
+  @RequiredPermission('file:create')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
@@ -80,13 +80,13 @@ export class FilesController {
   }
 
   @Get()
-  @RequirePermission('file:read')
+  @RequiredPermission('file:read')
   async getAllFiles(@Request() req: Req) {
     return await this.getAllFilesUseCase.execute(req.tenantId);
   }
 
   @Get(':id')
-  @RequirePermission('file:read')
+  @RequiredPermission('file:read')
   async getFileById(
     @Param('id', ParseIntPipe) id: number,
     @Request() req: Req,
@@ -95,7 +95,7 @@ export class FilesController {
   }
 
   @Get(':id/download')
-  @RequirePermission('file:download')
+  @RequiredPermission('file:download')
   async downloadFile(
     @Param('id', ParseIntPipe) id: number,
     @Query('tenantId') tenantId: string,
@@ -130,7 +130,7 @@ export class FilesController {
   }
 
   @Delete(':id')
-  @RequirePermission('file:delete')
+  @RequiredPermission('file:delete')
   async deleteFile(
     @Param('id', ParseIntPipe) id: number,
     @Request() req: Req,

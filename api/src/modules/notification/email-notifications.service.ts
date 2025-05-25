@@ -10,11 +10,11 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { EmailProvider } from '@modules/notification/interfaces/email.provider.interface';
 import { OnEvent } from '@nestjs/event-emitter';
-import { SignupDto } from '@modules/auth/dtos/signup.dto';
 import { ConfigService } from '@nestjs/config';
 import buildWelcomeEmailTemplate from '@modules/notification/email/templates/signup-wellcome-email.template';
 import buildNewUserWelcomeEmail from '@modules/notification/email/templates/new-user-wellcome-email.template';
 import { CreateUserDto } from '@modules/users/dtos/create-user.dto';
+import { SignupDto } from '@modules/auth';
 
 interface SendEmailDTO {
   to: string;

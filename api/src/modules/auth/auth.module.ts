@@ -8,51 +8,48 @@
  * Created: 2024
  */
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { AuthController } from './presentation/controllers/auth.controller';
+import { AuthApplicationService } from './presentation/services/auth-application.service';
 import { UsersModule } from '@modules/users/users.module';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from '@modules/auth/passport/strategies/local.strategy';
-import { JwtStrategy } from '@modules/auth/passport/strategies/jwt.strategy';
+import { LocalStrategy } from './infrastructure/passport/local.strategy';
+import { JwtStrategy } from './infrastructure/passport/jwt.strategy';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth/jwt-auth.guard';
-import { CompanyModule } from '@modules/company/company.module';
+import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
+
 import { PrismaService } from '@libs/database/prisma/prisma.service';
 import { PermissionsModule } from '@modules/permissions/permissions.module';
-import { PermissionGuard } from './guards/permission/permission.guard';
+import { PermissionGuard } from './presentation/guards/permission.guard';
 import { TenantModule } from '@modules/tenant/tenant.module';
-// New use cases and services
+// Use cases and services
 import { AuthenticationUseCase } from './application/use-cases/authentication.use-case';
-import { UserRegistrationUseCase } from './application/use-cases/user-registration.use-case';
-import { CompanyCreationUseCase } from './application/use-cases/company-creation.use-case';
 import { CompanyOnboardingUseCase } from './application/use-cases/company-onboarding.use-case';
 import { ArgonPasswordHashingService } from '@shared/services/argon-password-hashing.service';
 import { PASSWORD_HASHING_SERVICE } from '@shared/interfaces/password-hashing.interface';
 import { USER_REPOSITORY } from '@shared/interfaces/user-repository.interface';
-import { COMPANY_REPOSITORY } from '@shared/interfaces/company-repository.interface';
 import { PrismaUserRepository } from '@shared/infrastructure/repositories/prisma-user.repository';
-import { PrismaCompanyRepository } from '@shared/infrastructure/repositories/prisma-company.repository';
 import { UserMapper } from '@shared/mappers/user.mapper';
-import { CompanyMapper } from '@shared/mappers/company.mapper';
+// Domain services and repositories
+import { AuthenticationDomainService } from './domain/services/authentication.domain-service';
+import { UserCredentialsRepository } from './infrastructure/repositories/user-credentials.repository';
+import { USER_CREDENTIALS_REPOSITORY } from './domain/repositories/user-credentials.repository.interface';
+// Application services
+import { JwtApplicationService } from './application/services/jwt.service';
 
 @Module({
-  imports: [
-    UsersModule,
-    PassportModule,
-    CompanyModule,
-    PermissionsModule,
-    TenantModule,
-  ],
+  imports: [UsersModule, PassportModule, PermissionsModule, TenantModule],
   providers: [
     PrismaService,
-    AuthService,
+    AuthApplicationService,
     LocalStrategy,
     JwtStrategy,
     // Use cases
     AuthenticationUseCase,
-    UserRegistrationUseCase,
-    CompanyCreationUseCase,
     CompanyOnboardingUseCase,
+    // Domain services
+    AuthenticationDomainService,
+    // Application services
+    JwtApplicationService,
     // Services
     {
       provide: PASSWORD_HASHING_SERVICE,
@@ -64,12 +61,11 @@ import { CompanyMapper } from '@shared/mappers/company.mapper';
       useClass: PrismaUserRepository,
     },
     {
-      provide: COMPANY_REPOSITORY,
-      useClass: PrismaCompanyRepository,
+      provide: USER_CREDENTIALS_REPOSITORY,
+      useClass: UserCredentialsRepository,
     },
     // Mappers
     UserMapper,
-    CompanyMapper,
     // Guards
     {
       provide: APP_GUARD,

@@ -10,15 +10,15 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { PermissionsService } from './permissions.service';
 import { CreatePermissionDto } from './dto/create-permission.dto';
-import { RequirePermission } from '../auth/decorators/require-permission.decorator';
 import { Permission } from './interfaces/permission.interface';
+import { RequiredPermission } from '@modules/auth';
 
 @Controller('permissions')
 export class PermissionsController {
   constructor(private readonly permissionsService: PermissionsService) {}
 
   @Post()
-  @RequirePermission('permission:create')
+  @RequiredPermission('permission:create')
   create(
     @Body() createPermissionDto: CreatePermissionDto,
   ): Promise<Permission> {
@@ -26,19 +26,19 @@ export class PermissionsController {
   }
 
   @Get()
-  @RequirePermission('permission:read')
+  @RequiredPermission('permission:read')
   findAll(): Promise<Permission[]> {
     return this.permissionsService.findAll();
   }
 
   @Get(':id')
-  @RequirePermission('permission:read')
+  @RequiredPermission('permission:read')
   findOne(@Param('id') id: string): Promise<Permission | null> {
     return this.permissionsService.findById(id);
   }
 
   @Delete(':id')
-  @RequirePermission('permission:delete')
+  @RequiredPermission('permission:delete')
   remove(@Param('id') id: string): Promise<Permission> {
     return this.permissionsService.remove(id);
   }

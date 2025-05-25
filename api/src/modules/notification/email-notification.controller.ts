@@ -15,15 +15,16 @@ import {
   Request,
 } from '@nestjs/common';
 import { EmailNotificationsService } from '@modules/notification/email-notifications.service';
-import { RequirePermission } from '@modules/auth/decorators/require-permission.decorator';
+
 import { Request as Req } from 'express';
+import { RequiredPermission } from '@modules/auth';
 
 @Controller('email-notification')
 export class EmailNotificationController {
   constructor(private emailService: EmailNotificationsService) {}
 
   @Post('send-email')
-  @RequirePermission('notification:send')
+  @RequiredPermission('notification:send')
   async manualSendEmail(
     @Request() req: Req,
     @Body() dto: { to: string; subject: string; body: string },
