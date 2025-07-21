@@ -19,6 +19,9 @@ import { DownloadFileUseCase } from './application/use-cases/download-file.use-c
 import { GetFileByIdUseCase } from './application/use-cases/get-file-by-id.use-case';
 import { GetAllFilesUseCase } from './application/use-cases/get-all-files.use-case';
 import { DeleteFileUseCase } from './application/use-cases/delete-file.use-case';
+import { GenerateEditorConfigUseCase } from './application/use-cases/generate-editor-config.use-case';
+import { SaveEditedFileUseCase } from './application/use-cases/save-edited-file.use-case';
+import { HandleOnlyOfficeCallbackUseCase } from './application/use-cases/handle-onlyoffice-callback.use-case';
 
 // Infrastructure Layer
 import { FileRepository } from './infrastructure/repositories/file.repository';
@@ -46,6 +49,9 @@ import { PrismaService } from '@libs/database/prisma/prisma.service';
     GetFileByIdUseCase,
     GetAllFilesUseCase,
     DeleteFileUseCase,
+    GenerateEditorConfigUseCase,
+    SaveEditedFileUseCase,
+    HandleOnlyOfficeCallbackUseCase,
 
     // Repository Implementations
     {

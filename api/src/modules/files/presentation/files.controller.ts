@@ -8,9 +8,12 @@
  * Created: 2024
  */
 import {
+  Body,
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Logger,
   NotFoundException,
   Param,
@@ -37,6 +40,8 @@ import { DownloadFileUseCase } from '../application/use-cases/download-file.use-
 import { GetFileByIdUseCase } from '../application/use-cases/get-file-by-id.use-case';
 import { GetAllFilesUseCase } from '../application/use-cases/get-all-files.use-case';
 import { DeleteFileUseCase } from '../application/use-cases/delete-file.use-case';
+import { GenerateEditorConfigUseCase } from '../application/use-cases/generate-editor-config.use-case';
+import { HandleOnlyOfficeCallbackUseCase } from '../application/use-cases/handle-onlyoffice-callback.use-case';
 
 // DTOs
 import {
@@ -44,6 +49,7 @@ import {
   FileUploadResultDto,
 } from '../application/dtos/upload-file.dto';
 import { DownloadFileDto } from '../application/dtos/download-file.dto';
+import { OnlyOfficeCallbackDto } from '../application/dtos/onlyoffice-callback.dto';
 
 @Controller('files')
 export class FilesController {
@@ -54,6 +60,8 @@ export class FilesController {
     private readonly getAllFilesUseCase: GetAllFilesUseCase,
     private readonly deleteFileUseCase: DeleteFileUseCase,
     private readonly jwtService: JwtService,
+    private readonly generateEditorConfigUseCase: GenerateEditorConfigUseCase,
+    private readonly handleOnlyOfficeCallbackUseCase: HandleOnlyOfficeCallbackUseCase,
   ) {}
 
   @Post('upload')
@@ -166,5 +174,40 @@ export class FilesController {
       Logger.error(e);
       throw new UnauthorizedException('Token invÃ¡lido o expirado');
     }
+  }
+
+  @Get(':id/editor-url')
+  getEditorUrl(@Param('id', ParseIntPipe) id: number, @Request() req: Req) {
+    const { id: userId, name } = req.user.data;
+    const tenantId = req.tenantId;
+    const token = req.headers['authorization']?.split(' ')[1] as string;
+
+    return this.generateEditorConfigUseCase.execute({
+      fileId: id,
+      userId,
+      userDepartmentName: req.user.department?.name ?? 'Sin departamento',
+      userName: name,
+      tenantId,
+      token,
+    });
+  }
+
+  @IsPublic()
+  @HttpCode(HttpStatus.OK)
+  @Post('changes-callback/:fileId')
+  async handleChanges(
+    @Param('fileId', ParseIntPipe) fileId: number,
+    @Query('token') token: string,
+    @Query('tenantId') tenantId: string,
+    @Body() body: OnlyOfficeCallbackDto,
+  ): Promise<string> {
+    const result = await this.handleOnlyOfficeCallbackUseCase.execute(
+      fileId,
+      token,
+      tenantId,
+      body,
+    );
+
+    return result.toJSON();
   }
 }

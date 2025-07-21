@@ -9,11 +9,11 @@
  */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { FilesController } from '../files-controller';
 import { FilesService } from '../files-service';
 import { NotFoundException } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { FilesController } from '../presentation/files.controller';
 
 describe('FilesController', () => {
   let controller: FilesController;

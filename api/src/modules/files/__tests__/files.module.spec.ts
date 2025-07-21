@@ -8,12 +8,12 @@
  * Created: 2024
  */
 import { Test, TestingModule } from '@nestjs/testing';
-import { FilesController } from '../files-controller';
-import { FilesService } from '../files-service';
+import { FilesController } from '../presentation/files.controller';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { MinioService } from '@libs/storage/minio/minio.service';
 import { PrismaService } from '@libs/database/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
+import { FilesService } from '../files-service';
 
 describe('FilesModule', () => {
   let module: TestingModule;
